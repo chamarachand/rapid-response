@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:client/pages/SOS_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -106,12 +108,23 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Rapid Response Mobile Application: SE G12 Group',
+              'My Group is SD12 this is new one. Jayathu',
             ),
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            SizedBox(height: 20), // Add some space
+            ElevatedButton(
+              onPressed: () {
+                // Add your button's functionality here
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SOSpage()),
+                );
+              },
+              child: Text('SOS Page'),
+            )
           ],
         ),
       ),
