@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { FirstResponder, validate } = require("../models/first-responder"); //typo
+const { FirstResponder, validate } = require("../models/first-responder");
 
 // Get
 router.get("/", (req, res) => {
