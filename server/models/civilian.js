@@ -1,8 +1,12 @@
 const mongoose = require("mongoose");
-const { User } = require("./user");
+const { User, userValidationSchema } = require("./user");
 
 const civilianSchema = new mongoose.Schema();
 
 const Civilian = User.discriminator("Civilian", civilianSchema);
 
-module.exports = Civilian;
+function validateCivilian(user) {
+  return userValidationSchema.validate(user);
+}
+
+module.exports = { Civilian, validate: validateCivilian };
