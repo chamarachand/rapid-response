@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 
 const genderValues = ["Male", "Female", "Other"];
 
+// Schema for validating the user before storing in MongoDB
 const userSchema = new mongoose.Schema({
   firstName: { type: String, minlength: 2, maxlength: 50, required: true },
   lastName: { type: String, minlength: 2, maxlength: 50, required: true },
@@ -23,6 +24,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
+// Schema for validating the incoming http request with user details in the body
 const userValidationSchema = Joi.object({
   firstName: Joi.string().min(2).max(50).required(),
   lastName: Joi.string().min(2).max(50).required(),
