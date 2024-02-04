@@ -28,8 +28,8 @@ const User = mongoose.model("User", userSchema);
 const userValidationSchema = Joi.object({
   firstName: Joi.string().min(2).max(50).required(),
   lastName: Joi.string().min(2).max(50).required(),
-  nicNo: Joi.string.min(9).max(12).required(),
-  gender: Joi.string().valid(genderValues), // Check whether we need to use the spread operator
+  nicNo: Joi.string().min(9).max(12).required(),
+  gender: Joi.string().valid(...genderValues), // Check whether we need to use the spread operator
   birthDay: Joi.string().required(), // Add date validation
   phoneNumber: Joi.string().required(), // Add phone number validation
   email: Joi.string().email().min(5).max(255).required(),
