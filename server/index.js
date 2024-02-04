@@ -8,6 +8,7 @@ const firstResponderRoutes = require("./routes/firstResponderRoutes");
 connection();
 
 // Middleware
+app.use(express.json());
 app.use("/api/civilian", civilianRoutes);
 app.use("/api/first-responder", firstResponderRoutes);
 
