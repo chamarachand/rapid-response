@@ -19,14 +19,14 @@ router.post("/", async (req, res) => {
     if (user)
       return res
         .status(400)
-        .send("User with the given username already exists");
+        .send("Civilian user with the given username already exists");
 
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
     user = new Civilian({ ...req.body, password: hashPassword });
     await user.save();
-    res.status(201).send("User registered successfully!"); // we can send  the user as well
+    res.status(201).send("Civilian user registered successfully!"); // we can send  the user as well
   } catch (error) {
     res.status(500).send("Internal Server Error");
   }
