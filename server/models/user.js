@@ -33,6 +33,7 @@ const userValidationSchema = Joi.object({
   birthDay: Joi.string().required(), // Add date validation
   phoneNumber: Joi.string().required(), // Add phone number validation
   email: Joi.string().email().min(5).max(255).required(),
+  username: Joi.string().min(4).max(16).required(),
   password: Joi.string().min(8).max(1024).required(),
 });
 
