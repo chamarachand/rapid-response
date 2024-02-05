@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-// const { User, userValidationSchema } = require("./user");
 const { userSchema, userValidationSchema } = require("../common/sharedSchema");
 
 const civilianSchema = new mongoose.Schema(userSchema);

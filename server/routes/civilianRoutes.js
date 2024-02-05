@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const { Civilian, validate } = require("../models/civilian");
-const { User } = require("../models/user");
 
 // Get
 router.get("/", (req, res) => {

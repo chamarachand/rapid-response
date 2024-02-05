@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-// const { User, userValidationSchema } = require("./user");
 const { userSchema, userValidationSchema } = require("../common/sharedSchema");
 
 const responderValues = ["Police", "Paramedic", "Fire"]; // Add more
