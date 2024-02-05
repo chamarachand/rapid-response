@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
-const { User, userValidationSchema } = require("./user");
+// const { User, userValidationSchema } = require("./user");
+const { userSchema, userValidationSchema } = require("../common/sharedSchema");
 
-const civilianSchema = new mongoose.Schema();
+const civilianSchema = new mongoose.Schema(userSchema);
 
-const Civilian = User.discriminator("Civilian", civilianSchema);
+const Civilian = mongoose.model("Civilian", civilianSchema);
 
 function validateCivilian(user) {
   return userValidationSchema.validate(user);

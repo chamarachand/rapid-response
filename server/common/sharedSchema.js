@@ -1,5 +1,5 @@
-const Joi = require("joi");
 const mongoose = require("mongoose");
+const Joi = require("joi");
 
 const genderValues = ["Male", "Female", "Other"];
 
@@ -22,14 +22,12 @@ const userSchema = new mongoose.Schema({
   password: { type: String, minlength: 8, maxlength: 1024, required: true },
 });
 
-const User = mongoose.model("User", userSchema);
-
 // Schema for validating the incoming http request with user details in the body
 const userValidationSchema = Joi.object({
   firstName: Joi.string().min(2).max(50).required(),
   lastName: Joi.string().min(2).max(50).required(),
   nicNo: Joi.string().min(9).max(12).required(),
-  gender: Joi.string().valid(...genderValues), // Check whether we need to use the spread operator
+  gender: Joi.string().valid(...genderValues),
   birthDay: Joi.string().required(), // Add date validation
   phoneNumber: Joi.string().required(), // Add phone number validation
   email: Joi.string().email().min(5).max(255).required(),
@@ -37,4 +35,4 @@ const userValidationSchema = Joi.object({
   password: Joi.string().min(8).max(1024).required(),
 });
 
-module.exports = { User, userValidationSchema };
+module.exports = { userSchema, userValidationSchema };

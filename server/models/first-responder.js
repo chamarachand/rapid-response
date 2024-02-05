@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
-const { User, userValidationSchema } = require("./user");
 const Joi = require("joi");
+// const { User, userValidationSchema } = require("./user");
+const { userSchema, userValidationSchema } = require("../common/sharedSchema");
 
 const responderValues = ["Police", "Paramedic", "Fire"]; // Add more
 
 const firstResponderSchema = new mongoose.Schema({
+  ...userSchema.obj,
   responderType: { type: String, enum: responderValues, required: true },
   departmentName: {
     type: String,
@@ -15,10 +17,7 @@ const firstResponderSchema = new mongoose.Schema({
   departmentId: { type: String, maxlength: 32, required: true },
 });
 
-const FirstResponder = User.discriminator(
-  "FirstResponder",
-  firstResponderSchema
-);
+const FirstResponder = mongoose.model("FirstResponder", firstResponderSchema);
 
 function validateFirstResponder(user) {
   const firstResponderValidationSchema = userValidationSchema.keys({
