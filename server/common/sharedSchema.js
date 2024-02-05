@@ -1,4 +1,7 @@
 const mongoose = require("mongoose");
+const Joi = require("joi");
+
+const genderValues = ["Male", "Female", "Other"];
 
 // Schema for validating the user before storing in MongoDB
 const userSchema = new mongoose.Schema({
