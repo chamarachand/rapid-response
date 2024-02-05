@@ -22,7 +22,9 @@ const FirstResponder = User.discriminator(
 
 function validateFirstResponder(user) {
   const firstResponderValidationSchema = userValidationSchema.keys({
-    responderType: Joi.string().valid(responderValues).required(),
+    responderType: Joi.string()
+      .valid(...responderValues)
+      .required(),
     departmentName: Joi.string().min(5).max(255).required(),
     departmentId: Joi.string().max(32).required(),
   });

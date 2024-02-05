@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const { FirstResponder, validate } = require("../models/first-responder");
 
 // Get
@@ -25,6 +26,7 @@ router.post("/", async (req, res) => {
     await user.save();
     res.status(201).send("First responder user registered successfully!"); // we can send  the user as well
   } catch (error) {
+    console.log(error);
     res.status(500).send("Internal Server Error");
   }
 });
