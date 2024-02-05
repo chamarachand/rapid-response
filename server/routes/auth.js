@@ -45,3 +45,5 @@ function validate(req) {
 async function correctPassword(plainTextPassword, hashedPassword) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 }
+
+module.exports = router;
