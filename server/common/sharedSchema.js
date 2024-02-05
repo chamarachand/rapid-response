@@ -18,8 +18,14 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: true,
   },
-  username: { type: String, unique: true, required: true },
-  password: { type: String, minlength: 8, maxlength: 1024, required: true },
+  username: {
+    type: String,
+    minlength: 4,
+    maxlength: 16,
+    unique: true,
+    required: true,
+  },
+  password: { type: String, minlength: 8, maxlength: 255, required: true },
 });
 
 // Schema for validating the incoming http request with user details in the body
@@ -32,7 +38,7 @@ const userValidationSchema = Joi.object({
   phoneNumber: Joi.string().required(), // Add phone number validation
   email: Joi.string().email().min(5).max(255).required(),
   username: Joi.string().min(4).max(16).required(),
-  password: Joi.string().min(8).max(1024).required(),
+  password: Joi.string().min(8).max(255).required(),
 });
 
 module.exports = { userSchema, userValidationSchema };
