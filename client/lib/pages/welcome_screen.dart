@@ -10,7 +10,8 @@ class WelcomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Welcome Page"),
         ),
-        body: Column(
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
                 onPressed: () => Navigator.push(context,
