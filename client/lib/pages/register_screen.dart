@@ -7,7 +7,16 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Login"),
+        title: const Row(children: [
+          Text("Register"),
+          Padding(
+            padding: EdgeInsets.only(left: 8),
+            child: Icon(
+              Icons.person,
+              size: 32,
+            ),
+          )
+        ]),
       ),
       body: const Center(child: Text("This is Register Page")),
     );
