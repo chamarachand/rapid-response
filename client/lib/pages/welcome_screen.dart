@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'login_screen.dart';
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class WelcomePage extends StatelessWidget {
+  const WelcomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +13,8 @@ class MyWidget extends StatelessWidget {
         body: Column(
           children: [
             ElevatedButton(
-                onPressed: MaterialPageRoute(
-                  builder: (context) => LoginPage(),
-                ),
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const LoginPage())),
                 child: const Text("Login"))
           ],
         ));
