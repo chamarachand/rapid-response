@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
+import 'register_screen.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -10,13 +11,23 @@ class WelcomePage extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Welcome Page"),
         ),
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        body: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const LoginPage())),
-                child: const Text("Login"))
+            Center(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage())),
+                    child: const Text("Login"))),
+            Center(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage())),
+                    child: const Text("Register")))
           ],
         ));
   }
