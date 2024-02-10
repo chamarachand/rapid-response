@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:client/pages/SOS_page.dart';
 import 'package:client/pages/welcome_screen.dart';
 
 void main() {
