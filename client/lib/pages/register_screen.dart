@@ -8,7 +8,11 @@ class RegisterPage2 extends StatefulWidget {
 }
 
 class _RegisterPage2State extends State<RegisterPage2> {
-  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _fnameController = TextEditingController();
+  final TextEditingController _lnameController = TextEditingController();
+  final TextEditingController _nicnoController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _birthdateController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -20,7 +24,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
     if (picked != null) {
       setState(() {
-        _dateController.text = picked.toLocal().toString().split(' ')[0];
+        _birthdateController.text = picked.toLocal().toString().split(' ')[0];
       });
     }
   }
@@ -44,6 +48,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
+              controller: _fnameController,
               decoration: const InputDecoration(
                   labelText: "First Name",
                   border: OutlineInputBorder(),
@@ -53,6 +58,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
+              controller: _lnameController,
               decoration: const InputDecoration(
                   labelText: "Last Name",
                   border: OutlineInputBorder(),
@@ -62,6 +68,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
+              controller: _nicnoController,
               decoration: const InputDecoration(
                   labelText: "NIC Number",
                   border: OutlineInputBorder(),
@@ -81,21 +88,28 @@ class _RegisterPage2State extends State<RegisterPage2> {
                         DropdownMenuItem(value: gender, child: Text(gender)))
                     .toList(),
                 onChanged: (String? selectedGender) =>
-                    {print('Gender: $selectedGender')}),
+                    {_genderController.text = selectedGender ?? ""}),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
+              controller: _birthdateController,
               decoration: const InputDecoration(
                   labelText: "Date of Birth",
                   border: OutlineInputBorder(),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  suffixIcon: Icon(Icons.calendar_today)),
-              controller: _dateController,
+                  suffixIcon: Icon(Icons.calendar_month)),
               readOnly: true,
               onTap: () => _selectDate(context),
             ),
-          )
+          ),
+          ElevatedButton(
+              //Testing purpose
+              onPressed: () {
+                print(_fnameController.text);
+                print(_lnameController.text);
+              },
+              child: const Text("Continue"))
         ]));
   }
 }
