@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RegisterScreen4 extends StatefulWidget {
-  const RegisterScreen4({super.key});
+class RegisterPage4 extends StatefulWidget {
+  const RegisterPage4({super.key});
 
   @override
-  State<RegisterScreen4> createState() => _RegisterScreen4State();
+  State<RegisterPage4> createState() => _RegisterScreen4State();
 }
 
-class _RegisterScreen4State extends State<RegisterScreen4> {
+class _RegisterScreen4State extends State<RegisterPage4> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
