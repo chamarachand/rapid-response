@@ -32,7 +32,8 @@ class _RegisterPage3State extends State<RegisterPage3> {
           child: TextFormField(
             controller: _phonenoController,
             decoration: const InputDecoration(
-                labelText: "First Name",
+                labelText: "Mobile No",
+                prefixIcon: Icon(Icons.phone),
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always),
           ),
@@ -43,10 +44,18 @@ class _RegisterPage3State extends State<RegisterPage3> {
             controller: _emailController,
             decoration: const InputDecoration(
                 labelText: "Email",
+                prefixIcon: Icon(Icons.email),
                 border: OutlineInputBorder(),
                 floatingLabelBehavior: FloatingLabelBehavior.always),
           ),
         ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+            onPressed: () {
+              print(_phonenoController.text);
+              print(_emailController.text);
+            },
+            child: const Text("Continue"))
       ]),
     );
   }
