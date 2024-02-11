@@ -41,6 +41,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: TextFormField(
               controller: _passwordController,
+              obscureText: true, //hide text
               decoration: const InputDecoration(
                   labelText: "Select a password",
                   border: OutlineInputBorder(),
@@ -50,6 +51,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: TextFormField(
               controller: _repasswordController,
+              obscureText: true, //hide text
               decoration: const InputDecoration(
                   labelText: "Re-enter password",
                   border: OutlineInputBorder(),
