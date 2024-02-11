@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'register_screen_4.dart';
 
 class RegisterPage3 extends StatefulWidget {
   const RegisterPage3({super.key});
@@ -51,10 +52,8 @@ class _RegisterPage3State extends State<RegisterPage3> {
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-            onPressed: () {
-              print(_phonenoController.text);
-              print(_emailController.text);
-            },
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const RegisterPage4())),
             child: const Text("Continue"))
       ]),
     );
