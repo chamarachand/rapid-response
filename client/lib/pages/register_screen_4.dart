@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:client/providers/registration_provider.dart';
 
 class RegisterPage4 extends StatefulWidget {
   const RegisterPage4({super.key});
@@ -14,6 +16,8 @@ class _RegisterScreen4State extends State<RegisterPage4> {
 
   @override
   Widget build(BuildContext context) {
+    final civilianProvider = Provider.of<RegistrationProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(children: [
@@ -60,8 +64,10 @@ class _RegisterScreen4State extends State<RegisterPage4> {
         const SizedBox(height: 24),
         ElevatedButton(
             onPressed: () {
-              print(_usernameController.text);
-              print(_passwordController.text);
+              civilianProvider.updateUser(
+                username: _usernameController.text,
+                password: _passwordController.text,
+              );
             },
             child: const Text("Register"))
       ]),
