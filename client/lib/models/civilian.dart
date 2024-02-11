@@ -20,4 +20,19 @@ class Civilian {
     this.username,
     this.password,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'nicNumber': nicNumber,
+      'gender': gender,
+      'dateOfBirth':
+          dateOfBirth?.toIso8601String(), // Convert DateTime to ISO 8601 string
+      'mobileNumber': mobileNumber,
+      'email': email,
+      'username': username,
+      'password': password,
+    };
+  }
 }

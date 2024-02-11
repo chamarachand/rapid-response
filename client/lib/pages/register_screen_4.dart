@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
 
@@ -13,6 +15,22 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
+
+  registerCivilian(RegistrationProvider provider) async {
+    print("Stepped");
+    try {
+      var response = await http.post(
+          Uri.parse("http://10.0.2.2:3000/api/civilian"),
+          body: jsonEncode(provider.civilian.toJson()));
+      if (response.statusCode == 201)
+        print("Created");
+      else
+        print(response.body);
+      print("Done");
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +81,13 @@ class _RegisterScreen4State extends State<RegisterPage4> {
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               civilianProvider.updateUser(
                 username: _usernameController.text,
                 password: _passwordController.text,
               );
+              await registerCivilian(civilianProvider);
+              print("Reached");
             },
             child: const Text("Register"))
       ]),
