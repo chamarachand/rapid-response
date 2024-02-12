@@ -1,10 +1,10 @@
 class Civilian {
   String? firstName;
   String? lastName;
-  String? nicNumber;
+  String? nicNo;
   String? gender;
-  DateTime? dateOfBirth;
-  String? mobileNumber;
+  DateTime? birthDay;
+  String? phoneNumber;
   String? email;
   String? username;
   String? password;
@@ -12,12 +12,27 @@ class Civilian {
   Civilian({
     this.firstName,
     this.lastName,
-    this.nicNumber,
+    this.nicNo,
     this.gender,
-    this.dateOfBirth,
-    this.mobileNumber,
+    this.birthDay,
+    this.phoneNumber,
     this.email,
     this.username,
     this.password,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'nicNo': nicNo,
+      'gender': gender,
+      'birthDay':
+          birthDay?.toIso8601String(), // Convert DateTime to ISO 8601 string
+      'phoneNumber': phoneNumber,
+      'email': email,
+      'username': username,
+      'password': password,
+    };
+  }
 }

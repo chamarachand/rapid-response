@@ -18,10 +18,10 @@ class RegistrationProvider extends ChangeNotifier {
       String? password}) {
     _civilian.firstName = firstName ?? _civilian.firstName;
     _civilian.lastName = lastName ?? _civilian.lastName;
-    _civilian.nicNumber = nicNumber ?? _civilian.nicNumber;
+    _civilian.nicNo = nicNumber ?? _civilian.nicNo;
     _civilian.gender = gender ?? _civilian.gender;
-    _civilian.dateOfBirth = dateOfBirth ?? _civilian.dateOfBirth;
-    _civilian.mobileNumber = mobileNumber ?? _civilian.mobileNumber;
+    _civilian.birthDay = dateOfBirth ?? _civilian.birthDay;
+    _civilian.phoneNumber = mobileNumber ?? _civilian.phoneNumber;
     _civilian.email = email ?? _civilian.email;
     _civilian.username = username ?? _civilian.username;
     _civilian.password = password ?? _civilian.password;
