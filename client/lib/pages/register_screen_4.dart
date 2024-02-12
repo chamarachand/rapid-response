@@ -25,14 +25,44 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 'Content-Type': 'application/json', // Add this line
               },
               body: jsonEncode(provider.civilian));
-      if (response.statusCode == 201)
-        print("Created");
-      else
+      if (response.statusCode == 201) {
+        showSuccessAlertDialog();
+      } else {
+        showFailAlertDialog();
         print(response.body);
+      }
       print("Stepped out");
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  void showSuccessAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text("Registration Successful!"),
+              content: const Icon(Icons.check_circle, color: Colors.green),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+            ));
+  }
+
+  void showFailAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text("Registration Failed!"),
+              content: const Icon(Icons.close_rounded, color: Colors.red),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+            ));
   }
 
   @override
@@ -89,7 +119,8 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 username: _usernameController.text,
                 password: _passwordController.text,
               );
-              await registerCivilian(civilianProvider);
+              await registerCivilian(
+                  civilianProvider); // check whether 'await' is necessary
               print("After reach");
             },
             child: const Text("Register"))
