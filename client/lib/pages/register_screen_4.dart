@@ -19,14 +19,17 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   registerCivilian(RegistrationProvider provider) async {
     print("Stepped");
     try {
-      var response = await http.post(
-          Uri.parse("http://10.0.2.2:3000/api/civilian"),
-          body: jsonEncode(provider.civilian.toJson()));
+      var response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/api/civilian"),
+              headers: {
+                'Content-Type': 'application/json', // Add this line
+              },
+              body: jsonEncode(provider.civilian));
       if (response.statusCode == 201)
         print("Created");
       else
         print(response.body);
-      print("Done");
+      print("Stepped out");
     } catch (e) {
       print("Error: $e");
     }
@@ -87,7 +90,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 password: _passwordController.text,
               );
               await registerCivilian(civilianProvider);
-              print("Reached");
+              print("After reach");
             },
             child: const Text("Register"))
       ]),
