@@ -1,4 +1,6 @@
+import 'package:client/providers/registration_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'register_screen_3.dart';
 
 class RegisterPage2 extends StatefulWidget {
@@ -32,6 +34,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
   @override
   Widget build(BuildContext context) {
+    final civilianPrvider = Provider.of<RegistrationProvider>(context);
+
     return Scaffold(
         appBar: AppBar(
           title: const Row(children: [
@@ -105,11 +109,19 @@ class _RegisterPage2State extends State<RegisterPage2> {
             ),
           ),
           ElevatedButton(
-              //Testing purpose
-              onPressed: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RegisterPage3())),
+              onPressed: () {
+                civilianPrvider.updateUser(
+                    firstName: _fnameController.text,
+                    lastName: _lnameController.text,
+                    nicNumber: _nicnoController.text,
+                    gender: _genderController.text,
+                    dateOfBirth: DateTime.parse(_birthdateController
+                        .text)); // check whether there is another way (ex: directly take as DateTime)
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterPage3()));
+              },
               child: const Text("Continue"))
         ]));
   }

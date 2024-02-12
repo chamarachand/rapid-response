@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:client/providers/registration_provider.dart';
 
 class RegisterPage4 extends StatefulWidget {
   const RegisterPage4({super.key});
@@ -12,8 +16,59 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
+  registerCivilian(RegistrationProvider provider) async {
+    print("Stepped");
+    try {
+      var response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/api/civilian"),
+              headers: {
+                'Content-Type': 'application/json', // Add this line
+              },
+              body: jsonEncode(provider.civilian));
+      if (response.statusCode == 201) {
+        showSuccessAlertDialog();
+      } else {
+        showFailAlertDialog();
+        print(response.body);
+      }
+      print("Stepped out");
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  void showSuccessAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text("Registration Successful!"),
+              content: const Icon(Icons.check_circle, color: Colors.green),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+            ));
+  }
+
+  void showFailAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text("Registration Failed!"),
+              content: const Icon(Icons.close_rounded, color: Colors.red),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final civilianProvider = Provider.of<RegistrationProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(children: [
@@ -59,9 +114,14 @@ class _RegisterScreen4State extends State<RegisterPage4> {
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-            onPressed: () {
-              print(_usernameController.text);
-              print(_passwordController.text);
+            onPressed: () async {
+              civilianProvider.updateUser(
+                username: _usernameController.text,
+                password: _passwordController.text,
+              );
+              await registerCivilian(
+                  civilianProvider); // check whether 'await' is necessary
+              print("After reach");
             },
             child: const Text("Register"))
       ]),
