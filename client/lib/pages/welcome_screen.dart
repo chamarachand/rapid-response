@@ -1,3 +1,4 @@
+import 'package:client/pages/report_incident_screen.dart';
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'register_screen_2.dart';
@@ -35,7 +36,14 @@ class WelcomePage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const SOSpage())),
-                    child: const Text("To Main (Test)")))
+                    child: const Text("To Main (Test)"))),
+            Center(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ReportScreen())),
+                    child: const Text("To Report Screen (Test)")))
           ],
         ));
   }
