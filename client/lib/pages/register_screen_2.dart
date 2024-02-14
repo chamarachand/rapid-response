@@ -115,8 +115,9 @@ class _RegisterPage2State extends State<RegisterPage2> {
                     lastName: _lnameController.text,
                     nicNumber: _nicnoController.text,
                     gender: _genderController.text,
-                    dateOfBirth: DateTime.parse(_birthdateController
-                        .text)); // check whether there is another way (ex: directly take as DateTime)
+                    dateOfBirth: _birthdateController.text != ""
+                        ? DateTime.parse(_birthdateController.text)
+                        : null); // check whether there is another way (ex: directly take as DateTime)
                 Navigator.push(
                     context,
                     MaterialPageRoute(
