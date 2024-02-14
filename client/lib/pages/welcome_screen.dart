@@ -36,7 +36,7 @@ class WelcomePage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const SOSpage())),
-                    child: const Text("To Main (Test)"))),
+                    child: const Text("SOS Page (Test)"))),
             Center(
                 child: ElevatedButton(
                     onPressed: () => Navigator.push(
