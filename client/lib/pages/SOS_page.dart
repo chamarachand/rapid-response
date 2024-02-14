@@ -16,7 +16,8 @@ class SOSpage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -52,7 +53,9 @@ class SOSpage extends StatelessWidget {
                   fillColor: Colors.pink[100],
                   hintText: "Not in the list? Type Here",
                   border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)))),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
             ),
             const Expanded(
               child: ElevatedButton(
