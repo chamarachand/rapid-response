@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'register_screen_4.dart';
 import 'package:client/providers/registration_provider.dart';
@@ -46,8 +47,9 @@ class _RegisterPage3State extends State<RegisterPage3> {
                     prefixIcon: Icon(Icons.phone),
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
-                  if (value!.isEmpty) return "Please enter your phone number";
+                  if (value == null) return "Please enter your phone number";
                   if (value.length != 10) {
                     return "Please enter a valid phone number";
                   }
