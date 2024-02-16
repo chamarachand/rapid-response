@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'register_screen_4.dart';
@@ -64,6 +65,11 @@ class _RegisterPage3State extends State<RegisterPage3> {
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
+                validator: (value) {
+                  return EmailValidator.validate(value!)
+                      ? null
+                      : "Please enter a valid email address";
+                },
               ),
             ),
             const SizedBox(height: 24),
