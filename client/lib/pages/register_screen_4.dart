@@ -41,13 +41,25 @@ class _RegisterScreen4State extends State<RegisterPage4> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: const Text("Registration Successful!"),
-              content: const Icon(Icons.check_circle, color: Colors.green),
+              title: const Text(
+                "Registration Successful!",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "You have been registered succesfully! Please verify your account.",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 40,
+              ),
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"))
+                    child: const Text("OK")),
               ],
+              actionsAlignment: MainAxisAlignment.center,
             ));
   }
 
@@ -55,13 +67,25 @@ class _RegisterScreen4State extends State<RegisterPage4> {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-              title: const Text("Registration Failed!"),
-              content: const Icon(Icons.close_rounded, color: Colors.red),
+              title: const Text(
+                "Registration Failed!",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "Registration unsuccessful! Please try again",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.close_rounded,
+                color: Colors.red,
+                size: 40,
+              ),
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: const Text("OK"))
               ],
+              actionsAlignment: MainAxisAlignment.center,
             ));
   }
 
@@ -119,8 +143,9 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 username: _usernameController.text,
                 password: _passwordController.text,
               );
-              await registerCivilian(
-                  civilianProvider); // check whether 'await' is necessary
+              // await registerCivilian(
+              //     civilianProvider); // check whether 'await' is necessary
+              showFailAlertDialog();
               print("After reach");
             },
             child: const Text("Register"))
