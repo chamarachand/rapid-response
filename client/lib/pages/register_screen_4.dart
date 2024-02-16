@@ -143,10 +143,8 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 username: _usernameController.text,
                 password: _passwordController.text,
               );
-              // await registerCivilian(
-              //     civilianProvider); // check whether 'await' is necessary
-              showFailAlertDialog();
-              print("After reach");
+              await registerCivilian(
+                  civilianProvider); // check whether 'await' is necessary
             },
             child: const Text("Register"))
       ]),
