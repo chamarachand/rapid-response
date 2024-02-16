@@ -83,7 +83,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 style: TextStyle(fontSize: 20),
               ),
               content: const Text(
-                "You have been registered succesfully! Please verify your account.",
+                "You have been registered succesfully! Please continue with login.",
                 textAlign: TextAlign.center,
               ),
               icon: const Icon(
