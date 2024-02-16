@@ -52,7 +52,6 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   }
 
   registerCivilian(RegistrationProvider provider) async {
-    print("Stepped");
     try {
       var response =
           await http.post(Uri.parse("http://10.0.2.2:3000/api/civilian"),
@@ -64,9 +63,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
         showSuccessAlertDialog();
       } else {
         showFailAlertDialog();
-        print(response.body);
       }
-      print("Stepped out");
     } catch (e) {
       print("Error: $e");
     }
