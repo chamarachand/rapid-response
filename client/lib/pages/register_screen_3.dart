@@ -49,7 +49,7 @@ class _RegisterPage3State extends State<RegisterPage3> {
                     floatingLabelBehavior: FloatingLabelBehavior.always),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: (value) {
-                  if (value == null) return "Please enter your phone number";
+                  if (value!.isEmpty) return "Please enter your phone number";
                   if (value.length != 10) {
                     return "Please enter a valid phone number";
                   }
