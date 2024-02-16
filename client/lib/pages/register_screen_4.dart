@@ -184,21 +184,20 @@ class _RegisterScreen4State extends State<RegisterPage4> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
-              controller: _repasswordController,
-              obscureText: true, //hide text
-              decoration: const InputDecoration(
-                labelText: "Re-enter password",
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              validator: (value) {
-                if (value!.isEmpty) return "Please re-enter your password";
-                if (value != _passwordController.text) {
-                  return "Passwords do not match";
-                }
-                return null;
-              },
-            ),
+                controller: _repasswordController,
+                obscureText: true, //hide text
+                decoration: const InputDecoration(
+                  labelText: "Re-enter password",
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) return "Please re-enter your password";
+                  if (value != _passwordController.text) {
+                    return "Passwords do not match";
+                  }
+                  return null;
+                }),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
