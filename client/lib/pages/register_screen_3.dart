@@ -67,6 +67,10 @@ class _RegisterPage3State extends State<RegisterPage3> {
                     prefixIcon: Icon(Icons.email),
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(
+                      RegExp(r'\s')) // Prevent entering spaces
+                ],
                 validator: (value) {
                   return EmailValidator.validate(value!)
                       ? null
