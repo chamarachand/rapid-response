@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
+import 'login_screen.dart';
 
 class RegisterPage4 extends StatefulWidget {
   const RegisterPage4({super.key});
@@ -17,6 +18,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
+  bool _successfulRegister = false;
 
   validatePassword(String value) {
     RegExp regex =
@@ -61,6 +63,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
               body: jsonEncode(provider.civilian));
       if (response.statusCode == 201) {
         showSuccessAlertDialog();
+        _successfulRegister = true;
       } else {
         showFailAlertDialog();
         print(response.body);
@@ -90,7 +93,13 @@ class _RegisterScreen4State extends State<RegisterPage4> {
               ),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => const LoginPage())));
+                    },
                     child: const Text("OK")),
               ],
               actionsAlignment: MainAxisAlignment.center,
