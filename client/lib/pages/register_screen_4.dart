@@ -18,7 +18,6 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
-  bool _successfulRegister = false;
 
   validatePassword(String value) {
     RegExp regex =
@@ -63,7 +62,6 @@ class _RegisterScreen4State extends State<RegisterPage4> {
               body: jsonEncode(provider.civilian));
       if (response.statusCode == 201) {
         showSuccessAlertDialog();
-        _successfulRegister = true;
       } else {
         showFailAlertDialog();
         print(response.body);
