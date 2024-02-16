@@ -18,6 +18,38 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
 
+  validatePassword(String value) {
+    RegExp regex =
+        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+
+    if (!regex.hasMatch(value)) {
+      if (value.length < 8) {
+        return "Password must be at least 8 characters";
+      }
+
+      if (value.length > 255) {
+        return "Password too long";
+      }
+
+      if (!value.contains(RegExp(r'[A-Z]'))) {
+        return "Password should have atleast 1 uppercase letter";
+      }
+
+      if (!value.contains(RegExp(r'[a-z]'))) {
+        return "Password should have atleast 1 lowercase letter";
+      }
+
+      if (!value.contains(RegExp(r'[0-9]'))) {
+        return "Password should have atleast 1 digit";
+      }
+
+      if (!value.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
+        return "Password should have atleast 1 special character";
+      }
+    }
+    return null;
+  }
+
   registerCivilian(RegistrationProvider provider) async {
     print("Stepped");
     try {
@@ -137,22 +169,36 @@ class _RegisterScreen4State extends State<RegisterPage4> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
-                controller: _passwordController,
-                obscureText: true, //hide text
-                decoration: const InputDecoration(
-                    labelText: "Select a password",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always)),
+              controller: _passwordController,
+              obscureText: true, //hide text
+              decoration: const InputDecoration(
+                  labelText: "Select a password",
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                  suffixIcon: Icon(Icons.info_rounded)),
+              validator: (value) => (value!.isEmpty)
+                  ? "Please enter a password"
+                  : validatePassword(value),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
             child: TextFormField(
-                controller: _repasswordController,
-                obscureText: true, //hide text
-                decoration: const InputDecoration(
-                    labelText: "Re-enter password",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always)),
+              controller: _repasswordController,
+              obscureText: true, //hide text
+              decoration: const InputDecoration(
+                labelText: "Re-enter password",
+                border: OutlineInputBorder(),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+              ),
+              validator: (value) {
+                if (value!.isEmpty) return "Please re-enter your password";
+                if (value != _passwordController.text) {
+                  return "Passwords do not match";
+                }
+                return null;
+              },
+            ),
           ),
           const SizedBox(height: 24),
           ElevatedButton(
