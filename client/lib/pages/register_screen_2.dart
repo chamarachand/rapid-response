@@ -62,6 +62,10 @@ class _RegisterPage2State extends State<RegisterPage2> {
                     labelText: "First Name",
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(
+                      RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
+                ],
                 validator: (value) {
                   value = value!
                       .trim(); // In a TextFormField f the user doesn't enter anything, the value returned will be an empty string "", not null.
@@ -80,6 +84,10 @@ class _RegisterPage2State extends State<RegisterPage2> {
                     labelText: "Last Name",
                     border: OutlineInputBorder(),
                     floatingLabelBehavior: FloatingLabelBehavior.always),
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(
+                      RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
+                ],
                 validator: (value) {
                   value = value!.trim();
                   if (value.isEmpty) return "This field is required";
