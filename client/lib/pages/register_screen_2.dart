@@ -112,7 +112,11 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 validator: (value) {
                   value = value!.trim();
                   if (value.isEmpty) return "This field is required";
-                  if (value.length != 10 && value.length != 12) {
+
+                  RegExp format1 = RegExp(r'^\d{9}[Vv]$');
+                  RegExp format2 = RegExp(r'^\d{12}$');
+
+                  if (!format1.hasMatch(value) && !format2.hasMatch(value)) {
                     return "Invalid NIC number";
                   }
                   return null;
