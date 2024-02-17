@@ -32,7 +32,11 @@ const userSchema = new mongoose.Schema({
 const userValidationSchema = Joi.object({
   firstName: Joi.string().min(2).max(50).required(),
   lastName: Joi.string().min(2).max(50).required(),
-  nicNo: Joi.string().min(9).max(12).required(),
+  nicNo: Joi.string()
+    .min(9)
+    .max(12)
+    .regex(/^(?:\d{9}[Vv]|\d{12})$/)
+    .required(),
   gender: Joi.string().valid(...genderValues),
   birthDay: Joi.string().required(), // Add date validation
   phoneNumber: Joi.string().required(), // Add phone number validation
