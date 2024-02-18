@@ -21,18 +21,18 @@ class Civilian {
     this.password,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'firstName': firstName,
-      'lastName': lastName,
-      'nicNo': nicNo,
-      'gender': gender,
-      'birthDay':
-          birthDay?.toIso8601String(), // Convert DateTime to ISO 8601 string
-      'phoneNumber': phoneNumber,
-      'email': email,
-      'username': username,
-      'password': password,
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'firstName': firstName,
+  //     'lastName': lastName,
+  //     'nicNo': nicNo,
+  //     'gender': gender,
+  //     'birthDay':
+  //         birthDay?.toIso8601String(), // Convert DateTime to ISO 8601 string
+  //     'phoneNumber': phoneNumber,
+  //     'email': email,
+  //     'username': username,
+  //     'password': password,
+  //   };
+  // }
 }
