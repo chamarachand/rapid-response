@@ -16,7 +16,8 @@ router.post("/", async (req, res) => {
   date.setMonth(details);
   date.setDate(details);
 
-  console.log(date);
+  console.log(req.body.birthDay);
+  res.send(req.body.birthDay);
 });
 
 function validate(req) {
