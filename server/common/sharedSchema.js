@@ -9,7 +9,16 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, minlength: 2, maxlength: 50, required: true },
   nicNo: { type: String, minlength: 9, maxlength: 12, required: true },
   gender: { type: String, enum: genderValues, required: true },
-  birthDay: { type: Date, required: true },
+  birthDay: {
+    type: Date,
+    required: true,
+    // set: function (value) {
+    //   // Custom setter function to convert date to UTC
+    //   return new Date(
+    //     Date.UTC(value.getFullYear(), value.getMonth(), value.getDate())
+    //   );
+    // },
+  },
   phoneNumber: { type: String, required: true },
   email: {
     type: String,
@@ -26,6 +35,20 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   password: { type: String, minlength: 8, maxlength: 255, required: true },
+});
+
+// Convert Date into UTC format before saving in the database
+userSchema.pre("save", function (next) {
+  if (this.birthDay) {
+    this.birthDay = new Date(
+      Date.UTC(
+        this.birthDay.getFullYear(),
+        this.birthDay.getMonth(),
+        this.birthDay.getDate()
+      )
+    );
+  }
+  next();
 });
 
 // Schema for validating the incoming http request with user details in the body
