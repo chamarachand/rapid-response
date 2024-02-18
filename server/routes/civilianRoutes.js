@@ -11,8 +11,6 @@ router.get("/", (req, res) => {
 //Post
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body.birthDay);
-    console.log(typeof req.body.birthDay);
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 

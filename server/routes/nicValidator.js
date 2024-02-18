@@ -7,17 +7,22 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  const details = parseInt(req.body.nicNo.substring(2, 5));
+  const nicNo = req.body.nicNo;
+
+  const details = parseInt(nicNo.substring(2, 5));
   const gender = details < 500 ? "Male" : "Female";
 
-  const date = new Date();
-  const birthYear = parseInt("19" + req.body.nicNo.substring(0, 2));
-  date.setFullYear(birthYear);
-  date.setMonth(details);
-  date.setDate(details);
+  const birthYear = parseInt("19" + nicNo.substring(0, 2));
+  const dob = new Date(birthYear, 0);
+  dob.setDate(details);
 
-  console.log(req.body.birthDay);
-  res.send(req.body.birthDay);
+  const givenGender = req.body.gender;
+  const givenDob = new Date(req.body.birthDay + "Z");
+
+  if (gender === givenGender && datesMatch(dob, givenDob))
+    return res.status(200).send("Valid");
+
+  return res.status(403).send("Invalid");
 });
 
 function validate(req) {
@@ -35,6 +40,14 @@ function validate(req) {
   });
 
   return schema.validate(req);
+}
+
+function datesMatch(date1, date2) {
+  return (
+    date1.getUTCFullYear() === date2.getUTCFullYear() &&
+    date1.getUTCMonth() === date2.getUTCMonth() &&
+    date1.getUTCDate() === date2.getUTCDate()
+  );
 }
 
 module.exports = router;
