@@ -7,17 +7,16 @@ router.post("/", async (req, res) => {
 
   if (error) return res.status(400).send(error.details[0].message);
 
-  const nicNo = req.body.nicNo;
-
-  const details = parseInt(nicNo.substring(2, 5));
-  const gender = details < 500 ? "Male" : "Female";
-
-  const birthYear = parseInt("19" + nicNo.substring(0, 2));
-  const dob = new Date(birthYear, 0);
-  dob.setDate(details);
-
+  const givenNicNo = req.body.nicNo;
   const givenGender = req.body.gender;
   const givenDob = new Date(req.body.birthDay + "Z");
+
+  const details = parseInt(givenNicNo.substring(2, 5));
+  const gender = details < 500 ? "Male" : "Female";
+
+  const birthYear = parseInt("19" + givenNicNo.substring(0, 2));
+  const dob = new Date(birthYear, 0);
+  dob.setDate(details < 500 ? details : details - 500);
 
   if (gender === givenGender && datesMatch(dob, givenDob))
     return res.status(200).send("Valid");
