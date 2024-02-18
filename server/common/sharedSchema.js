@@ -28,6 +28,20 @@ const userSchema = new mongoose.Schema({
   password: { type: String, minlength: 8, maxlength: 255, required: true },
 });
 
+// Convert Date into UTC format before saving in the database
+userSchema.pre("save", function (next) {
+  if (this.birthDay) {
+    this.birthDay = new Date(
+      Date.UTC(
+        this.birthDay.getFullYear(),
+        this.birthDay.getMonth(),
+        this.birthDay.getDate()
+      )
+    );
+  }
+  next();
+});
+
 // Schema for validating the incoming http request with user details in the body
 const userValidationSchema = Joi.object({
   firstName: Joi.string().min(2).max(50).required(),
