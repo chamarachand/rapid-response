@@ -11,28 +11,31 @@ router.post("/", async (req, res) => {
   const givenGender = req.body.gender;
   const givenDob = new Date(req.body.birthDay + "Z");
 
-  let details;
-  let birthYear;
-
-  if (givenNicNo.length === 10) {
-    details = parseInt(givenNicNo.substring(2, 5));
-    birthYear = parseInt("19" + givenNicNo.substring(0, 2));
-  } else {
-    details = parseInt(givenNicNo.substring(4, 7));
-    birthYear = parseInt(givenNicNo.substring(0, 4));
-  }
-
-  const gender = details < 500 ? "Male" : "Female";
-  let dob = new Date(birthYear, 0);
-  dob.setDate(details < 500 ? details : details - 500);
-
-  dob = new Date(Date.UTC(dob.getFullYear(), dob.getMonth(), dob.getDate())); // Convert to UTC Date
+  const { gender, dob } = getGenderAndDob(givenNicNo);
 
   if (gender === givenGender && datesMatch(dob, givenDob))
     return res.status(200).send("Valid");
 
   return res.status(403).send("Invalid");
 });
+
+function getGenderAndDob(nicNo) {
+  const isOldNic = nicNo.length == 10;
+  const detailsCode = parseInt(
+    isOldNic ? nicNo.substring(2, 5) : nicNo.substring(4, 7)
+  );
+  const birthYear = parseInt(
+    isOldNic ? nicNo.substring(0, 2) : nicNo.substring(0, 4)
+  );
+
+  const gender = detailsCode < 500 ? "Male" : "Female";
+  let dob = new Date(birthYear, 0);
+  dob.setDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
+
+  dob = new Date(Date.UTC(dob.getFullYear(), dob.getMonth(), dob.getDate())); // Convert to UTC Date
+
+  return { gender, dob };
+}
 
 function validate(req) {
   const genderValues = ["Male", "Female", "Other"];
