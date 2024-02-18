@@ -11,10 +11,21 @@ router.post("/", async (req, res) => {
   const givenGender = req.body.gender;
   const givenDob = new Date(req.body.birthDay + "Z");
 
-  const details = parseInt(givenNicNo.substring(2, 5));
-  const gender = details < 500 ? "Male" : "Female";
+  let details;
+  let birthYear;
 
-  const birthYear = parseInt("19" + givenNicNo.substring(0, 2));
+  if (givenNicNo.length === 10) {
+    details = parseInt(givenNicNo.substring(2, 5));
+    birthYear = parseInt("19" + givenNicNo.substring(0, 2));
+  } else {
+    details = parseInt(givenNicNo.substring(4, 7));
+    birthYear = parseInt(givenNicNo.substring(0, 4));
+  }
+
+  console.log(details);
+  console.log(birthYear);
+
+  const gender = details < 500 ? "Male" : "Female";
   const dob = new Date(birthYear, 0);
   dob.setDate(details < 500 ? details : details - 500);
 
@@ -32,7 +43,6 @@ function validate(req) {
       .min(9)
       .max(12)
       .regex(/^(?:\d{9}[Vv]|\d{12})$/)
-      .trim()
       .required(),
     gender: Joi.string().valid(...genderValues),
     birthDay: Joi.string().required(),
