@@ -60,6 +60,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
               },
               body: jsonEncode(provider.civilian));
       if (response.statusCode == 201) {
+        //change this not to depend on the status code
         showSuccessAlertDialog();
       } else {
         showFailAlertDialog();
