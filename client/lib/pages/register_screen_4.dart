@@ -51,6 +51,19 @@ class _RegisterScreen4State extends State<RegisterPage4> {
     return null;
   }
 
+  userExists(String username) async {
+    try {
+      var response = await http.post(
+          Uri.parse("http://10.0.2.2:3000/api/civilian/checkUser/$username"),
+          headers: {'Content-Type': 'application/json'});
+
+      var data = jsonDecode(response.body);
+      return (data['userExists']);
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   registerCivilian(RegistrationProvider provider) async {
     try {
       var response =
