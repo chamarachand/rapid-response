@@ -22,12 +22,11 @@ router.post("/", async (req, res) => {
     birthYear = parseInt(givenNicNo.substring(0, 4));
   }
 
-  console.log(details);
-  console.log(birthYear);
-
   const gender = details < 500 ? "Male" : "Female";
-  const dob = new Date(birthYear, 0);
+  let dob = new Date(birthYear, 0);
   dob.setDate(details < 500 ? details : details - 500);
+
+  dob = new Date(Date.UTC(dob.getFullYear(), dob.getMonth(), dob.getDate())); // Convert to UTC Date
 
   if (gender === givenGender && datesMatch(dob, givenDob))
     return res.status(200).send("Valid");
