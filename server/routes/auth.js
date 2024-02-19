@@ -25,9 +25,14 @@ router.post("/", async (req, res) => {
     if (!correctPassword(req.body.password, user.password))
       return res.status(401).send("Invalid username or password");
 
-    return res
-      .status(200)
-      .send({ message: "Login successful", userType: userType });
+    const token = jwt.sign(
+      { userType: userType, username: user.username },
+      "jwtPrivateKey"
+    );
+    res.send(token);
+    // return res
+    //   .status(200)
+    //   .send({ message: "Login successful", userType: userType });
   } catch (error) {
     res.status(500).send("Internal server error");
   }
