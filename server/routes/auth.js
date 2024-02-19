@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const config = require("config");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 
@@ -20,19 +20,13 @@ router.post("/", async (req, res) => {
       return res.status(401).send("Invalid username or password");
 
     const user = civilian || firstResponder;
-    const userType = civilian ? "civilian" : "first responder";
+    // const userType = civilian ? "civilian" : "first responder";
 
     if (!correctPassword(req.body.password, user.password))
       return res.status(401).send("Invalid username or password");
 
-    const token = jwt.sign(
-      { userType: userType, username: user.username },
-      "jwtPrivateKey"
-    );
+    const token = user.generateAuthToken();
     res.send(token);
-    // return res
-    //   .status(200)
-    //   .send({ message: "Login successful", userType: userType });
   } catch (error) {
     res.status(500).send("Internal server error");
   }
