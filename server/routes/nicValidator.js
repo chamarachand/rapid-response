@@ -13,9 +13,6 @@ router.post("/", async (req, res) => {
 
   const { gender, dob } = getGenderAndDob(givenNicNo);
 
-  console.log(dob);
-  console.log(givenDob);
-
   if (gender === givenGender && datesMatch(dob, givenDob))
     return res.status(200).send("Valid");
 
@@ -24,9 +21,6 @@ router.post("/", async (req, res) => {
 
 function getGenderAndDob(nicNo) {
   const isOldNic = nicNo.length == 10;
-  // const detailsCode = parseInt(
-  //   isOldNic ? nicNo.substring(2, 5) : nicNo.substring(4, 7)
-  // );
 
   const detailsCode = isOldNic
     ? parseInt(nicNo.substring(2, 5)) - 1
@@ -43,7 +37,6 @@ function getGenderAndDob(nicNo) {
   // console.log(detailsCode);
   // dob.setDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
 
-  console.log(dob);
   // dob = new Date(Date.UTC(dob.getFullYear(), dob.getMonth(), dob.getDate())); // Convert to UTC Date
 
   return { gender, dob };
