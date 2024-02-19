@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ReportScreen extends StatefulWidget {
-  const ReportScreen({super.key});
+  const ReportScreen({Key? key}) : super(key: key);
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -9,6 +11,8 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
+  ImageProvider? image;
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +31,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   primary: Colors.orange,
                   onPrimary: Colors.black,
                   fixedSize: const Size(1000, 50)),
-              onPressed: () {},
+              onPressed: pickImage,
               child: const Text('+ add Image'),
             ),
           ),
@@ -38,12 +42,10 @@ class _ReportScreenState extends State<ReportScreen> {
                   primary: Colors.orange,
                   onPrimary: Colors.black,
                   fixedSize: const Size(1000, 50)),
-              onPressed: () {},
+              onPressed: add_video,
               child: const Text('+ add Video'),
             ),
           ),
-
-          //changejdjhdkcbdckyidsyciyciuyci
           SizedBox(height: 20),
           Container(
             padding: textFieldPadding,
@@ -52,13 +54,14 @@ class _ReportScreenState extends State<ReportScreen> {
                   primary: Colors.orange,
                   onPrimary: Colors.black,
                   fixedSize: const Size(1000, 50)),
-              onPressed: () {},
+              onPressed: add_voice,
               child: const Text('+ add Voice'),
             ),
           ),
           Container(
             padding: textFieldPadding,
-            child: const TextField(
+            child: TextField(
+              controller: descriptionController,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Description",
@@ -103,4 +106,19 @@ class _ReportScreenState extends State<ReportScreen> {
     // Implement navigation logic based on the selected bottom navigation bar item
     // You can use Navigator to push or pop screens based on the selected index
   }
+
+  void pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? imageFile =
+        await _picker.pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      setState(() {
+        image = FileImage(File(imageFile.path));
+      });
+    }
+  }
+
+  void add_video() {}
+
+  void add_voice() {}
 }
