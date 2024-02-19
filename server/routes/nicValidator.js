@@ -24,16 +24,24 @@ router.post("/", async (req, res) => {
 
 function getGenderAndDob(nicNo) {
   const isOldNic = nicNo.length == 10;
-  const detailsCode = parseInt(
-    isOldNic ? nicNo.substring(2, 5) : nicNo.substring(4, 7)
-  );
+  // const detailsCode = parseInt(
+  //   isOldNic ? nicNo.substring(2, 5) : nicNo.substring(4, 7)
+  // );
+
+  const detailsCode = isOldNic
+    ? parseInt(nicNo.substring(2, 5)) - 1
+    : parseInt(nicNo.substring(4, 7));
+
   const birthYear = parseInt(
     isOldNic ? nicNo.substring(0, 2) : nicNo.substring(0, 4)
   );
 
   const gender = detailsCode < 500 ? "Male" : "Female";
-  let dob = new Date(birthYear, 0);
-  dob.setDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
+  let dob = new Date(Date.UTC(birthYear, 0, 1)); // Set timezone to UTC
+  dob.setUTCDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
+  // let dob = new Date(birthYear, 0);
+  // console.log(detailsCode);
+  // dob.setDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
 
   console.log(dob);
   // dob = new Date(Date.UTC(dob.getFullYear(), dob.getMonth(), dob.getDate())); // Convert to UTC Date
