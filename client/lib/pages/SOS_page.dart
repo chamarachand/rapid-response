@@ -59,12 +59,13 @@ class SOSpage extends StatelessWidget {
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
             ),
-            Expanded(
+            const SizedBox(height: 20),
+            SingleChildScrollView(
               child: ElevatedButton(
                 onPressed: () {
-                  print("Hello World"); // Print when the button is pressed
+                  print("Hello World");
                 },
-                child: Text("Send SOS"),
+                child: const Text('Send SOS'),
               ),
             )
           ],
