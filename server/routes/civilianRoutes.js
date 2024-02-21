@@ -8,6 +8,26 @@ router.get("/", (req, res) => {
   res.send("This is civilian api");
 });
 
+router.get("/checkUser/:username", async (req, res) => {
+  try {
+    const username = req.params.username;
+
+    const civilian = await Civilian.findOne({ username });
+
+    if (civilian)
+      res.status(400).json({
+        userExists: true,
+        message: "A user with the given id already exists",
+      });
+    else
+      res
+        .status(200)
+        .json({ userExists: false, message: "User does not exist" });
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+});
+
 //Post
 router.post("/", async (req, res) => {
   try {

@@ -51,6 +51,26 @@ class _RegisterScreen4State extends State<RegisterPage4> {
     return null;
   }
 
+  userExists(String username) async {
+    // No usage
+    try {
+      var response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/api/civilian/checkUser/$username"),
+          headers: {'Content-Type': 'application/json'});
+
+      var data = jsonDecode(response.body);
+      print("Reached");
+      if (data['userExists']) {
+        showUserExistsAlertDialog();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   registerCivilian(RegistrationProvider provider) async {
     try {
       var response =
@@ -60,6 +80,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
               },
               body: jsonEncode(provider.civilian));
       if (response.statusCode == 201) {
+        //change this not to depend on the status code
         showSuccessAlertDialog();
       } else {
         showFailAlertDialog();
@@ -94,6 +115,34 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                           context,
                           MaterialPageRoute(
                               builder: ((context) => const LoginPage())));
+                    },
+                    child: const Text("OK")),
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
+  }
+
+  void showUserExistsAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "Username Exists!",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "A user with the given username already exists. Please try another username",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.warning,
+                color: Colors.yellow,
+                size: 40,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
                     },
                     child: const Text("OK")),
               ],
@@ -207,6 +256,8 @@ class _RegisterScreen4State extends State<RegisterPage4> {
           ElevatedButton(
               onPressed: () async {
                 if (!_formKey.currentState!.validate()) return;
+
+                if (await userExists(_usernameController.text)) return;
 
                 civilianProvider.updateUser(
                   username: _usernameController.text,

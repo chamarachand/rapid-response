@@ -16,6 +16,13 @@ const firstResponderSchema = new mongoose.Schema({
   departmentId: { type: String, maxlength: 32, required: true },
 });
 
+firstResponderSchema.methods.generateAuthToken = function () {
+  return jwt.sign(
+    { userType: "civilian", username: this.username },
+    "jwtPrivateKey" // Change this to config.get("jwtPrvateKey")
+  );
+};
+
 const FirstResponder = mongoose.model("FirstResponder", firstResponderSchema);
 
 function validateFirstResponder(user) {

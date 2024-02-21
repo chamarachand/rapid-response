@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:client/providers/registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'register_screen_3.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage2 extends StatefulWidget {
   const RegisterPage2({super.key});
@@ -34,9 +37,58 @@ class _RegisterPage2State extends State<RegisterPage2> {
     }
   }
 
+  validateNic() async {
+    try {
+      var response =
+          await http.post(Uri.parse("http://10.0.2.2:3000/api/validate-nic"),
+              headers: {
+                'Content-Type': 'application/json', // Add this line
+              },
+              body: jsonEncode({
+                "nicNo": _nicnoController.text,
+                "gender": _genderController.text,
+                "birthDay": _birthdateController.text
+              }));
+      if (response.statusCode == 200) {
+        return true;
+      } else if (response.statusCode == 403) {
+        showFailAlertDialog();
+        return false;
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  void showFailAlertDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "NIC Validation Failed!",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "Your given nic does not match with the gender or birthday",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.close_rounded,
+                color: Colors.red,
+                size: 40,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    final civilianPrvider = Provider.of<RegistrationProvider>(context);
+    final civilianProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
         appBar: AppBar(
@@ -112,7 +164,11 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 validator: (value) {
                   value = value!.trim();
                   if (value.isEmpty) return "This field is required";
-                  if (value.length != 10 && value.length != 12) {
+
+                  RegExp format1 = RegExp(r'^\d{9}[Vv]$');
+                  RegExp format2 = RegExp(r'^\d{12}$');
+
+                  if (!format1.hasMatch(value) && !format2.hasMatch(value)) {
                     return "Invalid NIC number";
                   }
                   return null;
@@ -152,20 +208,24 @@ class _RegisterPage2State extends State<RegisterPage2> {
                       (value == "") ? "This field is required" : null),
             ),
             ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (!_formKey.currentState!.validate()) return;
 
-                  civilianPrvider.updateUser(
+                  if (!await validateNic()) return;
+
+                  civilianProvider.updateUser(
                       firstName: _fnameController.text,
                       lastName: _lnameController.text,
                       nicNumber: _nicnoController.text,
                       gender: _genderController.text,
-                      dateOfBirth: DateTime.parse(_birthdateController
-                          .text)); // check whether there is another way (ex: directly take as DateTime)
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RegisterPage3()));
+                      dateOfBirth: DateTime.parse(_birthdateController.text));
+
+                  if (mounted) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterPage3()));
+                  }
                 },
                 child: const Text("Continue"))
           ]),

@@ -32,10 +32,9 @@ class SOSpage extends StatelessWidget {
               backgroundColor: const Color.fromARGB(255, 235, 235, 235),
               child: Icon(Icons.mic, size: 60, color: Colors.grey[700]),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 10),
             Expanded(
               child: DropdownButton<String>(
-                borderRadius: const BorderRadius.all(Radius.circular(5)),
                 value: "Emergency Type",
                 items: <String>["Emergency Type", "Fire", "Medical", "Police"]
                     .map<DropdownMenuItem<String>>((String value) {
@@ -52,20 +51,16 @@ class SOSpage extends StatelessWidget {
                   filled: true,
                   fillColor: Color.fromARGB(255, 255, 104, 104),
                   hintText: "Not in the list? Type Here",
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide.none),
+                  border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
             ),
-            const SizedBox(
-              width: 150.0,
-              height: 75.0,
-              child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: Positioned(
-                      child: ElevatedButton(
-                          onPressed: null, child: Text('Send SOS')))),
+            const Expanded(
+              child: ElevatedButton(
+                onPressed: null,
+                child: Text("Send SOS"),
+              ),
             )
           ],
         ),
