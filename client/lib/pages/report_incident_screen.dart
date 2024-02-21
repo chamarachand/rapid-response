@@ -24,8 +24,8 @@ class _ReportScreenState extends State<ReportScreen> {
             padding: textFieldPadding,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: Colors.orange,
-                  onPrimary: Colors.black,
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.orange,
                   fixedSize: const Size(1000, 50)),
               onPressed: () {},
               child: const Text('+ add Image'),
@@ -35,8 +35,8 @@ class _ReportScreenState extends State<ReportScreen> {
             padding: textFieldPadding,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: Colors.orange,
-                  onPrimary: Colors.black,
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.orange,
                   fixedSize: const Size(1000, 50)),
               onPressed: () {},
               child: const Text('+ add Video'),
@@ -46,8 +46,8 @@ class _ReportScreenState extends State<ReportScreen> {
             padding: textFieldPadding,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  primary: Colors.orange,
-                  onPrimary: Colors.black,
+                  foregroundColor: Colors.black,
+                  backgroundColor: Colors.orange,
                   fixedSize: const Size(1000, 50)),
               onPressed: () {},
               child: const Text('+ add Voice'),
