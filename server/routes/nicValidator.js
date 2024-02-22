@@ -22,17 +22,21 @@ router.post("/", async (req, res) => {
 function getGenderAndDob(nicNo) {
   const isOldNic = nicNo.length == 10;
 
-  const detailsCode = isOldNic
-    ? parseInt(nicNo.substring(2, 5)) - 1
+  let detailsCode = isOldNic
+    ? parseInt(nicNo.substring(2, 5))
     : parseInt(nicNo.substring(4, 7));
 
   const birthYear = parseInt(
     isOldNic ? nicNo.substring(0, 2) : nicNo.substring(0, 4)
   );
 
+  // As the day of the year is calculated, considering every year as a leap year (in SL)
+  if (!isLeapYear(birthYear) && detailsCode > 59) detailsCode--;
+
   const gender = detailsCode < 500 ? "Male" : "Female";
   let dob = new Date(Date.UTC(birthYear, 0, 1)); // Set timezone to UTC
   dob.setUTCDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
+
   // let dob = new Date(birthYear, 0);
   // console.log(detailsCode);
   // dob.setDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
@@ -64,6 +68,10 @@ function datesMatch(date1, date2) {
     date1.getUTCMonth() === date2.getUTCMonth() &&
     date1.getUTCDate() === date2.getUTCDate()
   );
+}
+
+function isLeapYear(year) {
+  return (year % 4 == 0 && year % 100 != 0) || year % 400 == 0;
 }
 
 module.exports = router;
