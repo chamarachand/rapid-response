@@ -37,12 +37,6 @@ function getGenderAndDob(nicNo) {
   let dob = new Date(Date.UTC(birthYear, 0, 1)); // Set timezone to UTC
   dob.setUTCDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
 
-  // let dob = new Date(birthYear, 0);
-  // console.log(detailsCode);
-  // dob.setDate(detailsCode < 500 ? detailsCode : detailsCode - 500);
-
-  // dob = new Date(Date.UTC(dob.getFullYear(), dob.getMonth(), dob.getDate())); // Convert to UTC Date
-
   return { gender, dob };
 }
 
