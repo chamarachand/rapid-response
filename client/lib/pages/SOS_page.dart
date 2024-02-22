@@ -1,73 +1,140 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
-class SOSpage extends StatelessWidget {
-  const SOSpage({super.key});
+class SOSpage extends StatefulWidget {
+  const SOSpage({Key? key}) : super(key: key);
+
+  @override
+  _SOSpageState createState() => _SOSpageState();
+}
+
+class _SOSpageState extends State<SOSpage> {
+  String _chosenModel = 'Accident'; // Initial value for the dropdown
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text(
           'SOS',
           style: TextStyle(
-              color: Color.fromARGB(255, 70, 70, 70),
-              fontSize: 30,
-              fontWeight: FontWeight.bold),
+            color: Color.fromARGB(255, 70, 70, 70),
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            CircleAvatar(
-              radius: 55,
-              backgroundColor: const Color.fromARGB(255, 235, 235, 235),
-              child: Icon(Icons.camera_alt, size: 60, color: Colors.grey[700]),
-            ),
-            const SizedBox(height: 30),
-            CircleAvatar(
-              radius: 55,
-              backgroundColor: const Color.fromARGB(255, 235, 235, 235),
-              child: Icon(Icons.mic, size: 60, color: Colors.grey[700]),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: DropdownButton<String>(
-
-                value: "Emergency Type",
-                items: <String>["Emergency Type", "Fire", "Medical", "Police"]
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? value) {},
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              const CircleAvatar(
+                radius: 55,
+                backgroundColor: Color.fromARGB(227, 255, 78, 78),
+                child: Icon(
+                  Icons.camera_alt,
+                  size: 60,
+                  color: Color.fromARGB(255, 43, 43, 43),
+                ),
               ),
-            ),
-            const SizedBox(height: 30),
-            TextField(
-              decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.pink[100],
-                  hintText: "Not in the list? Type Here",
-                  border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      borderSide: BorderSide.none),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
-            ),
-            Expanded(
-              child: ElevatedButton(
+              const SizedBox(height: 30),
+              const CircleAvatar(
+                radius: 55,
+                backgroundColor: Color.fromARGB(227, 255, 78, 78),
+                child: Icon(Icons.mic,
+                    size: 60, color: Color.fromARGB(255, 43, 43, 43)),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              FractionallySizedBox(
+                alignment: Alignment.center,
+                widthFactor: 0.9,
+                child: Container(
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(227, 255, 78, 78),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    value: _chosenModel,
+                    items: <String>[
+                      'Accident',
+                      'Fludding',
+                      'Land Slide',
+                      'Flud1ding',
+                      'Fludd2ing',
+                      'Fluddi3ng',
+                      'Fluddin4g',
+                      'Fludding5',
+                      '1Fludding',
+                      'F2ludding',
+                      'Fl3udding',
+                      'Flu4dding',
+                      'Flud5ding',
+                      'Fludd6ing',
+                      'Fluddi7ng',
+                      'Fluddin7g',
+                      'Fluddin8g'
+                    ].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _chosenModel = newValue!;
+                      });
+                    },
+                    hint: const Text(
+                      "Emergency Type",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    dropdownColor: const Color.fromARGB(227, 255, 78, 78),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              FractionallySizedBox(
+                widthFactor: 0.9,
+                child: Container(
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(227, 255, 78, 78),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.all(3),
+                    child: TextField(
+                      decoration: InputDecoration(hintText: "Not in the list"),
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
                 onPressed: () {
-                  print("Hello World"); // Print when the button is pressed
+                  print("Hello World");
                 },
-                child: Text("Send SOS"),
-              ),
-            )
-          ],
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(227, 255, 78, 78),
+                ),
+                child: const Text('Send SOS'),
+              )
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
