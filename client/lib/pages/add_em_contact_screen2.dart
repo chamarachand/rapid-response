@@ -12,6 +12,7 @@ class _AddUserPageState extends State<AddUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         // title: Text(widget._user["firstName"] + " " + widget._user["lastName"]),
         title: const Row(
