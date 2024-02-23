@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'register_screen_2.dart';
 import 'SOS_page.dart';
+import 'add_em_comtact_screen.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -51,7 +52,14 @@ class WelcomePage extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => const add_event())),
-                    child: const Text("To Add Event (Test)")))
+                    child: const Text("To Add Event (Test)"))),
+            Center(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const UserSearchPage())),
+                    child: const Text("Add Emergency Contacts")))
           ],
         ));
   }
