@@ -8,6 +8,21 @@ router.get("/", (req, res) => {
   res.send("This is civilian api");
 });
 
+router.get("/search", async (req, res) => {
+  try {
+    const serachTerm = req.query.username;
+    const users = await Civilian.find({
+      username: { $regex: serachTerm, $options: "i" },
+    });
+
+    if (users.length === 0) return res.status(404).send("No users found");
+
+    res.send(users);
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+});
+
 router.get("/checkUser/:username", async (req, res) => {
   try {
     const username = req.params.username;
