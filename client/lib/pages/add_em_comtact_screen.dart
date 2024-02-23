@@ -101,7 +101,7 @@ class _UserListState extends State<UserList> {
               )),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Icon(Icons.open_in_new),
+                child: Icon(Icons.open_in_new, size: 22),
               )
             ]),
           ),
