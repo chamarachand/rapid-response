@@ -91,6 +91,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
     final civilianProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Row(children: [
             Text("Register"),
