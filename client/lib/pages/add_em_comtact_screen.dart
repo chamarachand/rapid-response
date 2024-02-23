@@ -98,11 +98,11 @@ class _UserListState extends State<UserList> {
                 ),
                 title: Text(user["username"]),
                 subtitle: Text(user["firstName"] + " " + user["lastName"]),
+                // trailing: const Icon(Icons.open_in_new, size: 22),
               )),
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Icon(Icons.open_in_new, size: 22),
-              )
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Icon(Icons.open_in_new, size: 22))
             ]),
           ),
         );
