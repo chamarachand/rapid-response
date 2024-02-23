@@ -86,22 +86,25 @@ class _UserListState extends State<UserList> {
       itemBuilder: (context, index) {
         var user = widget._users[index];
 
-        return Card(
-          child: Row(children: [
-            Expanded(
-                child: ListTile(
-              leading: const CircleAvatar(
-                backgroundImage: NetworkImage(
-                    "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
-              ),
-              title: Text(user["username"]),
-              subtitle: Text(user["firstName"] + " " + user["lastName"]),
-            )),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: Icon(Icons.open_in_new),
-            )
-          ]),
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Card(
+            child: Row(children: [
+              Expanded(
+                  child: ListTile(
+                leading: const CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
+                ),
+                title: Text(user["username"]),
+                subtitle: Text(user["firstName"] + " " + user["lastName"]),
+              )),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Icon(Icons.open_in_new),
+              )
+            ]),
+          ),
         );
       },
     );
