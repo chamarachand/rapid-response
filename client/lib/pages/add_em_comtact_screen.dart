@@ -54,11 +54,14 @@ class _UserSearchPageState extends State<UserSearchPage> {
         ),
       ),
       body: Column(children: [
-        TextFormField(
-          controller: _searchController,
-          decoration: const InputDecoration(
-              hintText: "Search", suffixIcon: Icon(Icons.search)),
-          onChanged: _updateSearchQuery,
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: TextFormField(
+            controller: _searchController,
+            decoration: const InputDecoration(
+                hintText: "Search", suffixIcon: Icon(Icons.search)),
+            onChanged: _updateSearchQuery,
+          ),
         ),
         Expanded(child: UserList(_searchResults))
       ]),
@@ -67,9 +70,9 @@ class _UserSearchPageState extends State<UserSearchPage> {
 }
 
 class UserList extends StatefulWidget {
-  List _users;
+  final List _users;
   // const UserList({super.key});
-  UserList(this._users, {super.key});
+  const UserList(this._users, {super.key});
 
   @override
   State<UserList> createState() => _UserListState();
@@ -94,8 +97,9 @@ class _UserListState extends State<UserList> {
               title: Text(user["username"]),
               subtitle: Text(user["firstName"] + " " + user["lastName"]),
             )),
-            const Row(
-              children: [Icon(Icons.open_in_new)],
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(Icons.open_in_new),
             )
           ]),
         );
