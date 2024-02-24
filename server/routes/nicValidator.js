@@ -29,7 +29,6 @@ function getGenderAndDob(nicNo) {
   const birthYear = parseInt(
     isOldNic ? nicNo.substring(0, 2) : nicNo.substring(0, 4)
   );
-  git;
 
   // As the day of the year is calculated, considering every year as a leap year (in SL)
   if (!isLeapYear(birthYear) && detailsCode > 59) detailsCode--;
