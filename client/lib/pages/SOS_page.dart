@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class SOSpage extends StatefulWidget {
-  const SOSpage({Key? key}) : super(key: key);
+  const SOSpage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SOSpageState createState() => _SOSpageState();
 }
 
@@ -30,14 +31,14 @@ class _SOSpageState extends State<SOSpage> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: <Widget>[
+              // Add here
               const CircleAvatar(
                 radius: 55,
                 backgroundColor: Color.fromARGB(227, 255, 78, 78),
-                child: Icon(
-                  Icons.camera_alt,
-                  size: 60,
-                  color: Color.fromARGB(255, 43, 43, 43),
-                ),
+                child: ElevatedButton(
+                    onPressed: null,
+                    child: Icon(Icons.camera_alt,
+                        size: 60, color: Color.fromARGB(255, 43, 43, 43))),
               ),
               const SizedBox(height: 30),
               const CircleAvatar(
