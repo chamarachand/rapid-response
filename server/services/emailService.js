@@ -37,7 +37,7 @@ async function sendRegisterConfirmationMail(firstName, email) {
 
     <p>Stay safe,</p>
 
-    <p>[Your Name]<br>Rapid Response Team</p>`,
+    <p>Rapid Response Team</p>`,
   };
 
   try {
