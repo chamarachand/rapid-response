@@ -6,17 +6,28 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: "chamaquarium@gmail.com",
-    pass: "mkxv fbfn tipy viqs",
+    user: "rapidresponse.srilanka@gmail.com",
+    pass: "omqk nfim hbbz srze",
   },
 });
 
-async function sendRegisterConfirmationMail() {
+async function sendRegisterConfirmationMail(firstName, email) {
   const mailOptions = {
-    from: '"Cham Aquarium2" <chamaquarium2@gmail.com>',
-    to: "lasithachandrasekara@gmail.com",
-    subject: "Registration Confirmed!",
-    text: "You have been registered successfully!",
+    from: '"Rapid Response" <rapidresponse.srilanka@gmail.com>',
+    to: email,
+    subject: "Welcome to Rapid Response - Your Emergency Assistance Platform",
+    text: `Dear ${firstName},
+
+Welcome to Rapid Response! 🚨
+    
+You're now part of a community dedicated to swift emergency assistance. With Rapid Response, you can send SOS signals, report incidents, and receive real-time alerts.
+    
+Explore the app, update your profile, and link emergency contacts for added safety.
+    
+Stay safe and connected!
+    
+Best regards,
+Rapid Response Team`,
   };
 
   try {

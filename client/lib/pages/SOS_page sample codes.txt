@@ -1,0 +1,56 @@
+Expanded(
+              child: DropdownButton<String>(
+                value: "Emergency Type",
+                elevation: 5,
+                items: <String>["Emergency Type", "Fire", "Medical", "Police"]
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? value) {},
+              ),
+            ),
+            const TextField(
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color.fromARGB(255, 255, 104, 104),
+                  hintText: "Not in the list? Type Here",
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
+            ),
+            const SizedBox(height: 20),
+            const Expanded(
+              child: ElevatedButton(
+                onPressed: null,
+                child: Text("Send SOS"),
+              ),
+            )
+
+
+
+
+
+
+
+
+
+            child: Column(
+          children: <Widget>[
+            CircleAvatar(
+              radius: 55,
+              backgroundColor: const Color.fromARGB(255, 235, 235, 235),
+              child: Icon(Icons.camera_alt, size: 60, color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 30),
+            CircleAvatar(
+              radius: 55,
+              backgroundColor: const Color.fromARGB(255, 235, 235, 235),
+              child: Icon(Icons.mic, size: 60, color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 10),
+          ],
+        )
