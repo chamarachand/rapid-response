@@ -34,19 +34,32 @@ class _SOSpageState extends State<SOSpage> {
               // Add here
               const CircleAvatar(
                 radius: 55,
-                backgroundColor: Color.fromARGB(227, 255, 78, 78),
-                child: Icon(
-                  Icons.camera_alt,
-                  size: 60,
-                  color: Color.fromARGB(255, 43, 43, 43),
-                ),
+                backgroundColor: Color.fromARGB(255, 247, 147, 0),
+                child: ElevatedButton(
+                    onPressed: null,
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.transparent)),
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 60,
+                      color: Color.fromARGB(255, 43, 43, 43),
+                    )),
               ),
               const SizedBox(height: 30),
               const CircleAvatar(
                 radius: 55,
                 backgroundColor: Color.fromARGB(255, 247, 147, 0),
-                child: Icon(Icons.mic,
-                    size: 60, color: Color.fromARGB(255, 43, 43, 43)),
+                child: ElevatedButton(
+                    onPressed: null,
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStatePropertyAll(Colors.transparent)),
+                    child: Icon(
+                      Icons.mic_outlined,
+                      size: 60,
+                      color: Color.fromARGB(255, 43, 43, 43),
+                    )),
               ),
               const SizedBox(
                 height: 30,
@@ -144,7 +157,11 @@ class _SOSpageState extends State<SOSpage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 247, 147, 0),
                 ),
-                child: const Text('Send SOS'),
+                child: const Text(
+                  'Send SOS',
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
               )
             ],
           ),
