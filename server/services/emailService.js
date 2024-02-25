@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 async function sendRegisterConfirmationMail() {
   const mailOptions = {
-    from: '"Cham Aquarium2" <chamaquarium2@gmail.com>',
+    from: '"Rapid Response" <rapidresponse.srilanka@gmail.com>',
     to: "lasithachandrasekara@gmail.com",
     subject: "Registration Confirmed!",
     text: "You have been registered successfully!",
