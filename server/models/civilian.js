@@ -2,7 +2,18 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const { userSchema, userValidationSchema } = require("../common/sharedSchema");
 
-const civilianSchema = new mongoose.Schema(userSchema);
+const civilianSchema = new mongoose.Schema({
+  ...userSchema.obj,
+  emergencyContacts: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Civilian",
+      },
+    ],
+    default: [],
+  },
+});
 
 civilianSchema.methods.generateAuthToken = function () {
   return jwt.sign(
