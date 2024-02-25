@@ -11,12 +11,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function sendRegisterConfirmationMail() {
+async function sendRegisterConfirmationMail(firstName, email) {
   const mailOptions = {
     from: '"Rapid Response" <rapidresponse.srilanka@gmail.com>',
-    to: "lasithachandrasekara@gmail.com",
+    to: email,
     subject: " Welcome to Rapid Response - Your Emergency Assistance App!",
-    html: `<p>Dear [User's Name],</p>
+    html: `<p>Dear ${firstName},</p>
 
     <p>Welcome to <strong>Rapid Response</strong>, your reliable companion in times of emergency. We're thrilled to have you on board, and we want to extend a warm welcome to our community.</p>
 
