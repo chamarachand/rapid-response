@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:client/pages/Signin%20_button.dart';
 import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
-   LoginPage({super.key});
+  LoginPage({super.key});
 
   //text editing controllers
   final usernameController = TextEditingController();
@@ -56,26 +54,24 @@ class LoginPage extends StatelessWidget {
                 controller: passwordController,
                 hintText: "Enter password?",
                 obsecureText: true,
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Fogot password?",
+                      style: TextStyle(
+                          color: const Color.fromARGB(255, 4, 47, 86)),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text("Fogot password?",
-                      style: TextStyle(color:const Color.fromARGB(255, 4, 47, 86)),
-                      ),
-                      
-                    ],
-                  ),
-                ),
-                 const SizedBox(height: 10),
-                 //sign in button
-                      signin_button(
-                        
-                      ),
-
+              ),
+              const SizedBox(height: 10),
+              //sign in button
+              signin_button(),
             ],
           ),
         ),
