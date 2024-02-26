@@ -31,22 +31,19 @@ class _SOSpageState extends State<SOSpage> {
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: <Widget>[
-              // Add here
-              const CircleAvatar(
-                radius: 55,
-                backgroundColor: Color.fromARGB(255, 247, 147, 0),
-                child: ElevatedButton(
-                    onPressed: null,
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll(Colors.transparent)),
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 60,
-                      color: Color.fromARGB(255, 43, 43, 43),
-                    )),
-              ),
+// Camera Button
+              CircleAvatar(
+                  radius: 55,
+                  backgroundColor: const Color.fromARGB(255, 247, 147, 0),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.camera_alt),
+                    iconSize: 60,
+                    color: const Color.fromARGB(255, 43, 43, 43),
+                  )),
               const SizedBox(height: 30),
+
+// Mic Button
               const CircleAvatar(
                 radius: 55,
                 backgroundColor: Color.fromARGB(255, 247, 147, 0),
@@ -64,6 +61,8 @@ class _SOSpageState extends State<SOSpage> {
               const SizedBox(
                 height: 30,
               ),
+
+// Drop Down
               FractionallySizedBox(
                 alignment: Alignment.center,
                 widthFactor: 0.9,
@@ -122,6 +121,8 @@ class _SOSpageState extends State<SOSpage> {
                 ),
               ),
               const SizedBox(height: 30),
+
+// Not in the List
               FractionallySizedBox(
                 widthFactor: 0.9,
                 child: Container(
@@ -150,6 +151,8 @@ class _SOSpageState extends State<SOSpage> {
                 ),
               ),
               const SizedBox(height: 30),
+
+// SOS Button
               ElevatedButton(
                 onPressed: () {
                   print("Hello World");
@@ -167,6 +170,8 @@ class _SOSpageState extends State<SOSpage> {
           ),
         ),
       ),
+
+// Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
