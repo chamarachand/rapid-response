@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class login_textfields extends StatelessWidget {
   final controller;
   final String hintText;
+  final bool obsecureText;
 
   const login_textfields({
     super.key,
     required this.controller,
     required this.hintText,
+    required this.obsecureText,
   });
 
   @override
@@ -16,6 +18,7 @@ class login_textfields extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
         controller: controller,
+        obscureText: obsecureText,
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),

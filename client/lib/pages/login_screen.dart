@@ -4,7 +4,11 @@ import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+   LoginPage({super.key});
+
+  //text editing controllers
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +41,31 @@ class LoginPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               //for username
-              login_textfields(),
+              login_textfields(
+                controller: usernameController,
+                hintText: "Enter user name?",
+                obsecureText: false,
+              ),
               const SizedBox(height: 10),
               //for password
-              login_textfields(),
+              login_textfields(
+                controller: passwordController,
+                hintText: "Enter password?",
+                obsecureText: true,
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text("Fogot password?",
+                      style: TextStyle(color:Colors.blue[600]),
+                      ),
+                    ],
+                  ),
+                ),
+
             ],
           ),
         ),
