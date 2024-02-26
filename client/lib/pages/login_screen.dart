@@ -19,7 +19,7 @@ class LoginPage extends StatelessWidget {
         title: const Text("Login"),
       ),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               Color.fromRGBO(255, 153, 153, 1),
@@ -37,11 +37,11 @@ class LoginPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
+              const Icon(
                 Icons.lock,
                 size: 100,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               //for username
               login_textfields(
                 controller: usernameController,
@@ -56,22 +56,21 @@ class LoginPage extends StatelessWidget {
                 obsecureText: true,
               ),
               const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
                       "Fogot password?",
-                      style: TextStyle(
-                          color: const Color.fromARGB(255, 4, 47, 86)),
+                      style: TextStyle(color: Color.fromARGB(255, 4, 47, 86)),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 10),
               //sign in button
-              signin_button(),
+              const signin_button(),
             ],
           ),
         ),
