@@ -30,6 +30,7 @@ class _SOSpageState extends State<SOSpage> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
 // Camera Button
               CircleAvatar(
@@ -44,20 +45,15 @@ class _SOSpageState extends State<SOSpage> {
               const SizedBox(height: 30),
 
 // Mic Button
-              const CircleAvatar(
-                radius: 55,
-                backgroundColor: Color.fromARGB(255, 247, 147, 0),
-                child: ElevatedButton(
-                    onPressed: null,
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStatePropertyAll(Colors.transparent)),
-                    child: Icon(
-                      Icons.mic_outlined,
-                      size: 60,
-                      color: Color.fromARGB(255, 43, 43, 43),
-                    )),
-              ),
+              CircleAvatar(
+                  radius: 55,
+                  backgroundColor: const Color.fromARGB(255, 247, 147, 0),
+                  child: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.mic),
+                    iconSize: 60,
+                    color: const Color.fromARGB(255, 43, 43, 43),
+                  )),
               const SizedBox(
                 height: 30,
               ),
