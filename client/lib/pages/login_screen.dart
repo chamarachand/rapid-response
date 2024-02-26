@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:client/pages/Signin%20_button.dart';
 import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,9 @@ class LoginPage extends StatelessWidget {
   //text editing controllers
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+
+//user sign in method
+  //void signUserIn(){}
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +64,17 @@ class LoginPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text("Fogot password?",
-                      style: TextStyle(color:Colors.blue[600]),
+                      style: TextStyle(color:const Color.fromARGB(255, 4, 47, 86)),
                       ),
+                      
                     ],
                   ),
                 ),
+                 const SizedBox(height: 10),
+                 //sign in button
+                      signin_button(
+                        
+                      ),
 
             ],
           ),
