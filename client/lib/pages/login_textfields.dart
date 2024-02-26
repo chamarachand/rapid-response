@@ -23,6 +23,7 @@ class login_textfields extends StatelessWidget {
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 19, 121, 204)),
           ),
+          hintText: hintText,
         ),
       ),
     );
