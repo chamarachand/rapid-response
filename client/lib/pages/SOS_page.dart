@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class SOSpage extends StatefulWidget {
@@ -32,136 +34,30 @@ class _SOSpageState extends State<SOSpage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children: <Widget>[
 // Camera Button
-              CircleAvatar(
-                  radius: 55,
-                  backgroundColor: const Color.fromARGB(255, 247, 147, 0),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.camera_alt),
-                    iconSize: 60,
-                    color: const Color.fromARGB(255, 43, 43, 43),
-                  )),
-              const SizedBox(height: 30),
-
+                    cameraButtonBuilder(),
+                    const SizedBox(height: 30),
 // Mic Button
-              CircleAvatar(
-                  radius: 55,
-                  backgroundColor: const Color.fromARGB(255, 247, 147, 0),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.mic),
-                    iconSize: 60,
-                    color: const Color.fromARGB(255, 43, 43, 43),
-                  )),
-              const SizedBox(
-                height: 30,
-              ),
-
+                    micButtonBuilder(),
+                    const SizedBox(
+                      height: 30,
+                    ),
 // Drop Down
-              FractionallySizedBox(
-                alignment: Alignment.center,
-                widthFactor: 0.9,
-                child: Container(
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 247, 147, 0),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: DropdownButton<String>(
-                      focusColor: Colors.transparent,
-                      isExpanded: true,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      value: _chosenModel,
-                      items: <String>[
-                        'Accident',
-                        'Fludding',
-                        'Land Slide',
-                        'Flud1ding',
-                        'Fludd2ing',
-                        'Fluddi3ng',
-                        'Fluddin4g',
-                        'Fludding5',
-                        '1Fludding',
-                        'F2ludding',
-                        'Fl3udding',
-                        'Flu4dding',
-                        'Flud5ding',
-                        'Fludd6ing',
-                        'Fluddi7ng',
-                        'Fluddin7g',
-                        'Fluddin8g'
-                      ].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _chosenModel = newValue!;
-                        });
-                      },
-                      hint: const Text(
-                        "Emergency Type",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      dropdownColor: const Color.fromARGB(255, 247, 147, 0),
-                    ),
-                  ),
+                    buildDropdownMenu(),
+                    const SizedBox(height: 30),
+// Not in the List Widget
+                    buidTextField(),
+                    const SizedBox(height: 30),
+                  ],
                 ),
               ),
-              const SizedBox(height: 30),
-
-// Not in the List
-              FractionallySizedBox(
-                widthFactor: 0.9,
-                child: Container(
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 247, 147, 0),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10),
-                    child: TextField(
-                      decoration: InputDecoration(
-                          hintText: "Not in the list",
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.transparent)),
-                          focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.transparent))),
-                      style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.none),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-
 // SOS Button
-              ElevatedButton(
-                onPressed: () {
-                  print("Hello World");
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 247, 147, 0),
-                ),
-                child: const Text(
-                  'Send SOS',
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-              )
+              SOSButtonWidget(),
+              testWidget1()
             ],
           ),
         ),
@@ -186,4 +82,113 @@ class _SOSpageState extends State<SOSpage> {
       ),
     );
   }
+
+// Camera Button
+  Widget cameraButtonBuilder() => CircleAvatar(
+      radius: 55,
+      backgroundColor: const Color.fromARGB(255, 247, 147, 0),
+      child: IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.camera_alt),
+        iconSize: 60,
+        color: const Color.fromARGB(255, 43, 43, 43),
+      ));
+
+// Mic Button
+  Widget micButtonBuilder() => CircleAvatar(
+      radius: 55,
+      backgroundColor: const Color.fromARGB(255, 247, 147, 0),
+      child: IconButton(
+        onPressed: () {},
+        icon: const Icon(Icons.mic),
+        iconSize: 60,
+        color: const Color.fromARGB(255, 43, 43, 43),
+      ));
+
+// Drop Down Widget
+  Widget buildDropdownMenu() => Container(
+        decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 247, 147, 0),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: DropdownButton<String>(
+            focusColor: Colors.transparent,
+            isExpanded: true,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            value: _chosenModel,
+            items: <String>[
+              'Accident',
+              'Fludding',
+              'Land Slide',
+              'Flud1ding',
+              'Fludd2ing',
+              'Fluddi3ng',
+              'Fluddin4g',
+              'Fludding5',
+              '1Fludding',
+              'F2ludding',
+              'Fl3udding',
+              'Flu4dding',
+              'Flud5ding',
+              'Fludd6ing',
+              'Fluddi7ng',
+              'Fluddin7g',
+              'Fluddin8g'
+            ].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                _chosenModel = newValue!;
+              });
+            },
+            hint: const Text(
+              "Emergency Type",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            dropdownColor: const Color.fromARGB(255, 247, 147, 0),
+          ),
+        ),
+      );
+
+// Not in the List Widget
+  Widget buidTextField() => TextField(
+        style: const TextStyle(fontWeight: FontWeight.bold),
+        decoration: InputDecoration(
+            hintText: "Not in the List",
+            filled: true,
+            fillColor: const Color.fromARGB(255, 247, 147, 0),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+      );
+
+// SOS Button
+  // ignore: non_constant_identifier_names
+  Widget SOSButtonWidget() => ElevatedButton(
+        onPressed: () {
+          print("Hello World");
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color.fromARGB(255, 247, 147, 0),
+        ),
+        child: const Text(
+          'Send SOS',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      );
+
+  Widget testWidget1() => FloatingActionButton(
+        onPressed: () {
+          print("Hello World!");
+        },
+        child: const Text('Text'),
+      );
 }
