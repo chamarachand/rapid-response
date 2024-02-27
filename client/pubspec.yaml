@@ -38,6 +38,7 @@ dependencies:
   http: ^1.2.0
   email_validator: ^2.1.17
   autocomplete_textfield: 2.0.1
+  flutter_secure_storage: ^9.0.0
 
 dev_dependencies:
   flutter_test:
