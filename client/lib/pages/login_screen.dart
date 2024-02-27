@@ -18,6 +18,12 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
   var _errorText = "";
 
+  void _setErrorText(String msg) {
+    setState(() {
+      _setErrorText(msg);
+    });
+  }
+
   login() async {
     try {
       var response = await http.post(Uri.parse("http://10.0.2.2:3000/api/auth"),
