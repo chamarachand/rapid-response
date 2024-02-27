@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _setErrorText(String msg) {
     setState(() {
-      _setErrorText(msg);
+      _errorText = msg;
     });
   }
 
