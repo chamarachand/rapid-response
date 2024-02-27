@@ -111,6 +111,13 @@ class LoginPage extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           fontSize: 18),
                     ))),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: ((context) => LoginPage())));
+                },
+                child: Text("Don't Have a account? Register"),
               )
             ],
           ),
