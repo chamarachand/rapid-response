@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:client/pages/welcome_screen.dart';
+import 'package:client/authenticator.dart';
 import 'package:provider/provider.dart';
 import 'providers/registration_provider.dart';
 
@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const WelcomePage(),
+        home: const AuthenticationWrapper(),
       ),
     );
   }
