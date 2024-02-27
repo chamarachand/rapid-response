@@ -54,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("Login"),
       ),
@@ -73,91 +74,95 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.lock,
-                size: 100,
-              ),
-              SizedBox(
-                  height: 30,
-                  child: Text(
-                    _errorText,
-                    style: const TextStyle(color: Colors.red),
-                  )),
-              //for username
-              LoginTextFields(
-                globalKey: _formKey,
-                controller: usernameController,
-                hintText: "Username",
-                obsecureText: false,
-              ),
-              const SizedBox(height: 10),
-              //for password
-              LoginTextFields(
-                globalKey: _formKey,
-                controller: passwordController,
-                hintText: "Password",
-                obsecureText: true,
-              ),
-              const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "Fogot password?",
-                      style: TextStyle(color: Color.fromARGB(255, 4, 47, 86)),
-                    ),
-                  ],
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.lock,
+                  size: 100,
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: ElevatedButton(
-                    onPressed: () {
-                      if (usernameController.text.trim().isEmpty ||
-                          passwordController.text.trim().isEmpty) {
-                        _setErrorMsg("Please enter your username and password");
-                        return;
-                      }
-
-                      login();
-                    },
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(25.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        backgroundColor:
-                            const Color.fromARGB(255, 165, 223, 249)),
-                    child: const Center(
-                        child: Text(
-                      "Sign In",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 4, 47, 86),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18),
-                    ))),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: ((context) => const RegisterPage2())));
-                  },
-                  child: const Text(
-                    "Don't Have a account? Register",
-                    style: TextStyle(color: Color.fromRGBO(0, 24, 97, 1)),
+                SizedBox(
+                    height: 30,
+                    child: Text(
+                      _errorText,
+                      style: const TextStyle(color: Colors.red),
+                    )),
+                //for username
+                LoginTextFields(
+                  globalKey: _formKey,
+                  controller: usernameController,
+                  hintText: "Username",
+                  obsecureText: false,
+                ),
+                const SizedBox(height: 10),
+                //for password
+                LoginTextFields(
+                  globalKey: _formKey,
+                  controller: passwordController,
+                  hintText: "Password",
+                  obsecureText: true,
+                ),
+                const SizedBox(height: 10),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "Fogot password?",
+                        style: TextStyle(color: Color.fromARGB(255, 4, 47, 86)),
+                      ),
+                    ],
                   ),
                 ),
-              )
-            ],
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        if (usernameController.text.trim().isEmpty ||
+                            passwordController.text.trim().isEmpty) {
+                          _setErrorMsg(
+                              "Please enter your username and password");
+                          return;
+                        }
+
+                        login();
+                      },
+                      style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(25.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          backgroundColor:
+                              const Color.fromARGB(255, 165, 223, 249)),
+                      child: const Center(
+                          child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 4, 47, 86),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18),
+                      ))),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => const RegisterPage2())));
+                    },
+                    child: const Text(
+                      "Don't Have a account? Register",
+                      style: TextStyle(color: Color.fromRGBO(0, 24, 97, 1)),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
