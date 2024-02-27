@@ -17,7 +17,12 @@ const civilianSchema = new mongoose.Schema({
 
 civilianSchema.methods.generateAuthToken = function () {
   return jwt.sign(
-    { userType: "civilian", username: this.username },
+    {
+      userType: "civilian",
+      id: this._id,
+      username: this.username,
+      firstName: this.firstName,
+    },
     "jwtPrivateKey" // Change this to config.get("jwtPrvateKey")
   );
 };
