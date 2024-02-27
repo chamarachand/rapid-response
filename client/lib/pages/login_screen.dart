@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final passwordController = TextEditingController();
   var _errorText = "";
 
-  void _setErrorText(String msg) {
+  void _setErrorMsg(String msg) {
     setState(() {
       _errorText = msg;
     });
@@ -36,13 +36,13 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'];
 
-        _setErrorText("");
+        _setErrorMsg("");
         if (mounted) {
           Navigator.push(context,
               MaterialPageRoute(builder: ((context) => const Dashboard())));
         }
       } else if (response.statusCode == 400 || response.statusCode == 401) {
-        _setErrorText("Invalid username or password");
+        _setErrorMsg("Invalid username or password");
       } else {
         print(response.body);
       }
@@ -121,8 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       if (usernameController.text.trim().isEmpty ||
                           passwordController.text.trim().isEmpty) {
-                        _setErrorText(
-                            "Please enter your username and password");
+                        _setErrorMsg("Please enter your username and password");
                         return;
                       }
 
