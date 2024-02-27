@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'register_screen_2.dart';
+import 'dashboard_test.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -28,6 +29,11 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'];
+        // clear error text
+        if (mounted) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: ((context) => const Dashboard())));
+        }
       } else if (response.statusCode == 400 || response.statusCode == 401) {
         setState(() {
           _errorText = "Incorrect username of password";
@@ -135,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                     ))),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(0, 35, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 35, 0, 0),
                 child: InkWell(
                   onTap: () {
                     Navigator.push(
