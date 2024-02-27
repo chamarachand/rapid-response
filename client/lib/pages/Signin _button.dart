@@ -2,10 +2,9 @@ import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 
 class signin_button extends StatelessWidget {
-   
-   final  Function()? onTap;
+  final Function()? onTap;
 
-  const signin_button({super.key, required,this.onTap});
+  const signin_button({super.key, required, this.onTap});
 
   @override
   Widget build(BuildContext context) {
