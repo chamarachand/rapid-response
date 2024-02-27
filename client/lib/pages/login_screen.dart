@@ -1,5 +1,7 @@
 import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -8,8 +10,27 @@ class LoginPage extends StatelessWidget {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
-//user sign in method
-  //void signUserIn(){}
+  login() async {
+    try {
+      var response = await http.post(Uri.parse("http://10.0.2.2:3000/api/auth"),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "username": usernameController.text.trim(),
+            "password": passwordController.text.trim()
+          }));
+
+      if (response.statusCode == 200) {
+        final token = jsonDecode(response.body)['token'];
+        print("Got");
+      } else if (response.statusCode == 401) {
+        print("Invalid username or password");
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +66,7 @@ class LoginPage extends StatelessWidget {
               LoginTextFields(
                 globalKey: _formKey,
                 controller: usernameController,
-                hintText: "Enter user name?",
+                hintText: "Username",
                 obsecureText: false,
               ),
               const SizedBox(height: 10),
@@ -53,7 +74,7 @@ class LoginPage extends StatelessWidget {
               LoginTextFields(
                 globalKey: _formKey,
                 controller: passwordController,
-                hintText: "Enter password?",
+                hintText: "Password",
                 obsecureText: true,
               ),
               const SizedBox(height: 10),
@@ -73,7 +94,9 @@ class LoginPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      login();
+                    },
                     style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(25.0),
                         shape: RoundedRectangleBorder(
