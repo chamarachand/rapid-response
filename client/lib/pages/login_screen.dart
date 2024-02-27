@@ -44,18 +44,18 @@ class LoginPage extends StatelessWidget {
               const SizedBox(height: 20),
               //for username
               LoginTextFields(
-                _formKey,
-                usernameController,
-                "Enter user name?",
-                false,
+                globalKey: _formKey,
+                controller: usernameController,
+                hintText: "Enter user name?",
+                obsecureText: false,
               ),
               const SizedBox(height: 10),
               //for password
               LoginTextFields(
-                _formKey,
-                passwordController,
-                "Enter password?",
-                true,
+                globalKey: _formKey,
+                controller: passwordController,
+                hintText: "Enter password?",
+                obsecureText: true,
               ),
               const SizedBox(height: 10),
               const Padding(
