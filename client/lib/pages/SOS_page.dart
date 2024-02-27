@@ -1,6 +1,8 @@
-import 'dart:ffi';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -13,10 +15,12 @@ class SOSpage extends StatefulWidget {
 class _SOSpageState extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
 
+  File? image;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text(
           'SOS',
@@ -56,7 +60,6 @@ class _SOSpageState extends State<SOSpage> {
                 ),
               ),
 // SOS Button
-              SOSButtonWidget(),
               testWidget1()
             ],
           ),
@@ -88,7 +91,12 @@ class _SOSpageState extends State<SOSpage> {
       radius: 55,
       backgroundColor: const Color.fromARGB(255, 247, 147, 0),
       child: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => popupCameraContent(),
+          );
+        },
         icon: const Icon(Icons.camera_alt),
         iconSize: 60,
         color: const Color.fromARGB(255, 43, 43, 43),
@@ -99,7 +107,8 @@ class _SOSpageState extends State<SOSpage> {
       radius: 55,
       backgroundColor: const Color.fromARGB(255, 247, 147, 0),
       child: IconButton(
-        onPressed: () {},
+        onPressed: () => showDialog(
+            context: context, builder: (context) => popupMicContent(context)),
         icon: const Icon(Icons.mic),
         iconSize: 60,
         color: const Color.fromARGB(255, 43, 43, 43),
@@ -166,29 +175,103 @@ class _SOSpageState extends State<SOSpage> {
             hintText: "Not in the List",
             filled: true,
             fillColor: const Color.fromARGB(255, 247, 147, 0),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide.none)),
       );
 
 // SOS Button
-  // ignore: non_constant_identifier_names
-  Widget SOSButtonWidget() => ElevatedButton(
-        onPressed: () {
-          print("Hello World");
-        },
-        style: ElevatedButton.styleFrom(
+  Widget testWidget1() => SizedBox(
+        width: 130.0,
+        height: 40,
+        child: FloatingActionButton(
+          onPressed: () {
+            print("Hello World!");
+          },
           backgroundColor: const Color.fromARGB(255, 247, 147, 0),
-        ),
-        child: const Text(
-          'Send SOS',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          elevation: 2.0,
+          child: const Text(
+            'Send SOS',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
         ),
       );
 
-  Widget testWidget1() => FloatingActionButton(
-        onPressed: () {
-          print("Hello World!");
-        },
-        child: const Text('Text'),
+// Popup window when pressed camera icon
+  Widget popupCameraContent() => AlertDialog(
+        title: const Text('Camera Options'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            image != null
+                ? Image.file(
+                    image!,
+                    width: 160,
+                    height: 160,
+                    fit: BoxFit.cover,
+                  )
+                : const FlutterLogo(
+                    size: 160,
+                  ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera),
+              title: const Text('Take Photo'),
+              onTap: () {
+                // Code to handle taking a photo
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.image_search_outlined),
+              title: const Text('Choose from Gallery'),
+              onTap: () {
+                // Code to choose from gallery
+                pickImage();
+              },
+            ),
+          ],
+        ),
       );
+
+// Popup window when pressed mic icon
+  Widget popupMicContent(BuildContext context) => AlertDialog(
+        title: const Text('Record Voice'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Recording Status Indicator (if desired)
+            //Text(isRecording ? 'Recording...' : 'Ready to Record'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                IconButton(
+                  iconSize: 40,
+                  icon: const Icon(
+                      Icons.stop /*isRecording ? Icons.stop : Icons.mic*/),
+                  onPressed: () {} /*=> toggleRecording(context)*/,
+                ),
+                IconButton(
+                    iconSize: 40,
+                    icon: const Icon(Icons.play_arrow),
+                    onPressed:
+                        () {} /*=>
+                      playRecording(), // Assuming you have playback */
+                    ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+// Choose from gallery
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
 }
