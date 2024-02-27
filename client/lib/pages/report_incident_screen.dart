@@ -9,6 +9,7 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
+  final TextEditingController _DescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -17,59 +18,68 @@ class _ReportScreenState extends State<ReportScreen> {
         backgroundColor: Colors.grey[700],
         title: const Text("Incident Report"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: textFieldPadding,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.orange,
-                  fixedSize: const Size(1000, 50)),
-              onPressed: () {},
-              child: const Text('+ add Image'),
-            ),
-          ),
-          Container(
-            padding: textFieldPadding,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.orange,
-                  fixedSize: const Size(1000, 50)),
-              onPressed: () {},
-              child: const Text('+ add Video'),
-            ),
-          ),
-          Container(
-            padding: textFieldPadding,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  backgroundColor: Colors.orange,
-                  fixedSize: const Size(1000, 50)),
-              onPressed: () {},
-              child: const Text('+ add Voice'),
-            ),
-          ),
-          Container(
-            padding: textFieldPadding,
-            child: const TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Description",
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: textFieldPadding,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.orange,
+                    fixedSize: const Size(1000, 50)),
+                onPressed: () {},
+                child: const Text('+ add Image'),
               ),
             ),
-          ),
-          Container(
-            padding: textFieldPadding,
-            child: ElevatedButton(
-              onPressed: _submitIncident,
-              child: const Text("Submit"),
+            Container(
+              padding: textFieldPadding,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.orange,
+                    fixedSize: const Size(1000, 50)),
+                onPressed: () {},
+                child: const Text('+ add Video'),
+              ),
             ),
-          ),
-        ],
+            Container(
+              padding: textFieldPadding,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.orange,
+                    fixedSize: const Size(1000, 50)),
+                onPressed: () {},
+                child: const Text('+ add Voice'),
+              ),
+            ),
+            Container(
+              padding: textFieldPadding,
+              child: TextFormField(
+                controller: _DescriptionController,
+                decoration: const InputDecoration(
+                    labelText: "Description",
+                    border: OutlineInputBorder(),
+                    floatingLabelBehavior: FloatingLabelBehavior.always),
+                validator: (value) {
+                  value = value!
+                      .trim(); // In a TextFormField f the user doesn't enter anything, the value returned will be an empty string "", not null.
+                  if (value.isEmpty) return "This field is required";
+                  return null;
+                },
+              ),
+            ),
+            Container(
+              padding: textFieldPadding,
+              child: ElevatedButton(
+                onPressed: _submitIncident,
+                child: const Text("Submit"),
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [

@@ -19,7 +19,7 @@ class signin_button extends StatelessWidget {
         ),
         child: Center(
             child: Text(
-          "SignIn",
+          "Sign In",
           style: TextStyle(
             color: const Color.fromARGB(255, 4, 47, 86),
             fontWeight: FontWeight.bold,
