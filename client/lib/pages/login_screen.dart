@@ -1,4 +1,3 @@
-import 'package:client/pages/Signin%20_button.dart';
 import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
 
@@ -71,25 +70,24 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              //sign in button
-              GestureDetector(
-                child: Container(
-                  padding: EdgeInsets.all(25),
-                  margin: EdgeInsets.symmetric(horizontal: 25),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 165, 223, 249),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                      child: Text(
-                    "SignIn",
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 4, 47, 86),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  )),
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(25.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        backgroundColor:
+                            const Color.fromARGB(255, 165, 223, 249)),
+                    child: const Center(
+                        child: Text(
+                      "Sign In",
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 4, 47, 86),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18),
+                    ))),
               )
             ],
           ),
