@@ -35,15 +35,14 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'];
-        // clear error text
+
+        _setErrorText("");
         if (mounted) {
           Navigator.push(context,
               MaterialPageRoute(builder: ((context) => const Dashboard())));
         }
       } else if (response.statusCode == 400 || response.statusCode == 401) {
-        setState(() {
-          _errorText = "Incorrect username of password";
-        });
+        _setErrorText("Invalid username or password");
       } else {
         print(response.body);
       }
@@ -122,10 +121,8 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       if (usernameController.text.trim().isEmpty ||
                           passwordController.text.trim().isEmpty) {
-                        setState(() {
-                          _errorText =
-                              "Please enter your username and password";
-                        });
+                        _setErrorText(
+                            "Please enter your username and password");
                         return;
                       }
 
