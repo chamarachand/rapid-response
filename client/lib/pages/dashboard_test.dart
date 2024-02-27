@@ -10,13 +10,17 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  var _firstName = "";
+
   void _loadToken() async {
     final accessToken = await UserSecureStorage.getAccessToken();
 
     if (accessToken != null) {
       var decodedToken = JwtDecoder.decode(accessToken);
       // Access token claims
-      print(decodedToken['username']);
+      setState(() {
+        _firstName = decodedToken["firstName"];
+      });
     }
   }
 
@@ -29,10 +33,14 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("DashBoard"),
-      ),
-      body: const Text("This is dashboard"),
-    );
+        appBar: AppBar(
+          title: const Text("DashBoard"),
+        ),
+        body: Center(
+          child: Text(
+            "Hello $_firstName!",
+            style: const TextStyle(fontSize: 32),
+          ),
+        ));
   }
 }
