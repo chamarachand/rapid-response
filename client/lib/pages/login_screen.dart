@@ -1,10 +1,10 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'register_screen_2.dart';
 import 'dashboard_test.dart';
+import 'package:client/storage/user_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,7 +14,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final storage = const FlutterSecureStorage();
   final _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -37,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'];
-        await storage.write(key: "jwt", value: token);
+        UserSecureStorage.setAccessToken(token);
         _setErrorMsg("");
         if (mounted) {
           Navigator.push(context,
