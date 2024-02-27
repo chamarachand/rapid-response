@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -14,7 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
-  var errorText = "";
+  var _errorText = "";
 
   login() async {
     try {
@@ -27,9 +27,10 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'];
-        print("Got");
-      } else if (response.statusCode == 401) {
-        print("Invalid username or password");
+      } else if (response.statusCode == 400 || response.statusCode == 401) {
+        setState(() {
+          _errorText = "Incorrect username of password";
+        });
       } else {
         print(response.body);
       }
@@ -67,7 +68,12 @@ class _LoginPageState extends State<LoginPage> {
                 Icons.lock,
                 size: 100,
               ),
-              const SizedBox(height: 20),
+              SizedBox(
+                  height: 30,
+                  child: Text(
+                    _errorText,
+                    style: const TextStyle(color: Colors.red),
+                  )),
               //for username
               LoginTextFields(
                 globalKey: _formKey,
