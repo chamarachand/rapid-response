@@ -2,6 +2,7 @@ import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'register_screen_2.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -107,6 +108,15 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 25),
                 child: ElevatedButton(
                     onPressed: () {
+                      if (usernameController.text.trim().isEmpty ||
+                          passwordController.text.trim().isEmpty) {
+                        setState(() {
+                          _errorText =
+                              "Please enter your username and password";
+                        });
+                        return;
+                      }
+
                       login();
                     },
                     style: ElevatedButton.styleFrom(
@@ -128,8 +138,10 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.fromLTRB(0, 35, 0, 0),
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: ((context) => LoginPage())));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => const RegisterPage2())));
                   },
                   child: const Text(
                     "Don't Have a account? Register",
