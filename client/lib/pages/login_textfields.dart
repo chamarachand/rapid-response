@@ -16,7 +16,7 @@ class login_textfields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         obscureText: obsecureText,
         decoration: InputDecoration(
