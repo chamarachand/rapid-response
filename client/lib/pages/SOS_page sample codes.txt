@@ -98,3 +98,24 @@ Expanded(
                     ),
                   ),
                 ),
+
+
+
+
+                Container(
+                    padding: const EdgeInsets.all(10),
+                    child: const TextField(
+                      decoration: InputDecoration(
+                          hintText: "Not in the list",
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.transparent)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.transparent))),
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.none),
+                    ),
+                  )
