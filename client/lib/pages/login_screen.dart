@@ -72,7 +72,25 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               //sign in button
-              const signin_button(),
+              GestureDetector(
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  margin: EdgeInsets.symmetric(horizontal: 25),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 165, 223, 249),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                      child: Text(
+                    "SignIn",
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 4, 47, 86),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  )),
+                ),
+              )
             ],
           ),
         ),
