@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
-class login_textfields extends StatelessWidget {
-  final controller;
+class LoginTextFields extends StatelessWidget {
+  final TextEditingController controller;
   final String hintText;
   final bool obsecureText;
+  final GlobalKey globalKey;
 
-  const login_textfields({
-    super.key,
-    required this.controller,
-    required this.hintText,
-    required this.obsecureText,
-  });
+  const LoginTextFields(
+      this.controller, this.hintText, this.obsecureText, this.globalKey,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: TextFormField(
+        key: globalKey,
         controller: controller,
         obscureText: obsecureText,
         decoration: InputDecoration(
