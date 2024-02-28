@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'register_screen_2.dart';
 import 'SOS_page.dart';
+import 'package:client/pages/main_screen.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -23,6 +24,13 @@ class WelcomePage extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => const LoginPage())),
                     child: const Text("Login"))),
+            Center(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const MainMenu())),
+                    child: const Text("Main menu"))),
             Center(
                 child: ElevatedButton(
                     onPressed: () => Navigator.push(
