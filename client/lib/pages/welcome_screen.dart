@@ -20,10 +20,8 @@ class WelcomePage extends StatelessWidget {
           children: [
             Center(
                 child: ElevatedButton(
-                    onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>  LoginPage())),
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginPage())),
                     child: const Text("Login"))),
             Center(
                 child: ElevatedButton(

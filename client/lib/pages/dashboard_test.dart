@@ -1,3 +1,4 @@
+import 'package:client/pages/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -37,9 +38,27 @@ class _DashboardState extends State<Dashboard> {
           title: const Text("DashBoard"),
         ),
         body: Center(
-          child: Text(
-            "Hello $_firstName!",
-            style: const TextStyle(fontSize: 32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Hello $_firstName!",
+                style: const TextStyle(fontSize: 32),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    UserSecureStorage.deleteAccessToken();
+                    // try tp add await
+                    if (mounted) {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const WelcomePage()),
+                          (route) => false);
+                    }
+                  },
+                  child: const Text("Logout"))
+            ],
           ),
         ));
   }
