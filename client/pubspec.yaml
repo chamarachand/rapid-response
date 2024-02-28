@@ -38,6 +38,8 @@ dependencies:
   http: ^1.2.0
   email_validator: ^2.1.17
   autocomplete_textfield: ^2.0.1
+  flutter_secure_storage: ^9.0.0
+  jwt_decoder: ^2.0.1
   image_picker: ^1.0.7
 
 dev_dependencies:
@@ -62,7 +64,10 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets\RR_logo.png
+    # - images/a_dot_ham.jpeg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
