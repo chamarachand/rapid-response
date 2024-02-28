@@ -52,7 +52,6 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   }
 
   userExists(String username) async {
-    // No usage
     try {
       var response = await http.get(
           Uri.parse("http://10.0.2.2:3000/api/civilian/checkUser/$username"),
@@ -114,7 +113,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) => const LoginPage())));
+                              builder: ((context) =>  LoginPage())));
                     },
                     child: const Text("OK")),
               ],
