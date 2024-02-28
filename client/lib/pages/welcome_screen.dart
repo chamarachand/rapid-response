@@ -28,6 +28,13 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
+                            builder: (context) => const MainMenu())),
+                    child: const Text("Main menu"))),
+            Center(
+                child: ElevatedButton(
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
                             builder: (context) => const RegisterPage2())),
                     child: const Text("Register"))),
             Center(
