@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
-import 'package:client/pages/dashboard_test.dart';
 import 'package:client/pages/welcome_screen.dart';
-import 'package:flutter/services.dart';
+import 'package:client/pages/main_screen.dart';
 
 class AuthenticationWrapper extends StatelessWidget {
   const AuthenticationWrapper({super.key});
@@ -20,7 +19,7 @@ class AuthenticationWrapper extends StatelessWidget {
           return const CircularProgressIndicator();
         } else {
           final token = snapshot.data;
-          return token != null ? const Dashboard() : const WelcomePage();
+          return token != null ? const MainMenu() : const WelcomePage();
         }
       },
     );
