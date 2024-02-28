@@ -94,7 +94,7 @@ packages:
     description:
       name: ffi
 <<<<<<< HEAD
-  dependency_name:
+  dependency_name: dependency_name_from_pubspec_yaml
     sha256: "493f37e7df1804778ff3a53bd691d8692ddf69702cf4c1c1096a2e41b4779e21"
     url: "https://pub.dev"
     source: hosted
@@ -144,7 +144,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
->>>>>>> 987e503a34a50c79833e6b87c55b4f3c381be9e0
   flutter:
     dependency: "direct main"
     description: flutter
