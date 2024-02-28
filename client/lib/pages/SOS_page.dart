@@ -218,6 +218,7 @@ class _SOSpageState extends State<SOSpage> {
               title: const Text('Take Photo'),
               onTap: () {
                 // Code to handle taking a photo
+                pickImage(ImageSource.camera);
               },
             ),
             ListTile(
@@ -225,7 +226,7 @@ class _SOSpageState extends State<SOSpage> {
               title: const Text('Choose from Gallery'),
               onTap: () {
                 // Code to choose from gallery
-                pickImage();
+                pickImage(ImageSource.gallery);
               },
             ),
           ],
@@ -263,9 +264,9 @@ class _SOSpageState extends State<SOSpage> {
       );
 
 // Choose from gallery
-  Future pickImage() async {
+  Future pickImage(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
       final imageTemporary = File(image.path);
