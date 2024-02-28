@@ -57,14 +57,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.3+8"
-  crypto:
-    dependency: transitive
-    description:
-      name: crypto
-      sha256: ff625774173754681d66daaf4a448684fb04b78f902da9cb3d308c19cc5e8bab
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.3"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -94,11 +86,11 @@ packages:
     description:
       name: ffi
 <<<<<<< HEAD
-  dependency_name: dependency_name_from_pubspec_yaml
+  dependency_name:
     sha256: "493f37e7df1804778ff3a53bd691d8692ddf69702cf4c1c1096a2e41b4779e21"
     url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.0"
   file_selector_linux:
     dependency: transitive
     description:
@@ -144,6 +136,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+>>>>>>> 987e503a34a50c79833e6b87c55b4f3c381be9e0
   flutter:
     dependency: "direct main"
     description: flutter
@@ -157,7 +150,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-<<<<<<< HEAD
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -166,31 +158,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.17"
-  flutter_sound:
-    dependency: "direct main"
-    description:
-      name: flutter_sound
-      sha256: "7b191591afdfd37c04f47f46428e8145dae350cad2952c4c52ba3c7eaa22daf8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.3.4"
-  flutter_sound_platform_interface:
-    dependency: transitive
-    description:
-      name: flutter_sound_platform_interface
-      sha256: "984e0efcac5f5ef337178801c13f2b3587fb595fdacb7298b327f5ec64ae2830"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.3.4"
-  flutter_sound_web:
-    dependency: transitive
-    description:
-      name: flutter_sound_web
-      sha256: "19bcd2136ff0240f126b5552432332e818957dc7431767b1f2463d00dee08b11"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.3.4"
-=======
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -239,7 +206,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
->>>>>>> 987e503a34a50c79833e6b87c55b4f3c381be9e0
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -266,7 +232,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
-<<<<<<< HEAD
   image_picker:
     dependency: "direct main"
     description:
@@ -319,10 +284,10 @@ packages:
     dependency: transitive
     description:
       name: image_picker_platform_interface
-      sha256: "3d2c323daea9d60608f1caf30be32a938916f4975434b8352e6f73dae496da38"
+      sha256: fa4e815e6fcada50e35718727d83ba1c92f1edf95c0b4436554cec301b56233b
       url: "https://pub.dev"
     source: hosted
-    version: "2.9.4"
+    version: "2.9.3"
   image_picker_windows:
     dependency: transitive
     description:
@@ -332,17 +297,6 @@ packages:
     source: hosted
     version: "0.2.1+1"
   js:
-    dependency: transitive
-    description:
-      name: js
-      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.1"
-  leak_tracker:
-=======
-  js:
->>>>>>> 987e503a34a50c79833e6b87c55b4f3c381be9e0
     dependency: transitive
     description:
       name: js
@@ -366,14 +320,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  logger:
-    dependency: transitive
-    description:
-      name: logger
-      sha256: "6bbb9d6f7056729537a4309bda2e74e18e5d9f14302489cc1e93f33b3fe32cac"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2+1"
   matcher:
     dependency: transitive
     description:
@@ -397,8 +343,7 @@ packages:
       sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
-    version: "1.11.0"
+    version: "1.10.0"
   mime:
     dependency: transitive
     description:
@@ -407,9 +352,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-=======
-    version: "1.10.0"
->>>>>>> 987e503a34a50c79833e6b87c55b4f3c381be9e0
   nested:
     dependency: transitive
     description:
@@ -425,11 +367,7 @@ packages:
       sha256: "8829d8a55c13fc0e37127c29fedf290c102f4e40ae94ada574091fe0ff96c917"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
-    version: "1.9.0"
-=======
     version: "1.8.3"
->>>>>>> 987e503a34a50c79833e6b87c55b4f3c381be9e0
   path_provider:
     dependency: transitive
     description:
@@ -502,14 +440,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
-  recase:
-    dependency: transitive
-    description:
-      name: recase
-      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -523,14 +453,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
-  sprintf:
-    dependency: transitive
-    description:
-      name: sprintf
-      sha256: "1fc9ffe69d4df602376b52949af107d8f5703b77cda567c4d7d86a0693120f23"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
   stack_trace:
     dependency: transitive
     description:
@@ -555,14 +477,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  synchronized:
-    dependency: transitive
-    description:
-      name: synchronized
-      sha256: "539ef412b170d65ecdafd780f924e5be3f60032a1128df156adad6c5b373d558"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0+1"
   term_glyph:
     dependency: transitive
     description:
@@ -587,14 +501,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
-  uuid:
-    dependency: transitive
-    description:
-      name: uuid
-      sha256: cd210a09f7c18cbe5a02511718e0334de6559871052c90a90c0cca46a4aa81c8
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.3.3"
   vector_math:
     dependency: transitive
     description:
@@ -628,10 +534,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-<<<<<<< HEAD
-  dart: ">=3.3.0 <4.0.0"
-  flutter: ">=3.19.0"
-=======
   dart: ">=3.2.5 <4.0.0"
   flutter: ">=3.10.0"
->>>>>>> 987e503a34a50c79833e6b87c55b4f3c381be9e0

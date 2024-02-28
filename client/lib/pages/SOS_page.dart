@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -18,7 +19,6 @@ class _SOSpageState extends State<SOSpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text(
           'SOS',
@@ -31,35 +31,37 @@ class _SOSpageState extends State<SOSpage> {
         centerTitle: true,
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: <Widget>[
-// Camera Button
-                    cameraButtonBuilder(),
-                    const SizedBox(height: 30),
-// Mic Button
-                    micButtonBuilder(),
-                    const SizedBox(
-                      height: 30,
-                    ),
-// Drop Down
-                    buildDropdownMenu(),
-                    const SizedBox(height: 30),
-// Not in the List Widget
-                    buidTextField(),
-                    const SizedBox(height: 30),
-                  ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: <Widget>[
+                      // Camera Button
+                      cameraButtonBuilder(),
+                      const SizedBox(height: 30),
+                      // Mic Button
+                      micButtonBuilder(),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      // Drop Down
+                      buildDropdownMenu(),
+                      const SizedBox(height: 30),
+                      // Not in the List Widget
+                      buidTextField(),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
                 ),
-              ),
-// SOS Button
-              testWidget1()
-            ],
+                // SOS Button
+                testWidget1()
+              ],
+            ),
           ),
         ),
       ),

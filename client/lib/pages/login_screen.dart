@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'register_screen_2.dart';
-import 'dashboard_test.dart';
+import 'package:client/pages/main_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
         _setErrorMsg("");
         if (mounted) {
           Navigator.push(context,
-              MaterialPageRoute(builder: ((context) => const Dashboard())));
+              MaterialPageRoute(builder: ((context) => const MainMenu())));
         }
       } else if (response.statusCode == 400 || response.statusCode == 401) {
         _setErrorMsg("Invalid username or password");

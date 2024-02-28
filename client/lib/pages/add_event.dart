@@ -56,7 +56,7 @@ class _addEventState extends State<add_event> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Container(
               padding: textFieldPadding,
               child: TextFormField(
