@@ -62,28 +62,32 @@ class MainMenuScreen extends State<MainMenu> {
                 double appBarHeight = AppBar().preferredSize.height;
                 return Container(
                   alignment: Alignment.center,
-                  child: PopupMenuButton(
-                    icon: SizedBox(
-                      width: appBarHeight,
-                      height: appBarHeight,
-                      child: const Icon(Icons.person),
-                    ),
-                    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                      PopupMenuItem(
-                        child: ListTile(
-                          title: const Center(child: Text('Logout')),
-                          onTap: () {
-                            UserSecureStorage.deleteAccessToken();
-                            Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const WelcomePage()),
-                                (route) => false);
-                          },
-                        ),
+                  child: Row(children: [
+                    PopupMenuButton(
+                      icon: SizedBox(
+                        width: appBarHeight,
+                        height: appBarHeight,
+                        child: const Icon(Icons.person),
                       ),
-                    ],
-                  ),
+                      itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                        PopupMenuItem(
+                          child: ListTile(
+                            title: const Center(child: Text('Logout')),
+                            onTap: () {
+                              UserSecureStorage.deleteAccessToken();
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const WelcomePage()),
+                                  (route) => false);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(_firstName)
+                  ]),
                 );
               },
             ),
