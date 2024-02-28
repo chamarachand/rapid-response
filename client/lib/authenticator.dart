@@ -19,7 +19,7 @@ class AuthenticationWrapper extends StatelessWidget {
           return const CircularProgressIndicator();
         } else {
           final token = snapshot.data;
-          return token != null ? const Dashboard() : const WelcomePage();
+          return token != null ? const WelcomePage() : const Dashboard();
         }
       },
     );
