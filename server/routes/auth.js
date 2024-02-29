@@ -26,7 +26,9 @@ router.post("/", async (req, res) => {
       return res.status(401).send("Invalid username or password");
 
     const token = user.generateAuthToken();
-    res.send(token);
+    // res.send(token);
+
+    res.send({ token: token });
   } catch (error) {
     res.status(500).send("Internal server error");
   }

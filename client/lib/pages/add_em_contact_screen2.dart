@@ -44,7 +44,7 @@ class _AddUserPageState extends State<AddUserPage> {
             // Move this logic later to the MaterialApp, ThemeData
             onPressed: () {},
             style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFC06565),
+                backgroundColor: const Color(0xFFC06565),
                 foregroundColor: Colors.white),
             child: const Text("Send Request"),
           ),
@@ -52,7 +52,7 @@ class _AddUserPageState extends State<AddUserPage> {
           ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFC06565),
+                  backgroundColor: const Color(0xFFC06565),
                   foregroundColor: Colors.white),
               child: const Text("Cancel"))
         ]),
