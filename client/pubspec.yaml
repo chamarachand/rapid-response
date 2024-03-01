@@ -41,6 +41,8 @@ dependencies:
   jwt_decoder: ^2.0.1
   image_picker: ^1.0.7
   flutter_secure_storage: ^9.0.0
+  firebase_core: ^2.25.5
+  firebase_core_platform_interface: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,7 +69,6 @@ flutter:
   assets:
     - assets\RR_logo.png
     # - images/a_dot_ham.jpeg
-
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
