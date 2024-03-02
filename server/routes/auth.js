@@ -34,6 +34,36 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.patch("/update-fcm-token", async (req, res) => {
+  // set authMiddleware
+  const { username, fcmToken } = req.body;
+
+  // Later Create a schema toValidate userId and fcmToken
+  if (!username || !fcmToken) {
+    return res.status(400).json({ error: "Invalid data" });
+  }
+
+  const [civilian, firstResponder] = await Promise.all([
+    Civilian.findOneAndUpdate(
+      { username: username },
+      { $set: { fcmToken: fcmToken } },
+      { new: true }
+    ),
+    FirstResponder.findOneAndUpdate(
+      { username: username },
+      { $set: { fcmToken: fcmToken } },
+      { new: true }
+    ),
+  ]);
+
+  if (!civilian && !firstResponder)
+    return res.status(401).send("User with the given id not found");
+
+  const user = civilian || firstResponder;
+
+  res.status(200).send("FCM Token updated successfully");
+});
+
 // Can add this schema in the sharedSchema
 function validate(req) {
   const loginValidationSchema = Joi.object({

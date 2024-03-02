@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'register_screen_2.dart';
 import 'package:client/pages/main_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
+import 'package:client/api/firebase_api.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -49,6 +50,25 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print("Error: $e");
+    }
+  }
+
+  updateFcmToken() async {
+    String? fcmToken = await FirebaseAPI().getFcmToken();
+
+    try {
+      var response = await http.patch(
+          Uri.parse("http://10.0.2.2:3000/api/auth/update-fcm-token"),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "username": usernameController.text.trim(),
+            "fcmToken": fcmToken
+          }));
+      if (response.statusCode == 200) {
+        print("FCM updated successfully!");
+      }
+    } catch (error) {
+      print("Error: $error");
     }
   }
 
@@ -131,6 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
 
                         login();
+                        updateFcmToken();
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(25.0),
