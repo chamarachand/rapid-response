@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class AddUserPage extends StatefulWidget {
   final dynamic _user;
@@ -42,7 +44,27 @@ class _AddUserPageState extends State<AddUserPage> {
           const SizedBox(height: 40),
           ElevatedButton(
             // Move this logic later to the MaterialApp, ThemeData
-            onPressed: () {},
+            onPressed: () async {
+              try {
+                var response = await http.post(
+                    Uri.parse(
+                        "http://10.0.2.2:3000/api/auth/send-notification"),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode({
+                      "fcmToken": widget._user["fcmToken"],
+                      "title": "Emergency Contact Request",
+                      "body": widget._user["firstName"] +
+                          " " +
+                          widget._user["lastName"] +
+                          " send add as emergency contact request"
+                    }));
+                if (response.statusCode == 200) {
+                  print("Notification send successfully");
+                }
+              } catch (error) {
+                print("Error: $error");
+              }
+            },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
                 foregroundColor: Colors.white),

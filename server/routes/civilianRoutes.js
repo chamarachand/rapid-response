@@ -18,7 +18,7 @@ router.get("/search", async (req, res) => {
 
     if (users.length === 0) return res.status(404).send("No users found");
 
-    res.send(users);
+    res.send(users); // Change this to send only necessary details
   } catch (error) {
     res.status(500).send("Internal server error");
   }
