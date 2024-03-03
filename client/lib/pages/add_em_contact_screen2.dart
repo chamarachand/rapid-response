@@ -69,18 +69,10 @@ class _AddUserPageState extends State<AddUserPage> {
                 print("Error: $error");
               }
             },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC06565),
-                foregroundColor: Colors.white),
             child: const Text("Send Request"),
           ),
           const SizedBox(height: 8),
-          ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFC06565),
-                  foregroundColor: Colors.white),
-              child: const Text("Cancel"))
+          ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
         ]),
       ),
       bottomNavigationBar: BottomNavigationBar(
