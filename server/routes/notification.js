@@ -11,7 +11,8 @@ admin.initializeApp({
 router.post("/", async (req, res) => {
   const { to, title, body } = req.body; // Later validate this
 
-  const { fcmToken } = await Civilian.findById(to).select("fcmToken");
+  const { fcmToken } = await Civilian.findById(to).select("fcmToken"); // Add if not token logic
+  if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
 
   try {
     admin.messaging().send({
