@@ -55,7 +55,7 @@ class _AddUserPageState extends State<AddUserPage> {
                     Uri.parse("http://10.0.2.2:3000/api/send-notification"),
                     headers: {'Content-Type': 'application/json'},
                     body: jsonEncode({
-                      "from": decodedAccessToken["_id"],
+                      "from": decodedAccessToken["id"],
                       "to": widget._user["_id"],
                       "title": "Emergency Contact Request",
                       "body":

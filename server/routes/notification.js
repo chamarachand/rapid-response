@@ -2,21 +2,23 @@ const express = require("express");
 const router = express.Router();
 var admin = require("firebase-admin");
 const serviceAccount = require("../rapid-response-802d3-firebase-adminsdk-n69t0-43af2556f7.json");
-const { not } = require("joi");
+const { Civilian } = require("../models/civilian");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
 router.post("/", async (req, res) => {
-  const notification = req.body; // Later validate this
+  const { to, title, body } = req.body; // Later validate this
+
+  const { fcmToken } = await Civilian.findById(to).select("fcmToken");
 
   try {
     admin.messaging().send({
-      token: notification.fcmToken,
+      token: fcmToken,
       notification: {
-        title: notification.title,
-        body: notification.body,
+        title: title,
+        body: body,
       },
     });
     console.log("Notification send successfully");
