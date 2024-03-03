@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { from, to, title, body } = req.body; // Later validate this
+  const { from, to, title, body } = req.body;
 
   // Save to db
   try {
