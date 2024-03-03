@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:client/storage/user_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AddUserPage extends StatefulWidget {
   final dynamic _user;
@@ -46,20 +48,22 @@ class _AddUserPageState extends State<AddUserPage> {
             // Move this logic later to the MaterialApp, ThemeData
             onPressed: () async {
               try {
+                final accessToken = await UserSecureStorage.getAccessToken();
+                var decodedAccessToken = JwtDecoder.decode(accessToken!);
+
                 var response = await http.post(
-                    Uri.parse(
-                        "http://10.0.2.2:3000/api/auth/send-notification"),
+                    Uri.parse("http://10.0.2.2:3000/api/send-notification"),
                     headers: {'Content-Type': 'application/json'},
                     body: jsonEncode({
                       "fcmToken": widget._user["fcmToken"],
                       "title": "Emergency Contact Request",
-                      "body": widget._user["firstName"] +
-                          " " +
-                          widget._user["lastName"] +
-                          " send add as emergency contact request"
+                      "body":
+                          "${decodedAccessToken["firstName"]} send add as emergency contact request"
                     }));
                 if (response.statusCode == 200) {
                   print("Notification send successfully");
+                } else {
+                  print(response.statusCode);
                 }
               } catch (error) {
                 print("Error: $error");
