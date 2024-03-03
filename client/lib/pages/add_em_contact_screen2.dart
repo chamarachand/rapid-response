@@ -55,10 +55,11 @@ class _AddUserPageState extends State<AddUserPage> {
                     Uri.parse("http://10.0.2.2:3000/api/send-notification"),
                     headers: {'Content-Type': 'application/json'},
                     body: jsonEncode({
-                      "fcmToken": widget._user["fcmToken"],
-                      "title": "Emergency Contact Request",
+                      "from": decodedAccessToken["id"],
+                      "to": widget._user["_id"],
+                      "title": "Add Emergency Contact Request",
                       "body":
-                          "${decodedAccessToken["firstName"]} send add as emergency contact request"
+                          "${decodedAccessToken["firstName"]} sent add as emergency contact request"
                     }));
                 if (response.statusCode == 200) {
                   print("Notification send successfully");
