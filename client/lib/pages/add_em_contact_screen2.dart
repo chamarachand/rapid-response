@@ -66,7 +66,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 // var decodedAccessToken = JwtDecoder.decode(accessToken!);
 
                 var response = await http.post(
-                    Uri.parse("http://10.0.2.2:3000/api/send-notification"),
+                    Uri.parse("http://10.0.2.2:3000/api/notification/send"),
                     headers: {'Content-Type': 'application/json'},
                     body: jsonEncode({
                       "from": _accessToken["id"],
