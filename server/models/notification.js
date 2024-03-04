@@ -18,7 +18,6 @@ function validate(notification) {
     to: Joi.objectId().required(),
     title: Joi.string().required(),
     body: Joi.string().required(),
-    timestamp: Joi.date(),
   });
   return schema.validate();
 }

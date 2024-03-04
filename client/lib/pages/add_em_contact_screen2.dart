@@ -60,7 +60,6 @@ class _AddUserPageState extends State<AddUserPage> {
                       "title": "Add Emergency Contact Request",
                       "body":
                           "${decodedAccessToken["firstName"]} sent add as emergency contact request",
-                      "timestamp": DateTime.now().toIso8601String()
                     }));
                 if (response.statusCode == 200) {
                   print("Notification send successfully");

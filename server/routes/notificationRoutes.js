@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { from, to, title, body, timestamp } = req.body;
+  const { from, to, title, body } = req.body;
 
   // Save to db - notifications collection
   try {
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
       to: to,
       title: title,
       body: body,
-      timestamp: timestamp,
+      timestamp: new Date().toLocaleString(),
     });
 
     await notification.save();
