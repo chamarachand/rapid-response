@@ -16,7 +16,7 @@ app.use("/api/auth", auth);
 app.use("/api/civilian", civilianRoutes);
 app.use("/api/first-responder", firstResponderRoutes);
 app.use("/api/validate-nic", nicValidateRoutes);
-app.use("/api/send-notification", notificationRoutes);
+app.use("/api/notification", notificationRoutes);
 
 // Connecting to the port
 const port = process.env.PORT || 3000;

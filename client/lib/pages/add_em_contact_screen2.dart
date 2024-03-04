@@ -13,6 +13,84 @@ class AddUserPage extends StatefulWidget {
 }
 
 class _AddUserPageState extends State<AddUserPage> {
+  dynamic _accessToken;
+  bool _alreadyEmergencyContact = false;
+  bool _requestAlreadySent = false;
+
+  recieveAccessToken() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+
+    _accessToken = JwtDecoder.decode(accessToken!);
+  }
+
+  isEmergencyContact() async {
+    try {
+      var response = await http.get(Uri.parse(
+          "http://10.0.2.2:3000/api/notification/search/emcontact/${_accessToken["id"]}/${widget._user["_id"]}"));
+      if (response.statusCode == 200) {
+        setState(() {
+          _alreadyEmergencyContact = true;
+        });
+      } else if (response.statusCode == 404) {
+        print("false"); //remove this
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
+  isRequestSent() async {
+    try {
+      var response = await http.get(Uri.parse(
+          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}"));
+      if (response.statusCode == 200) {
+        _requestAlreadySent = true;
+      } else if (response.statusCode == 404) {
+        print("false"); //remove this
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
+  void showRequestAlreadySentDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "Request Already Sent!",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "A request has already been sent to this user, is currently pending",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.warning,
+                color: Colors.orange,
+                size: 40,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeData();
+  }
+
+  initializeData() async {
+    await recieveAccessToken();
+    isEmergencyContact();
+    isRequestSent();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,36 +122,49 @@ class _AddUserPageState extends State<AddUserPage> {
           ),
           Text(widget._user["username"]),
           const SizedBox(height: 40),
-          ElevatedButton(
-            // Move this logic later to the MaterialApp, ThemeData
-            onPressed: () async {
-              try {
-                final accessToken = await UserSecureStorage.getAccessToken();
-                var decodedAccessToken = JwtDecoder.decode(accessToken!);
-
-                var response = await http.post(
-                    Uri.parse("http://10.0.2.2:3000/api/send-notification"),
-                    headers: {'Content-Type': 'application/json'},
-                    body: jsonEncode({
-                      "from": decodedAccessToken["id"],
-                      "to": widget._user["_id"],
-                      "title": "Add Emergency Contact Request",
-                      "body":
-                          "${decodedAccessToken["firstName"]} sent add as emergency contact request"
-                    }));
-                if (response.statusCode == 200) {
-                  print("Notification send successfully");
-                } else {
-                  print(response.statusCode);
-                }
-              } catch (error) {
-                print("Error: $error");
-              }
-            },
-            child: const Text("Send Request"),
-          ),
+          _alreadyEmergencyContact
+              ? const Padding(
+                  padding: EdgeInsets.only(top: 15),
+                  child: Card(
+                    color: Colors.green,
+                    child: Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Text("Emergency Contact!",
+                          style: TextStyle(fontSize: 24, color: Colors.white)),
+                    ),
+                  ),
+                )
+              : ElevatedButton(
+                  onPressed: () async {
+                    if (_requestAlreadySent) {
+                      return showRequestAlreadySentDialog();
+                    }
+                    try {
+                      var response = await http.post(
+                          Uri.parse(
+                              "http://10.0.2.2:3000/api/notification/send"),
+                          headers: {'Content-Type': 'application/json'},
+                          body: jsonEncode({
+                            "from": _accessToken["id"],
+                            "to": widget._user["_id"],
+                            "title": "Add Emergency Contact Request",
+                            "body":
+                                "${_accessToken["firstName"]} sent add as emergency contact request",
+                          }));
+                      if (response.statusCode == 200) {
+                        print("Notification send successfully");
+                      } else {
+                        print(response.statusCode);
+                      }
+                    } catch (error) {
+                      print("Error: $error");
+                    }
+                  },
+                  child: const Text("Send Request"),
+                ),
           const SizedBox(height: 8),
-          ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
+          if (!_alreadyEmergencyContact)
+            ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
         ]),
       ),
       bottomNavigationBar: BottomNavigationBar(
