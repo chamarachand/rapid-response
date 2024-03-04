@@ -1,11 +1,12 @@
 import 'dart:convert';
-
 import 'package:client/providers/registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'register_screen_3.dart';
 import 'package:http/http.dart' as http;
+import 'register_screen_3.dart';
+import 'package:client/custom_widgets/label_text_register.dart';
+import 'package:client/custom_widgets/textformfield_decoration_register1.dart';
 
 class RegisterPage2 extends StatefulWidget {
   const RegisterPage2({super.key});
@@ -91,8 +92,9 @@ class _RegisterPage2State extends State<RegisterPage2> {
     final civilianProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        backgroundColor: const Color(0xFFEDF0F6),
         appBar: AppBar(
+          backgroundColor: Color(0xFF8497B0),
           title: const Row(children: [
             Text("Register"),
             Padding(
@@ -106,130 +108,130 @@ class _RegisterPage2State extends State<RegisterPage2> {
         ),
         body: Form(
           key: _formKey,
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: TextFormField(
-                controller: _fnameController,
-                decoration: const InputDecoration(
-                    labelText: "First Name",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always),
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(
-                      RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
-                ],
-                validator: (value) {
-                  value = value!
-                      .trim(); // In a TextFormField f the user doesn't enter anything, the value returned will be an empty string "", not null.
-                  if (value.isEmpty) return "This field is required";
-                  if (value.length < 2) return "First name too short";
-                  if (value.length > 50) return "First name too long";
-                  return null;
-                },
+          child: SingleChildScrollView(
+            child: Column(children: [
+              const SizedBox(height: 20),
+              const LabelTextRegister("First Name"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                child: TextFormField(
+                  controller: _fnameController,
+                  decoration: customInputDecoration(),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(
+                        RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
+                  ],
+                  validator: (value) {
+                    value = value!
+                        .trim(); // In a TextFormField f the user doesn't enter anything, the value returned will be an empty string "", not null.
+                    if (value.isEmpty) return "This field is required";
+                    if (value.length < 2) return "First name too short";
+                    if (value.length > 50) return "First name too long";
+                    return null;
+                  },
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: TextFormField(
-                controller: _lnameController,
-                decoration: const InputDecoration(
-                    labelText: "Last Name",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always),
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(
-                      RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
-                ],
-                validator: (value) {
-                  value = value!.trim();
-                  if (value.isEmpty) return "This field is required";
-                  if (value.length < 2) return "Last name too short";
-                  if (value.length > 50) return "Last name too long";
-                  return null;
-                },
+              const LabelTextRegister("Last Name"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                child: TextFormField(
+                  controller: _lnameController,
+                  decoration: customInputDecoration(),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(
+                        RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
+                  ],
+                  validator: (value) {
+                    value = value!.trim();
+                    if (value.isEmpty) return "This field is required";
+                    if (value.length < 2) return "Last name too short";
+                    if (value.length > 50) return "Last name too long";
+                    return null;
+                  },
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: TextFormField(
-                controller: _nicnoController,
-                decoration: const InputDecoration(
-                    labelText: "NIC Number",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always),
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(
-                      RegExp(r'\s')) // Prevent entering spaces
-                ],
-                validator: (value) {
-                  value = value!.trim();
-                  if (value.isEmpty) return "This field is required";
+              const LabelTextRegister("NIC Number"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                child: TextFormField(
+                  controller: _nicnoController,
+                  decoration: customInputDecoration(),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(
+                        RegExp(r'\s')) // Prevent entering spaces
+                  ],
+                  validator: (value) {
+                    value = value!.trim();
+                    if (value.isEmpty) return "This field is required";
 
-                  RegExp format1 = RegExp(r'^\d{9}[Vv]$');
-                  RegExp format2 = RegExp(r'^\d{12}$');
+                    RegExp format1 = RegExp(r'^\d{9}[Vv]$');
+                    RegExp format2 = RegExp(r'^\d{12}$');
 
-                  if (!format1.hasMatch(value) && !format2.hasMatch(value)) {
-                    return "Invalid NIC number";
-                  }
-                  return null;
-                },
+                    if (!format1.hasMatch(value) && !format2.hasMatch(value)) {
+                      return "Invalid NIC number";
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
-            Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: DropdownButtonFormField(
-                  decoration: const InputDecoration(
-                    labelText: "Gender",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  items: ['Male', 'Female', 'Other']
-                      .map((gender) =>
-                          DropdownMenuItem(value: gender, child: Text(gender)))
-                      .toList(),
-                  onChanged: (String? selectedGender) =>
-                      {_genderController.text = selectedGender ?? ""},
-                  validator: (value) =>
-                      (value == null) ? "This field is required" : null,
-                )),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: TextFormField(
-                  controller: _birthdateController,
-                  decoration: const InputDecoration(
-                      labelText: "Date of Birth",
-                      border: OutlineInputBorder(),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      suffixIcon: Icon(Icons.calendar_month)),
-                  readOnly: true,
-                  onTap: () => _selectDate(context),
-                  validator: (value) =>
-                      (value == "") ? "This field is required" : null),
-            ),
-            ElevatedButton(
-                onPressed: () async {
-                  if (!_formKey.currentState!.validate()) return;
+              const LabelTextRegister("Gender"),
+              Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                  child: DropdownButtonFormField(
+                    decoration: customInputDecoration(),
+                    items: ['Male', 'Female']
+                        .map((gender) => DropdownMenuItem(
+                            value: gender, child: Text(gender)))
+                        .toList(),
+                    onChanged: (String? selectedGender) =>
+                        {_genderController.text = selectedGender ?? ""},
+                    validator: (value) =>
+                        (value == null) ? "This field is required" : null,
+                  )),
+              const LabelTextRegister("Date of Birth"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                child: TextFormField(
+                    controller: _birthdateController,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        suffixIcon: const Icon(Icons.calendar_month),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 15),
+                        fillColor: const Color.fromARGB(255, 240, 217, 217),
+                        filled: true),
+                    readOnly: true,
+                    onTap: () => _selectDate(context),
+                    validator: (value) =>
+                        (value == "") ? "This field is required" : null),
+              ),
+              const SizedBox(height: 5),
+              ElevatedButton(
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) return;
 
-                  if (!await validateNic()) return;
+                    if (!await validateNic()) return;
 
-                  civilianProvider.updateUser(
-                      firstName: _fnameController.text,
-                      lastName: _lnameController.text,
-                      nicNumber: _nicnoController.text,
-                      gender: _genderController.text,
-                      dateOfBirth: DateTime.parse(_birthdateController.text));
+                    civilianProvider.updateUser(
+                        firstName: _fnameController.text,
+                        lastName: _lnameController.text,
+                        nicNumber: _nicnoController.text,
+                        gender: _genderController.text,
+                        dateOfBirth: DateTime.parse(_birthdateController.text));
 
-                  if (mounted) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterPage3()));
-                  }
-                },
-                child: const Text("Continue"))
-          ]),
+                    if (mounted) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterPage3()));
+                    }
+                  },
+                  child: const Text("Continue"))
+            ]),
+          ),
         ));
   }
 }
