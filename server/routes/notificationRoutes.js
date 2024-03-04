@@ -22,9 +22,11 @@ router.post("/", async (req, res) => {
     notification = new Notification({
       from: from,
       to: to,
+      type: "emeregency-contact-request",
       title: title,
       body: body,
       timestamp: new Date().toLocaleString(),
+      responded: false,
     });
 
     await notification.save();
