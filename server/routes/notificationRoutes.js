@@ -10,7 +10,63 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-router.post("/", async (req, res) => {
+// Check if the inteded user is already an emergency contact
+router.get(
+  "/search/emcontact/:currentUserId/:intendedUserId",
+  async (req, res) => {
+    const { currentUserId, intendedUserId } = req.params;
+
+    if (!currentUserId || !intendedUserId)
+      return res.status(400).send("Missing parameter/s");
+
+    const currentUser = await Civilian.findById(currentUserId).select(
+      "emergencyContacts"
+    );
+
+    if (!currentUser)
+      return res.status(400).send("User with given id not found");
+
+    const isEmergencyContact =
+      currentUser.emergencyContacts.includes(intendedUserId);
+
+    return isEmergencyContact
+      ? res.status(200).send("Intended user is already an emergency contact")
+      : res.status(404).send("Intended user is not an emergency contact");
+  }
+);
+
+router.get(
+  "/search/request/:currentUserId/:intendedUserId",
+  async (req, res) => {
+    const { currentUserId, intendedUserId } = req.params;
+
+    if (!currentUserId || !intendedUserId)
+      return res.status(400).send("Missing parameter/s");
+
+    const intendedUser = await Civilian.findById(intendedUserId).select(
+      "notifications"
+    );
+
+    if (!intendedUser)
+      return res.status(400).send("Intended user with given id not found");
+
+    for (let objectId of intendedUser.notifications) {
+      const notification = await Notification.findById(objectId);
+
+      if (
+        notification &&
+        notification.from == currentUserId && // replace == with === when connected with front end
+        notification.type === "emergency-contact-request" &&
+        !notification.responded
+      )
+        return res.status(200).send("Request for intended user already sent");
+    }
+
+    return res.status(404).send("Request for intended user not sent");
+  }
+);
+
+router.post("/send", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -22,9 +78,11 @@ router.post("/", async (req, res) => {
     notification = new Notification({
       from: from,
       to: to,
+      type: "emergency-contact-request",
       title: title,
       body: body,
       timestamp: new Date().toLocaleString(),
+      responded: false,
     });
 
     await notification.save();
