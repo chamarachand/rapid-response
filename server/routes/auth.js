@@ -5,10 +5,11 @@ const bcrypt = require("bcrypt");
 const config = require("config");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
+const { loginValidationSchema } = require("../common/sharedSchema");
 
 router.post("/", async (req, res) => {
   try {
-    const { error } = validate(req.body);
+    const { error } = loginValidationSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     const [civilian, firstResponder] = await Promise.all([
@@ -20,13 +21,16 @@ router.post("/", async (req, res) => {
       return res.status(401).send("Invalid username or password");
 
     const user = civilian || firstResponder;
-    // const userType = civilian ? "civilian" : "first responder";
 
-    if (!correctPassword(req.body.password, user.password))
+    const correctPassword = await validatePassword(
+      req.body.password,
+      user.password
+    );
+
+    if (!correctPassword)
       return res.status(401).send("Invalid username or password");
 
     const token = user.generateAuthToken();
-    // res.send(token);
 
     res.send({ token: token });
   } catch (error) {
@@ -64,17 +68,7 @@ router.patch("/update-fcm-token", async (req, res) => {
   res.status(200).send("FCM Token updated successfully");
 });
 
-// Can add this schema in the sharedSchema
-function validate(req) {
-  const loginValidationSchema = Joi.object({
-    username: Joi.string().min(4).max(16).required(),
-    password: Joi.string().min(8).max(255).required(),
-  });
-
-  return loginValidationSchema.validate(req);
-}
-
-async function correctPassword(plainTextPassword, hashedPassword) {
+async function validatePassword(plainTextPassword, hashedPassword) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 }
 

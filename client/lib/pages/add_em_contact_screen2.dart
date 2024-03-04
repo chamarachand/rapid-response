@@ -59,10 +59,11 @@ class _AddUserPageState extends State<AddUserPage> {
                       "to": widget._user["_id"],
                       "title": "Add Emergency Contact Request",
                       "body":
-                          "${decodedAccessToken["firstName"]} sent add as emergency contact request"
+                          "${decodedAccessToken["firstName"]} sent add as emergency contact request",
                     }));
                 if (response.statusCode == 200) {
                   print("Notification send successfully");
+                  print(DateTime.now().toIso8601String());
                 } else {
                   print(response.statusCode);
                 }

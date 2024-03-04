@@ -3,6 +3,7 @@ const router = express.Router();
 var admin = require("firebase-admin");
 const serviceAccount = require("../rapid-response-802d3-firebase-adminsdk-n69t0-43af2556f7.json");
 const { Civilian } = require("../models/civilian");
+const { FirstResponder } = require("../models/first-responder");
 const { Notification, validate } = require("../models/notification");
 
 admin.initializeApp({
@@ -14,15 +15,16 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   const { from, to, title, body } = req.body;
+  let notification;
 
-  // Save to db
+  // Save to db - notifications collection
   try {
-    const notification = new Notification({
+    notification = new Notification({
       from: from,
       to: to,
       title: title,
       body: body,
-      timestamp: new Date(),
+      timestamp: new Date().toLocaleString(),
     });
 
     await notification.save();
@@ -30,6 +32,25 @@ router.post("/", async (req, res) => {
     console.log("Error: ");
     res.status(500).send(error);
   }
+
+  // Save to db - user notifications
+  const [civilian, firstResponder] = await Promise.all([
+    Civilian.findByIdAndUpdate(
+      to,
+      { $push: { notifications: notification._id } },
+      { new: true }
+    ),
+    FirstResponder.findByIdAndUpdate(
+      to,
+      { $push: { notifications: notification._id } },
+      { new: true }
+    ),
+  ]);
+
+  const user = civilian || firstResponder;
+
+  if (!user)
+    return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
   const { fcmToken } = await Civilian.findById(to).select("fcmToken"); // Add if not token logic
