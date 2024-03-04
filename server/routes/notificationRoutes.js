@@ -23,6 +23,9 @@ router.get(
       "emergencyContacts"
     );
 
+    if (!currentUser)
+      return res.status(400).send("User with given id not found");
+
     const isEmergencyContact =
       currentUser.emergencyContacts.includes(intendedUserId);
 
@@ -43,6 +46,9 @@ router.get(
     const intendedUser = await Civilian.findById(intendedUserId).select(
       "notifications"
     );
+
+    if (!intendedUser)
+      return res.status(400).send("Intended user with given id not found");
 
     for (let objectId of intendedUser.notifications) {
       const notification = await Notification.findById(objectId);
