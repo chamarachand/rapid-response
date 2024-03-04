@@ -9,7 +9,7 @@ const { loginValidationSchema } = require("../common/sharedSchema");
 
 router.post("/", async (req, res) => {
   try {
-    const { error } = validate(req.body);
+    const { error } = loginValidationSchema.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     const [civilian, firstResponder] = await Promise.all([
@@ -66,9 +66,9 @@ router.patch("/update-fcm-token", async (req, res) => {
 });
 
 // Can add this schema in the sharedSchema
-function validate(req) {
-  return loginValidationSchema.validate(req);
-}
+// function validate(req) {
+//   return loginValidationSchema.validate(req);
+// }
 
 async function correctPassword(plainTextPassword, hashedPassword) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
