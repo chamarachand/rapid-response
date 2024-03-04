@@ -21,13 +21,16 @@ router.post("/", async (req, res) => {
       return res.status(401).send("Invalid username or password");
 
     const user = civilian || firstResponder;
-    // const userType = civilian ? "civilian" : "first responder";
 
-    if (!correctPassword(req.body.password, user.password))
+    const correctPassword = await validatePassword(
+      req.body.password,
+      user.password
+    );
+
+    if (!correctPassword)
       return res.status(401).send("Invalid username or password");
 
     const token = user.generateAuthToken();
-    // res.send(token);
 
     res.send({ token: token });
   } catch (error) {
@@ -65,12 +68,7 @@ router.patch("/update-fcm-token", async (req, res) => {
   res.status(200).send("FCM Token updated successfully");
 });
 
-// Can add this schema in the sharedSchema
-// function validate(req) {
-//   return loginValidationSchema.validate(req);
-// }
-
-async function correctPassword(plainTextPassword, hashedPassword) {
+async function validatePassword(plainTextPassword, hashedPassword) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 }
 
