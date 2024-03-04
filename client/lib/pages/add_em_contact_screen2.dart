@@ -14,13 +14,27 @@ class AddUserPage extends StatefulWidget {
 
 class _AddUserPageState extends State<AddUserPage> {
   var _accessToken;
+  bool _alreadyEmergencyContact = false;
 
   recieveAccessToken() async {
     final accessToken = await UserSecureStorage.getAccessToken();
     _accessToken = JwtDecoder.decode(accessToken!);
   }
 
-  isEmergencyContact() {}
+  isEmergencyContact() async {
+    try {
+      var response = await http.get(Uri.parse(
+          "http://10.0.2.2:3000/api/notification/search/emcontact/${_accessToken["id"]}/${widget._user["_id"]}"));
+      if (response.statusCode == 200) {
+        _alreadyEmergencyContact = true;
+        return true;
+      } else if (response.statusCode == 404) {
+        return false;
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
 
   @override
   void initState() {
