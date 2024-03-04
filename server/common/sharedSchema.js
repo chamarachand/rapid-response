@@ -60,4 +60,9 @@ const userValidationSchema = Joi.object({
   password: Joi.string().min(8).max(255).required(),
 });
 
-module.exports = { userSchema, userValidationSchema };
+const loginValidationSchema = Joi.object({
+  username: Joi.string().min(4).max(16).required(),
+  password: Joi.string().min(8).max(255).required(),
+});
+
+module.exports = { userSchema, userValidationSchema, loginValidationSchema };

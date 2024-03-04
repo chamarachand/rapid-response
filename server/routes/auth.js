@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const config = require("config");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
+const { loginValidationSchema } = require("../common/sharedSchema");
 
 router.post("/", async (req, res) => {
   try {
@@ -66,11 +67,6 @@ router.patch("/update-fcm-token", async (req, res) => {
 
 // Can add this schema in the sharedSchema
 function validate(req) {
-  const loginValidationSchema = Joi.object({
-    username: Joi.string().min(4).max(16).required(),
-    password: Joi.string().min(8).max(255).required(),
-  });
-
   return loginValidationSchema.validate(req);
 }
 
