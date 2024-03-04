@@ -13,6 +13,21 @@ class AddUserPage extends StatefulWidget {
 }
 
 class _AddUserPageState extends State<AddUserPage> {
+  var _accessToken;
+
+  recieveAccessToken() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    _accessToken = JwtDecoder.decode(accessToken!);
+  }
+
+  isEmergencyContact() {}
+
+  @override
+  void initState() {
+    super.initState();
+    recieveAccessToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,21 +60,20 @@ class _AddUserPageState extends State<AddUserPage> {
           Text(widget._user["username"]),
           const SizedBox(height: 40),
           ElevatedButton(
-            // Move this logic later to the MaterialApp, ThemeData
             onPressed: () async {
               try {
-                final accessToken = await UserSecureStorage.getAccessToken();
-                var decodedAccessToken = JwtDecoder.decode(accessToken!);
+                // final accessToken = await UserSecureStorage.getAccessToken();
+                // var decodedAccessToken = JwtDecoder.decode(accessToken!);
 
                 var response = await http.post(
                     Uri.parse("http://10.0.2.2:3000/api/send-notification"),
                     headers: {'Content-Type': 'application/json'},
                     body: jsonEncode({
-                      "from": decodedAccessToken["id"],
+                      "from": _accessToken["id"],
                       "to": widget._user["_id"],
                       "title": "Add Emergency Contact Request",
                       "body":
-                          "${decodedAccessToken["firstName"]} sent add as emergency contact request",
+                          "${_accessToken["firstName"]} sent add as emergency contact request",
                     }));
                 if (response.statusCode == 200) {
                   print("Notification send successfully");
