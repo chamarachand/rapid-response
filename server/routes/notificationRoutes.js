@@ -10,6 +10,27 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+router.get(
+  "/search/emcontact/:currentUserId/:intendedUserId",
+  async (req, res) => {
+    const { currentUserId, intendedUserId } = req.params;
+
+    if (!currentUserId || !intendedUserId)
+      return res.status(400).send("Missing parameter/s");
+
+    const currentUser = await Civilian.findById(currentUserId).select(
+      "emergencyContacts"
+    );
+
+    const isEmergencyContact =
+      currentUser.emergencyContacts.includes(intendedUserId);
+
+    return isEmergencyContact
+      ? res.status(200).send("Intended user is already an emergency contact")
+      : res.status(404).send("Intended user is not an emergency contact");
+  }
+);
+
 router.post("/send", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
