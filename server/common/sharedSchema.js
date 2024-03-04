@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   password: { type: String, minlength: 8, maxlength: 255, required: true },
-  fcmToken: { type: String, default: null },
+  fcmToken: { type: String, maxlength: 255, default: null },
 });
 
 // Convert Date into UTC format before saving in the database
