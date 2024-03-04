@@ -13,11 +13,12 @@ class AddUserPage extends StatefulWidget {
 }
 
 class _AddUserPageState extends State<AddUserPage> {
-  var _accessToken;
+  dynamic _accessToken;
   bool _alreadyEmergencyContact = false;
 
   recieveAccessToken() async {
     final accessToken = await UserSecureStorage.getAccessToken();
+
     _accessToken = JwtDecoder.decode(accessToken!);
   }
 
@@ -26,10 +27,12 @@ class _AddUserPageState extends State<AddUserPage> {
       var response = await http.get(Uri.parse(
           "http://10.0.2.2:3000/api/notification/search/emcontact/${_accessToken["id"]}/${widget._user["_id"]}"));
       if (response.statusCode == 200) {
-        _alreadyEmergencyContact = true;
+        setState(() {
+          _alreadyEmergencyContact = true;
+        });
         return true;
       } else if (response.statusCode == 404) {
-        return false;
+        print("false");
       }
     } catch (error) {
       print("Error: $error");
@@ -39,7 +42,12 @@ class _AddUserPageState extends State<AddUserPage> {
   @override
   void initState() {
     super.initState();
-    recieveAccessToken();
+    initializeData();
+  }
+
+  initializeData() async {
+    await recieveAccessToken();
+    isEmergencyContact();
   }
 
   @override
@@ -73,35 +81,49 @@ class _AddUserPageState extends State<AddUserPage> {
           ),
           Text(widget._user["username"]),
           const SizedBox(height: 40),
-          ElevatedButton(
-            onPressed: () async {
-              try {
-                // final accessToken = await UserSecureStorage.getAccessToken();
-                // var decodedAccessToken = JwtDecoder.decode(accessToken!);
+          _alreadyEmergencyContact
+              ? const Padding(
+                  padding: EdgeInsets.only(top: 15),
+                  child: Card(
+                    color: Colors.green,
+                    child: Padding(
+                      padding: EdgeInsets.all(12),
+                      child: Text("Emergency Contact!",
+                          style: TextStyle(fontSize: 24, color: Colors.white)),
+                    ),
+                  ),
+                )
+              : ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      // final accessToken = await UserSecureStorage.getAccessToken();
+                      // var decodedAccessToken = JwtDecoder.decode(accessToken!);
 
-                var response = await http.post(
-                    Uri.parse("http://10.0.2.2:3000/api/notification/send"),
-                    headers: {'Content-Type': 'application/json'},
-                    body: jsonEncode({
-                      "from": _accessToken["id"],
-                      "to": widget._user["_id"],
-                      "title": "Add Emergency Contact Request",
-                      "body":
-                          "${_accessToken["firstName"]} sent add as emergency contact request",
-                    }));
-                if (response.statusCode == 200) {
-                  print("Notification send successfully");
-                } else {
-                  print(response.statusCode);
-                }
-              } catch (error) {
-                print("Error: $error");
-              }
-            },
-            child: const Text("Send Request"),
-          ),
+                      var response = await http.post(
+                          Uri.parse(
+                              "http://10.0.2.2:3000/api/notification/send"),
+                          headers: {'Content-Type': 'application/json'},
+                          body: jsonEncode({
+                            "from": _accessToken["id"],
+                            "to": widget._user["_id"],
+                            "title": "Add Emergency Contact Request",
+                            "body":
+                                "${_accessToken["firstName"]} sent add as emergency contact request",
+                          }));
+                      if (response.statusCode == 200) {
+                        print("Notification send successfully");
+                      } else {
+                        print(response.statusCode);
+                      }
+                    } catch (error) {
+                      print("Error: $error");
+                    }
+                  },
+                  child: const Text("Send Request"),
+                ),
           const SizedBox(height: 8),
-          ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
+          if (!_alreadyEmergencyContact)
+            ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
         ]),
       ),
       bottomNavigationBar: BottomNavigationBar(
