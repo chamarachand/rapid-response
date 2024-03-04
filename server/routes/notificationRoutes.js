@@ -50,17 +50,15 @@ router.get(
     if (!intendedUser)
       return res.status(400).send("Intended user with given id not found");
 
-    for (let objectId of intendedUser.notifications) {
-      const notification = await Notification.findById(objectId);
+    const notifications = await Notification.find({
+      _id: { $in: intendedUser.notifications }, // Filter notifications by those in the intended user's notifications array
+      from: currentUserId, // Filter notifications by the sender
+      type: "emergency-contact-request",
+      responded: false,
+    });
 
-      if (
-        notification &&
-        notification.from == currentUserId && // replace == with === when connected with front end
-        notification.type === "emergency-contact-request" &&
-        !notification.responded
-      )
-        return res.status(200).send("Request for intended user already sent");
-    }
+    if (notifications.length >= 1)
+      return res.status(200).send("Request for intended user already sent");
 
     return res.status(404).send("Request for intended user not sent");
   }
