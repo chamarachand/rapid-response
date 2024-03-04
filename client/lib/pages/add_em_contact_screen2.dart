@@ -15,6 +15,7 @@ class AddUserPage extends StatefulWidget {
 class _AddUserPageState extends State<AddUserPage> {
   dynamic _accessToken;
   bool _alreadyEmergencyContact = false;
+  bool _requestAlreadySent = false;
 
   recieveAccessToken() async {
     final accessToken = await UserSecureStorage.getAccessToken();
@@ -30,13 +31,52 @@ class _AddUserPageState extends State<AddUserPage> {
         setState(() {
           _alreadyEmergencyContact = true;
         });
-        return true;
       } else if (response.statusCode == 404) {
-        print("false");
+        print("false"); //remove this
       }
     } catch (error) {
       print("Error: $error");
     }
+  }
+
+  isRequestSent() async {
+    try {
+      var response = await http.get(Uri.parse(
+          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}"));
+      if (response.statusCode == 200) {
+        _requestAlreadySent = true;
+      } else if (response.statusCode == 404) {
+        print("false"); //remove this
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
+  void showRequestAlreadySentDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "Request Already Sent!",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "A request has already been sent to this user, is currently pending",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.warning,
+                color: Colors.orange,
+                size: 40,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
   }
 
   @override
@@ -48,6 +88,7 @@ class _AddUserPageState extends State<AddUserPage> {
   initializeData() async {
     await recieveAccessToken();
     isEmergencyContact();
+    isRequestSent();
   }
 
   @override
@@ -95,10 +136,10 @@ class _AddUserPageState extends State<AddUserPage> {
                 )
               : ElevatedButton(
                   onPressed: () async {
+                    if (_requestAlreadySent) {
+                      return showRequestAlreadySentDialog();
+                    }
                     try {
-                      // final accessToken = await UserSecureStorage.getAccessToken();
-                      // var decodedAccessToken = JwtDecoder.decode(accessToken!);
-
                       var response = await http.post(
                           Uri.parse(
                               "http://10.0.2.2:3000/api/notification/send"),
