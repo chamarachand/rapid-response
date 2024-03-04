@@ -27,6 +27,15 @@ const userSchema = new mongoose.Schema({
   },
   password: { type: String, minlength: 8, maxlength: 255, required: true },
   fcmToken: { type: String, maxlength: 255, default: null },
+  notifications: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
+    default: [],
+  },
 });
 
 // Convert Date into UTC format before saving in the database
