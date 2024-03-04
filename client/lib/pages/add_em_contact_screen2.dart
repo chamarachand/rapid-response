@@ -63,7 +63,6 @@ class _AddUserPageState extends State<AddUserPage> {
                     }));
                 if (response.statusCode == 200) {
                   print("Notification send successfully");
-                  print(DateTime.now().toIso8601String());
                 } else {
                   print(response.statusCode);
                 }
