@@ -13,16 +13,16 @@ router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { from, to, title, body } = req.body;
+  const { from, to, title, body, timestamp } = req.body;
 
-  // Save to db
+  // Save to db - notifications collection
   try {
     const notification = new Notification({
       from: from,
       to: to,
       title: title,
       body: body,
-      timestamp: new Date(),
+      timestamp: timestamp,
     });
 
     await notification.save();
