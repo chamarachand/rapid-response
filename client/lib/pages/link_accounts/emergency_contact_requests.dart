@@ -31,6 +31,14 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
+  updateNotificationStatus(String notificationId) async {
+    final response = await http.patch(Uri.parse(
+        "http://10.0.2.2:3000/api/notification/responded/$notificationId"));
+    if (response.statusCode == 200) {
+      return true;
+    }
+  }
+
   void showSampleDialog() {
     showDialog(
         context: context,
