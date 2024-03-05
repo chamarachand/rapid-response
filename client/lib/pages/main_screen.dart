@@ -214,7 +214,7 @@ class MainMenuScreen extends State<MainMenu> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
+                          builder: ((context) => LinkAccountHome())));
                 },
               ),
               label: 'Link',
