@@ -26,7 +26,7 @@ class _AddUserPageState extends State<AddUserPage> {
   isEmergencyContact() async {
     try {
       var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/notification/search/emcontact/${_accessToken["id"]}/${widget._user["_id"]}"));
+          "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/${_accessToken["id"]}/${widget._user["_id"]}"));
       if (response.statusCode == 200) {
         setState(() {
           _alreadyEmergencyContact = true;
