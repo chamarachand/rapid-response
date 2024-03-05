@@ -40,7 +40,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                 ),
                 Card(
                   child: ListTile(
-                    title: const Text("Emergency Contact Requets"),
+                    title: const Text("Emergency Contact Requests"),
                     onTap: () {},
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),
