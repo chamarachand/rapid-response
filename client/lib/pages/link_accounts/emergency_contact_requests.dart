@@ -39,7 +39,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
-  void showSampleDialog() {
+  void showSampleDialog(String notificationId) {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -61,7 +61,15 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                     onPressed: () => Navigator.pop(context),
                     child: const Text("Yes")),
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () async {
+                      await updateNotificationStatus(notificationId);
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                      setState(() {
+                        _requests = getRequests();
+                      });
+                    },
                     child: const Text("No")),
                 TextButton(
                     onPressed: () => Navigator.pop(context),
@@ -128,7 +136,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                                 " " +
                                 request["from"]["lastName"]),
                             subtitle: const Text("Emergency contact request"),
-                            onTap: () => {showSampleDialog()},
+                            onTap: () => {showSampleDialog(request["_id"])},
                           ),
                         ),
                         const Padding(
