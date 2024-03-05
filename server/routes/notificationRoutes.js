@@ -67,6 +67,28 @@ router.get("/emergency-contact-requests/:userId", async (req, res) => {
   }
 });
 
+// Chane responded to true in a notification
+router.patch("/responded/:notificationId", async (req, res) => {
+  const { notificationId } = req.params;
+
+  if (!notificationId) return res.status(400).send("Bad Request");
+  try {
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      notificationId,
+      { responded: true },
+      { new: true }
+    );
+
+    if (!updatedNotification)
+      return res.status(404).send("Notification with the given id not found");
+
+    return res.status(200).send("Notification updated successfully");
+  } catch (error) {
+    console.log("Error: " + error);
+    return res.status(500).send("internal server error");
+  }
+});
+
 router.post("/send", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
