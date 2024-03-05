@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
 
 class LinkAccountHome extends StatefulWidget {
   const LinkAccountHome({super.key});
@@ -13,25 +14,53 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Linked Accounts")),
-      body: ListView(
+      appBar: AppBar(
+          title: const Text("Linked Accounts"),
+          backgroundColor: const Color(0xFFadd8e6)),
+      body: Column(
         children: [
-          ListTile(
-            title: Text("My Emergency Contacts"),
-            onTap: () {},
-            tileColor: Colors.amber,
+          const SizedBox(height: 2),
+          Expanded(
+            child: ListView(
+              children: [
+                Card(
+                  child: ListTile(
+                    title: const Text("My Emergency Contacts"),
+                    onTap: () {},
+                    tileColor: const Color(0xFFF7D8D8),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    title: const Text("Emergency Contact Requets"),
+                    onTap: () {},
+                    tileColor: const Color(0xFFF7D8D8),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                  ),
+                ),
+              ],
+            ),
           ),
-          ListTile(
-            title: Text("Emergency Contact Requets"),
-            onTap: () {},
-            tileColor: Colors.amber,
+          Container(
+            margin: const EdgeInsets.only(
+                bottom: 30), // Try to use a better approach
+            child: Center(
+              child: Image.asset(
+                "assets/family.png",
+              ),
+            ),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Color(0xFFF7D8D8),
-        child: Icon(Icons.person_add_alt_sharp),
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const UserSearchPage()));
+        },
+        backgroundColor: const Color(0xFFF7D8D8),
+        tooltip: "Add Emergency Contact",
+        child: const Icon(Icons.person_add_alt_sharp),
       ),
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xFFD9D9D9),
