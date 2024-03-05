@@ -67,7 +67,7 @@ router.get("/emergency-contact-requests/:userId", async (req, res) => {
   }
 });
 
-// Chane responded to true in a notification
+// Change responded to true in a notification
 router.patch("/responded/:notificationId", async (req, res) => {
   const { notificationId } = req.params;
 
@@ -85,7 +85,7 @@ router.patch("/responded/:notificationId", async (req, res) => {
     return res.status(200).send("Notification updated successfully");
   } catch (error) {
     console.log("Error: " + error);
-    return res.status(500).send("internal server error");
+    return res.status(500).send("Internal server error");
   }
 });
 
