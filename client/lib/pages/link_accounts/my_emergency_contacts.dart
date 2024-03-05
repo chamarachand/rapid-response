@@ -184,6 +184,7 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
                             leading: const CircleAvatar(
                               backgroundImage: NetworkImage(
                                   "https://i.scdn.co/image/ab676161000051747d5aa798103bfb8562427274"),
+                              radius: 24,
                             ),
                             title: Text(
                                 user["firstName"] + " " + user["lastName"]),
