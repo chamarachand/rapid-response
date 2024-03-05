@@ -52,7 +52,10 @@ router.get("/emergency-contact-requests/:userId", async (req, res) => {
       responded: false,
     })
       .select("from")
-      .populate("from")
+      .populate({
+        path: "from",
+        select: "_id firstName lastName",
+      })
       .sort({ timestamp: -1 });
 
     if (notifications.length === 0)
