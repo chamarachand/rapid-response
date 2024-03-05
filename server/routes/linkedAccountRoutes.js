@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { Civilian } = require("../models/civilian");
-const { FirstResponder } = require("../models/first-responder");
 
 router.get("/emergency-contacts/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -13,7 +12,7 @@ router.get("/emergency-contacts/:userId", async (req, res) => {
       .select("emergencyContacts")
       .populate({
         path: "emergencyContacts",
-        select: "firstName lastName phoneNumber",
+        select: "firstName lastName phoneNumber email",
       });
 
     if (!emergencyContacts || emergencyContacts.length === 0)

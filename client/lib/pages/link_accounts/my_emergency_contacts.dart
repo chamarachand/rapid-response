@@ -175,7 +175,7 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
                 var user = emergencyContacts[index];
 
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
                   child: Card(
                     child: Row(
                       children: [
@@ -183,19 +183,18 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
                           child: ListTile(
                             leading: const CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
+                                  "https://i.scdn.co/image/ab676161000051747d5aa798103bfb8562427274"),
                             ),
-                            title: Text(user["firstName"] ?? ""),
-                            subtitle: Text((user["firstName"] ?? "") +
-                                " " +
-                                (user["lastName"] ?? "")),
+                            title: Text(
+                                user["firstName"] + " " + user["lastName"]),
+                            subtitle: Text(user["email"]),
                             onTap: () => {},
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15),
-                          child: Icon(Icons.open_in_new, size: 22),
-                        )
+                        // const Padding(
+                        //   padding: EdgeInsets.symmetric(horizontal: 15),
+                        //   child: Icon(Icons.open_in_new, size: 22),
+                        // )
                       ],
                     ),
                   ),
