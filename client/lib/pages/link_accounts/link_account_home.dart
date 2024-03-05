@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
+import 'package:client/pages/link_accounts/my_emergency_contacts.dart';
 
 class LinkAccountHome extends StatefulWidget {
   const LinkAccountHome({super.key});
@@ -26,7 +27,13 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                 Card(
                   child: ListTile(
                     title: const Text("My Emergency Contacts"),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) =>
+                                  const MyEmergencyContacts())));
+                    },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),
                   ),
@@ -75,7 +82,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => LinkAccountHome())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',
