@@ -5,8 +5,7 @@ const { Civilian } = require("../models/civilian");
 // Get the list of emergency contacts of a particular user
 router.get("/emergency-contacts/:userId", async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
-  if (!userId) return res.status(400).send("Bad requst");
+  if (!userId) return res.status(400).send("Bad request");
 
   try {
     const { emergencyContacts } = await Civilian.findById(userId)
