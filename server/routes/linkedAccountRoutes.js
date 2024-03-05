@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Civilian } = require("../models/civilian");
 
+// Get the list of emergency contacts of a particular user
 router.get("/emergency-contacts/:userId", async (req, res) => {
   const { userId } = req.params;
   console.log(userId);
@@ -27,7 +28,7 @@ router.get("/emergency-contacts/:userId", async (req, res) => {
 
 // Check if the inteded user is already an emergency contact
 router.get(
-  "/search/emcontact/:currentUserId/:intendedUserId",
+  "/emergency-contacts/:currentUserId/:intendedUserId",
   async (req, res) => {
     const { currentUserId, intendedUserId } = req.params;
 
