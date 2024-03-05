@@ -35,6 +35,7 @@ router.get(
   }
 );
 
+// Check if a request has been already sent to the intended user
 router.get(
   "/search/request/:currentUserId/:intendedUserId",
   async (req, res) => {
