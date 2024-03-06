@@ -88,7 +88,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 style: TextStyle(fontSize: 20),
               ),
               content: Text(
-                "The request has been sent to $firstName $lastName",
+                "Emergency contact request has been sent to $firstName $lastName",
                 textAlign: TextAlign.center,
               ),
               icon: const Icon(
