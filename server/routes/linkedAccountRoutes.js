@@ -50,4 +50,33 @@ router.get(
   }
 );
 
+// Add the current user as an emergency contact of the requested user
+router.patch(
+  "/emergency-contacts/add/:currentUserId/:requestedUserId",
+  async (req, res) => {
+    const { currentUserId, requestedUserId } = req.params;
+
+    try {
+      if (!currentUserId || !requestedUserId)
+        return res.status(400).send("Bad Request");
+
+      // Can add validations for checking the userId is valid ObjectId
+
+      const updatedUser = await Civilian.findByIdAndUpdate(
+        requestedUserId,
+        { $push: { emergencyContacts: currentUserId } },
+        { new: true }
+      );
+
+      if (!updatedUser)
+        return res.status(404).send("User with the given id not found");
+
+      res.status(200).send("Emergency contact added successfully");
+    } catch (error) {
+      console.log("Error: " + error);
+      res.status(500).send("Internal server error");
+    }
+  }
+);
+
 module.exports = router;
