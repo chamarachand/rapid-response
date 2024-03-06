@@ -4,8 +4,14 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 const notificationSchema = new mongoose.Schema({
   // Add min max values later
-  from: { type: mongoose.Schema.Types.ObjectId },
-  to: { type: mongoose.Schema.Types.ObjectId, required: true },
+  from: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Civilian", // Later change this to baoth civilian and first responders using refPath. Then create new notifications and check
+  },
+  to: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
   type: { type: String },
   title: { type: String },
   body: { type: String },

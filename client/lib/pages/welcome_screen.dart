@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'register_screen_2.dart';
 import 'SOS_page.dart';
-import 'add_em_comtact_screen.dart';
+import 'link_accounts/add_em_comtact_screen.dart';
 import 'main_screen.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -21,8 +21,10 @@ class WelcomePage extends StatelessWidget {
           children: [
             Center(
                 child: ElevatedButton(
-                    onPressed: () => Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const LoginPage())),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage())),
                     child: const Text("Login"))),
             Center(
                 child: ElevatedButton(
