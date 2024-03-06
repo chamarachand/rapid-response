@@ -39,6 +39,18 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
+  addAsEmergencyContact(String requestedUserId) async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final decodedAccessToken = JwtDecoder.decode(accessToken!);
+
+    final response = await http.patch(Uri.parse(
+        "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/add/${decodedAccessToken["id"]}/$requestedUserId"));
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+  }
+
   void showSampleDialog(String notificationId) {
     showDialog(
         context: context,
