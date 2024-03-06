@@ -4,7 +4,8 @@ const connection = require("./database");
 const civilianRoutes = require("./routes/civilianRoutes");
 const firstResponderRoutes = require("./routes/firstResponderRoutes");
 const nicValidateRoutes = require("./routes/nicValidator");
-const notification = require("./routes/notification");
+const notificationRoutes = require("./routes/notificationRoutes");
+const linkedAccountRoutes = require("./routes/linkedAccountRoutes");
 const auth = require("./routes/auth");
 
 // Database connection
@@ -16,7 +17,8 @@ app.use("/api/auth", auth);
 app.use("/api/civilian", civilianRoutes);
 app.use("/api/first-responder", firstResponderRoutes);
 app.use("/api/validate-nic", nicValidateRoutes);
-app.use("/api/send-notification", notification);
+app.use("/api/notification", notificationRoutes);
+app.use("/api/linked-accounts", linkedAccountRoutes);
 
 // Connecting to the port
 const port = process.env.PORT || 3000;

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
 
-const genderValues = ["Male", "Female", "Other"];
+const genderValues = ["Male", "Female"];
 
 // Schema for validating the user before storing in MongoDB
 const userSchema = new mongoose.Schema({
@@ -26,7 +26,16 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   password: { type: String, minlength: 8, maxlength: 255, required: true },
-  fcmToken: { type: String, default: null },
+  fcmToken: { type: String, maxlength: 255, default: null },
+  notifications: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Notification",
+      },
+    ],
+    default: [],
+  },
 });
 
 // Convert Date into UTC format before saving in the database
@@ -60,4 +69,9 @@ const userValidationSchema = Joi.object({
   password: Joi.string().min(8).max(255).required(),
 });
 
-module.exports = { userSchema, userValidationSchema };
+const loginValidationSchema = Joi.object({
+  username: Joi.string().min(4).max(16).required(),
+  password: Joi.string().min(8).max(255).required(),
+});
+
+module.exports = { userSchema, userValidationSchema, loginValidationSchema };
