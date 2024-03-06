@@ -88,7 +88,6 @@ class _AddUserPageState extends State<AddUserPage> {
   initializeData() async {
     await recieveAccessToken();
     isEmergencyContact();
-    isRequestSent();
   }
 
   @override
