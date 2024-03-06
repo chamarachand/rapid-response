@@ -46,7 +46,7 @@ class _AddUserPageState extends State<AddUserPage> {
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
-        print("false"); //remove this
+        _requestAlreadySent = false;
       }
     } catch (error) {
       print("Error: $error");
@@ -136,6 +136,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 )
               : ElevatedButton(
                   onPressed: () async {
+                    await (isRequestSent());
                     if (_requestAlreadySent) {
                       return showRequestAlreadySentDialog();
                     }
