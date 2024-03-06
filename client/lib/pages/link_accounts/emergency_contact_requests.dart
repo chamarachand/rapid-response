@@ -58,7 +58,15 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
               ),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () async {
+                      await updateNotificationStatus(notificationId);
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                      setState(() {
+                        _requests = getRequests();
+                      });
+                    },
                     child: const Text("Yes")),
                 TextButton(
                     onPressed: () async {
