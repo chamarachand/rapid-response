@@ -27,6 +27,23 @@ civilianSchema.methods.generateAuthToken = function () {
   );
 };
 
+//-Sahan-created Id token 
+civilianSchema.methods.generateIdToken = function () {
+  return jwt.sign(
+    {
+      userType: "civilian",
+      id: this._id,
+      username: this.username,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      nicNo: this.nicNo,
+      phnNo: this.phoneNumber,
+      email: this.email,
+    },
+    "jwtPrivateKey"
+  );
+};
+
 const Civilian = mongoose.model("Civilian", civilianSchema);
 
 function validateCivilian(user) {
