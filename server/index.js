@@ -7,6 +7,7 @@ const nicValidateRoutes = require("./routes/nicValidator");
 const notificationRoutes = require("./routes/notificationRoutes");
 const linkedAccountRoutes = require("./routes/linkedAccountRoutes");
 const auth = require("./routes/auth");
+//const sosReport = require("./models/sos.model");
 
 // Database connection
 connection();
@@ -19,6 +20,7 @@ app.use("/api/first-responder", firstResponderRoutes);
 app.use("/api/validate-nic", nicValidateRoutes);
 app.use("/api/notification", notificationRoutes);
 app.use("/api/linked-accounts", linkedAccountRoutes);
+//app.use("/api/sos-Report", sosReport);
 
 // Connecting to the port
 const port = process.env.PORT || 3000;
