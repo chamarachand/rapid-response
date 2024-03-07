@@ -39,7 +39,19 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
-  void showSampleDialog(String notificationId) {
+  addAsEmergencyContact(String requestedUserId) async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final decodedAccessToken = JwtDecoder.decode(accessToken!);
+
+    final response = await http.patch(Uri.parse(
+        "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/add/${decodedAccessToken["id"]}/$requestedUserId"));
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+  }
+
+  void showSampleDialog(String notificationId, String requestedUserId) {
     showDialog(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -58,7 +70,17 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
               ),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () async {
+                      await updateNotificationStatus(notificationId);
+                      await addAsEmergencyContact(requestedUserId);
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
+                      showRequestAcceptedDialog();
+                      setState(() {
+                        _requests = getRequests();
+                      });
+                    },
                     child: const Text("Yes")),
                 TextButton(
                     onPressed: () async {
@@ -74,6 +96,34 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                 TextButton(
                     onPressed: () => Navigator.pop(context),
                     child: const Text("Cancel"))
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
+  }
+
+  void showRequestAcceptedDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "Request Accepted",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "You have been added as an emergency contact for the user",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.warning,
+                color: Colors.orange,
+                size: 40,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Ok")),
               ],
               actionsAlignment: MainAxisAlignment.center,
             ));
@@ -136,7 +186,10 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                                 " " +
                                 request["from"]["lastName"]),
                             subtitle: const Text("Emergency contact request"),
-                            onTap: () => {showSampleDialog(request["_id"])},
+                            onTap: () => {
+                              showSampleDialog(
+                                  request["_id"], request["from"]["_id"])
+                            },
                           ),
                         ),
                         const Padding(
