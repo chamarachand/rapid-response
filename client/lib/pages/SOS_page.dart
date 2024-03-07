@@ -129,22 +129,16 @@ class _SOSpageState extends State<SOSpage> {
             value: _chosenModel,
             items: <String>[
               'Accident',
-              'Fludding',
-              'Land Slide',
-              'Flud1ding',
-              'Fludd2ing',
-              'Fluddi3ng',
-              'Fluddin4g',
-              'Fludding5',
-              '1Fludding',
-              'F2ludding',
-              'Fl3udding',
-              'Flu4dding',
-              'Flud5ding',
-              'Fludd6ing',
-              'Fluddi7ng',
-              'Fluddin7g',
-              'Fluddin8g'
+              'Natural Disaster',
+              'Fire Emergency',
+              'Environmental Emergency',
+              'Traffic Accident',
+              'Violent Incident',
+              'Search and Rescue Operation',
+              'Structural Collapse',
+              'Water-related Emergency',
+              'Power Outage',
+              'Other'
             ].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -172,12 +166,11 @@ class _SOSpageState extends State<SOSpage> {
   Widget buidTextField() => TextField(
         style: const TextStyle(fontWeight: FontWeight.bold),
         decoration: InputDecoration(
-            hintText: "Not in the List",
+            labelText: "Not in the List",
             filled: true,
-            fillColor: const Color.fromARGB(255, 247, 147, 0),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none)),
+              borderRadius: BorderRadius.circular(10),
+            )),
       );
 
 // SOS Button
