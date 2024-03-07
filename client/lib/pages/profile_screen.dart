@@ -135,6 +135,31 @@ class ProfileScreen extends State<Profile> {
               ),
             ),
           ),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.stretch,
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     const Icon(Icons.person),
+          //     Column(
+          //       children: [
+          //         Row(
+          //           children: [
+          //             const Text(
+          //               "Name"
+          //             ),
+          //             IconButton(
+          //               onPressed: (){}, 
+          //               icon: const Icon(Icons.update),
+          //             ),
+          //           ],
+          //         ),
+          //         const Text(
+          //           "Sahan_01"
+          //         ),
+          //       ],
+          //     )
+          //   ],
+          // ),
           const Text(
             "Username: ",
             style: TextStyle(
