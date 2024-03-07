@@ -110,7 +110,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
           key: _formKey,
           child: SingleChildScrollView(
             child: Column(children: [
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               const LabelTextRegister("First Name"),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
