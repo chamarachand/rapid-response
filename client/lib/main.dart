@@ -1,3 +1,5 @@
+import 'package:client/firebase_options.dart';
+import 'package:client/pages/firebase.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +18,19 @@ Future<void> main() async {
           apiKey: 'AIzaSyB3-XWUh108BvTcdwiuC1jJgTtJGB0H1zQ',
           appId: '1:198757308599:android:65fe518f39f3c266769532',
           messagingSenderId: '198757308599',
-          projectId: 'rapid-response-802d3'));
+          projectId: 'rapid-response-802d3')
+    );
 
   await FirebaseAPI().initNotifications();
   flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings()));
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await signInUserAnonymously();
   runApp(const MyApp());
 }
 
