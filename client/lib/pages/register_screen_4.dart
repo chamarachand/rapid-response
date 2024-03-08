@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'login_screen.dart';
+import 'package:client/custom_widgets/label_text_register.dart';
 
 class RegisterPage4 extends StatefulWidget {
   const RegisterPage4({super.key});
@@ -175,12 +176,42 @@ class _RegisterScreen4State extends State<RegisterPage4> {
             ));
   }
 
+  void showPasswordPolicyDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "Password Policy",
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              content: const Text(
+                "To ensure the security of your account, please adhere to the following password conditions:\n\n"
+                "\u2022 Password must be at least 8 characters long.\n"
+                "\u2022 Password must contain characters from at least three of the following four categories:\n"
+                "   - Uppercase letters (A-Z)\n"
+                "   - Lowercase letters (a-z)\n"
+                "   - Digits (0-9)\n"
+                "   - Special characters (! @ # \$ % ^ & * ( ) , . ? \" : { } | < >)",
+                // textAlign: TextAlign.center,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
+  }
+
   @override
   Widget build(BuildContext context) {
     final civilianProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFEDF0F6),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF8497B0),
         title: const Row(children: [
           Text("Register"),
           Padding(
@@ -192,82 +223,109 @@ class _RegisterScreen4State extends State<RegisterPage4> {
           )
         ]),
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(
-                    labelText: "Select your username",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always),
-                inputFormatters: [
-                  FilteringTextInputFormatter.deny(RegExp(r'\s'))
-                ],
-                validator: (value) {
-                  if (value!.isEmpty) return "This field is required";
-                  if (value.startsWith(RegExp(r'\d'))) {
-                    return "Username cannot start with a number";
-                  }
-                  if (value.length < 4) {
-                    return "Username cannot be less than 4 characters";
-                  }
-                  return null;
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: TextFormField(
-                controller: _passwordController,
-                obscureText: true, //hide text
-                decoration: const InputDecoration(
-                    labelText: "Select a password",
-                    border: OutlineInputBorder(),
+      body: Center(
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Image.asset("assets/security.png"),
+              const LabelTextRegister("Enter Username"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                child: TextFormField(
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 18),
                     floatingLabelBehavior: FloatingLabelBehavior.always,
-                    suffixIcon: Icon(Icons.info_rounded)),
-                validator: (value) => (value!.isEmpty)
-                    ? "Please enter a password"
-                    : validatePassword(value),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              child: TextFormField(
-                  controller: _repasswordController,
-                  obscureText: true, //hide text
-                  decoration: const InputDecoration(
-                    labelText: "Re-enter password",
-                    border: OutlineInputBorder(),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    fillColor: const Color.fromARGB(255, 241, 228, 228),
+                    filled: true,
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.deny(RegExp(r'\s'))
+                  ],
                   validator: (value) {
-                    if (value!.isEmpty) return "Please re-enter your password";
-                    if (value != _passwordController.text) {
-                      return "Passwords do not match";
+                    if (value!.isEmpty) return "This field is required";
+                    if (value.startsWith(RegExp(r'\d'))) {
+                      return "Username cannot start with a number";
+                    }
+                    if (value.length < 4) {
+                      return "Username cannot be less than 4 characters";
                     }
                     return null;
-                  }),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-                onPressed: () async {
-                  if (!_formKey.currentState!.validate()) return;
+                  },
+                ),
+              ),
+              const LabelTextRegister("Enter Password"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                child: TextFormField(
+                  controller: _passwordController,
+                  obscureText: true, //hide text
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 18),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      fillColor: const Color.fromARGB(255, 241, 228, 228),
+                      filled: true,
+                      suffixIcon: GestureDetector(
+                          onTap: () => showPasswordPolicyDialog(),
+                          child: const Icon(Icons.info_rounded))),
+                  validator: (value) => (value!.isEmpty)
+                      ? "Please enter a password"
+                      : validatePassword(value),
+                ),
+              ),
+              const LabelTextRegister("Re-Enter Password"),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
+                child: TextFormField(
+                    controller: _repasswordController,
+                    obscureText: true, //hide text
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 18),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      fillColor: const Color.fromARGB(255, 241, 228, 228),
+                      filled: true,
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Please re-enter your password";
+                      }
+                      if (value != _passwordController.text) {
+                        return "Passwords do not match";
+                      }
+                      return null;
+                    }),
+              ),
+              const SizedBox(height: 4),
+              ElevatedButton(
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) return;
 
-                  if (await userExists(_usernameController.text)) return;
+                    if (await userExists(_usernameController.text)) return;
 
-                  civilianProvider.updateUser(
-                    username: _usernameController.text,
-                    password: _passwordController.text,
-                  );
-                  await registerCivilian(
-                      civilianProvider); // check whether 'await' is necessary
-                },
-                child: const Text("Register"))
-          ]),
+                    civilianProvider.updateUser(
+                      username: _usernameController.text,
+                      password: _passwordController.text,
+                    );
+                    await registerCivilian(
+                        civilianProvider); // check whether 'await' is necessary
+                  },
+                  child: const Text("Register"))
+            ]),
+          ),
         ),
       ),
     );
