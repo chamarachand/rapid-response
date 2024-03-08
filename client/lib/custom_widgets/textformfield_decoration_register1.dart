@@ -7,7 +7,7 @@ InputDecoration customInputDecoration() {
     ),
     floatingLabelBehavior: FloatingLabelBehavior.always,
     contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-    fillColor: const Color.fromARGB(255, 240, 217, 217),
+    fillColor: const Color.fromARGB(255, 241, 228, 228),
     filled: true,
   );
 }
