@@ -53,7 +53,8 @@ class _RegisterPage3State extends State<RegisterPage3> {
                       child: TextFormField(
                         controller: _phonenoController,
                         keyboardType: TextInputType.number,
-                        decoration: customInputDecorationContact(),
+                        decoration: customInputDecorationContact(
+                            const Icon(Icons.phone)),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
@@ -74,7 +75,8 @@ class _RegisterPage3State extends State<RegisterPage3> {
                       child: TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: customInputDecorationContact(),
+                        decoration: customInputDecorationContact(
+                            const Icon(Icons.email)),
                         inputFormatters: [
                           FilteringTextInputFormatter.deny(
                               RegExp(r'\s')) // Prevent entering spaces

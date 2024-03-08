@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-InputDecoration customInputDecorationContact() {
+InputDecoration customInputDecorationContact(icon) {
   return InputDecoration(
-    prefixIcon: const Icon(Icons.phone),
+    prefixIcon: icon,
     floatingLabelBehavior: FloatingLabelBehavior.always,
     fillColor: const Color.fromARGB(255, 241, 228, 228),
     filled: true,

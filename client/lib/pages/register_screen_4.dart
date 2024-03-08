@@ -113,7 +113,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) =>  const LoginPage())));
+                              builder: ((context) => const LoginPage())));
                     },
                     child: const Text("OK")),
               ],
@@ -194,79 +194,81 @@ class _RegisterScreen4State extends State<RegisterPage4> {
       ),
       body: Form(
         key: _formKey,
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: TextFormField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                  labelText: "Select your username",
-                  border: OutlineInputBorder(),
-                  floatingLabelBehavior: FloatingLabelBehavior.always),
-              inputFormatters: [
-                FilteringTextInputFormatter.deny(RegExp(r'\s'))
-              ],
-              validator: (value) {
-                if (value!.isEmpty) return "This field is required";
-                if (value.startsWith(RegExp(r'\d'))) {
-                  return "Username cannot start with a number";
-                }
-                if (value.length < 4) {
-                  return "Username cannot be less than 4 characters";
-                }
-                return null;
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: TextFormField(
-              controller: _passwordController,
-              obscureText: true, //hide text
-              decoration: const InputDecoration(
-                  labelText: "Select a password",
-                  border: OutlineInputBorder(),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  suffixIcon: Icon(Icons.info_rounded)),
-              validator: (value) => (value!.isEmpty)
-                  ? "Please enter a password"
-                  : validatePassword(value),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: TextFormField(
-                controller: _repasswordController,
-                obscureText: true, //hide text
+        child: SingleChildScrollView(
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TextFormField(
+                controller: _usernameController,
                 decoration: const InputDecoration(
-                  labelText: "Re-enter password",
-                  border: OutlineInputBorder(),
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
+                    labelText: "Select your username",
+                    border: OutlineInputBorder(),
+                    floatingLabelBehavior: FloatingLabelBehavior.always),
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp(r'\s'))
+                ],
                 validator: (value) {
-                  if (value!.isEmpty) return "Please re-enter your password";
-                  if (value != _passwordController.text) {
-                    return "Passwords do not match";
+                  if (value!.isEmpty) return "This field is required";
+                  if (value.startsWith(RegExp(r'\d'))) {
+                    return "Username cannot start with a number";
+                  }
+                  if (value.length < 4) {
+                    return "Username cannot be less than 4 characters";
                   }
                   return null;
-                }),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-              onPressed: () async {
-                if (!_formKey.currentState!.validate()) return;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TextFormField(
+                controller: _passwordController,
+                obscureText: true, //hide text
+                decoration: const InputDecoration(
+                    labelText: "Select a password",
+                    border: OutlineInputBorder(),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    suffixIcon: Icon(Icons.info_rounded)),
+                validator: (value) => (value!.isEmpty)
+                    ? "Please enter a password"
+                    : validatePassword(value),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: TextFormField(
+                  controller: _repasswordController,
+                  obscureText: true, //hide text
+                  decoration: const InputDecoration(
+                    labelText: "Re-enter password",
+                    border: OutlineInputBorder(),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) return "Please re-enter your password";
+                    if (value != _passwordController.text) {
+                      return "Passwords do not match";
+                    }
+                    return null;
+                  }),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+                onPressed: () async {
+                  if (!_formKey.currentState!.validate()) return;
 
-                if (await userExists(_usernameController.text)) return;
+                  if (await userExists(_usernameController.text)) return;
 
-                civilianProvider.updateUser(
-                  username: _usernameController.text,
-                  password: _passwordController.text,
-                );
-                await registerCivilian(
-                    civilianProvider); // check whether 'await' is necessary
-              },
-              child: const Text("Register"))
-        ]),
+                  civilianProvider.updateUser(
+                    username: _usernameController.text,
+                    password: _passwordController.text,
+                  );
+                  await registerCivilian(
+                      civilianProvider); // check whether 'await' is necessary
+                },
+                child: const Text("Register"))
+          ]),
+        ),
       ),
     );
   }
