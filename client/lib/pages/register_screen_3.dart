@@ -93,7 +93,7 @@ class _RegisterPage3State extends State<RegisterPage3> {
                         onPressed: () {
                           if (!_formKey.currentState!.validate()) return;
 
-                          civilianProvider.updateUser(
+                          civilianProvider.updateFirstResponder(
                             mobileNumber: _phonenoController.text,
                             email: _emailController.text,
                           );

@@ -216,7 +216,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
                     if (!await validateNic()) return;
 
-                    civilianProvider.updateUser(
+                    civilianProvider.updateFirstResponder(
                         firstName: _fnameController.text,
                         lastName: _lnameController.text,
                         nicNumber: _nicnoController.text,

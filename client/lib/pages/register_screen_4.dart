@@ -291,7 +291,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
 
                     if (await userExists(_usernameController.text)) return;
 
-                    civilianProvider.updateUser(
+                    civilianProvider.updateFirstResponder(
                       username: _usernameController.text,
                       password: _passwordController.text,
                     );

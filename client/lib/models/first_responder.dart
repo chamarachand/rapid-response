@@ -22,7 +22,7 @@ class FirstResponder {
     this.email,
     this.type,
     this.workId,
-    this.workAddress, // work plece
+    this.workAddress,
     this.username,
     this.password,
   });
