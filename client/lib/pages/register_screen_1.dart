@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:client/pages/register_screen_2.dart';
+import 'package:client/pages/utils/user_type.dart';
 
 class UserTypeSelectionScreen extends StatefulWidget {
   @override
@@ -7,13 +9,15 @@ class UserTypeSelectionScreen extends StatefulWidget {
 }
 
 class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
-  String? _selectedUserType;
+  UserTypes? _selectedUserType;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
-        title: Text('Select User Type'),
+        backgroundColor: const Color(0xFF8497B0),
+        title: const Text('Select User Type'),
       ),
       body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         ListView(
@@ -27,7 +31,7 @@ class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: const Text("General User"),
-              value: "civilian",
+              value: UserTypes.civilian,
               groupValue: _selectedUserType,
               onChanged: (value) {
                 setState(() {
@@ -41,7 +45,7 @@ class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: const Text("Police, Para Medic, Fire etc"),
-              value: "first-responser",
+              value: UserTypes.firstResponder,
               groupValue: _selectedUserType,
               onChanged: (value) {
                 setState(() {
@@ -53,10 +57,13 @@ class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle user selection
-                  print('Selected user type: $_selectedUserType');
+                  UserType.setUserType(_selectedUserType);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterPage2()));
                 },
-                child: Text('Continue'),
+                child: const Text('Continue'),
               ),
             ),
           ],
