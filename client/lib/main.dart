@@ -25,13 +25,6 @@ Future<void> main() async {
   flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings()));
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  await signInUserAnonymously();
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

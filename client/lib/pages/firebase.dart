@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,3 +13,4 @@ Future <void> signInUserAnonymously() async{
     print(e);
   }
 }
+*/
