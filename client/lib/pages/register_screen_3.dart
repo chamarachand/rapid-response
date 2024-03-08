@@ -1,3 +1,4 @@
+import 'package:client/pages/register_screen_fr.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -110,7 +111,11 @@ class _RegisterPage3State extends State<RegisterPage3> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const RegisterPage4()));
+                                  builder: (context) =>
+                                      (UserType.getUserType() ==
+                                              UserTypes.civilian)
+                                          ? const RegisterPage4()
+                                          : const RegisterPageFR()));
                         },
                         child: const Text("Continue"))
                   ]),
