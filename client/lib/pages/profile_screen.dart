@@ -1,21 +1,21 @@
-import 'package:client/pages/profile_screen.dart';
-import 'package:client/pages/registered_locations.dart';
 import 'package:flutter/material.dart';
 import 'SOS_page.dart';
 import 'report_incident_screen.dart';
 import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/link_account_home.dart';
+import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
 
-class MainMenu extends StatefulWidget {
-  const MainMenu({super.key});
+class Profile extends StatefulWidget {
+  const Profile({super.key});
   @override
-  MainMenuScreen createState() => MainMenuScreen();
+  ProfileScreen createState() => ProfileScreen();
 }
 
-class MainMenuScreen extends State<MainMenu> {
+class ProfileScreen extends State<Profile> {
   int _selectedIndex = 1;
+  
+  final profileImg = "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
   var _firstName = "";
 
@@ -53,7 +53,9 @@ class MainMenuScreen extends State<MainMenu> {
                     icon: SizedBox(
                       width: appBarHeight - 20,
                       height: appBarHeight - 20,
-                      child: Image.asset('assets/RR_logo.png'),
+                      child: const Text(
+                        "User Profile",
+                        ),
                     ),
                     onPressed: () {},
                   ),
@@ -92,14 +94,7 @@ class MainMenuScreen extends State<MainMenu> {
                                   height: appBarHeight - 20,
                                   child: Image.asset('assets/RR_logo.png'),
                                   ), 
-                              const SizedBox(height: 25),       
-                              ListTile(
-                                title: const Center(child: Text('View Profile')),
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Profile())),
-                              ),
+                              const SizedBox(height: 25),
                               ListTile(
                                 title: const Center(child: Text('Logout')),
                                 onTap: () {
@@ -126,107 +121,54 @@ class MainMenuScreen extends State<MainMenu> {
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: 25),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const SOSpage())),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 30),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    )),
-                child: const Text(
-                  'SOS',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                  ),
+          Center(
+            child: SizedBox(
+              width: 300,
+              height: 300,
+              child: ClipOval(
+                child: Image.network(
+                  profileImg,
+                  fit: BoxFit.cover,
                 ),
               ),
-              ElevatedButton(
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ReportScreen())),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 33, vertical: 30),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    )),
-                child: const Text(
-                  'Report',
-                  style: TextStyle(
+            ),
+          ),
+          const Text(
+            "Username: ",
+            style: TextStyle(
                     fontSize: 30,
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 0, 0, 0),
                   ),
-                ),
-              ),
-            ],
           ),
-          const SizedBox(height: 25),
-          ElevatedButton(
-            onPressed: () {
-              // Implement Map functionality
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC06565),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 138, vertical: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                )),
-            child: const Text(
-              'MAP',
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-              ),
-            ),
+          Text(
+            _firstName +" "+ _firstName,
+            style: const TextStyle(
+                    fontSize: 30,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
           ),
-          const SizedBox(height: 25),
-          ElevatedButton(
-            onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisterLocation())),
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC06565),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 29, vertical: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                )),
-            child: const Text(
-              'Registered Locations',
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.white,
-              ),
-            ),
+          Text(
+            "NIC Number: ",
+            style: const TextStyle(
+                    fontSize: 30,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
           ),
-          const SizedBox(height: 25),
-          Expanded(
-            child: Container(
-              color: Colors.grey[300],
-              child: ListView.builder(
-                itemCount: 10, // Example notification count
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('Notification $index'),
-                    // Add more details here if needed
-                  );
-                },
-              ),
-            ),
+          Text(
+            "Phone Number: ",
+            style: const TextStyle(
+                    fontSize: 30,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
+          ),
+          Text(
+            "Email Address: ",
+            style: const TextStyle(
+                    fontSize: 30,
+                    color: Color.fromARGB(255, 0, 0, 0),
+                  ),
           ),
         ],
       ),
@@ -243,7 +185,7 @@ class MainMenuScreen extends State<MainMenu> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => LinkAccountHome())));
+                          builder: ((context) => const UserSearchPage())));
                 },
               ),
               label: 'Link',
@@ -253,10 +195,6 @@ class MainMenuScreen extends State<MainMenu> {
                 icon: const Icon(Icons.home),
                 onPressed: () {
                   _onItemTapped(1);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const MainMenu())));
                 },
               ),
               label: 'Home',

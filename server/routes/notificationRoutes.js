@@ -10,38 +10,39 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// Check if the inteded user is already an emergency contact
-router.get(
-  "/search/emcontact/:currentUserId/:intendedUserId",
-  async (req, res) => {
-    const { currentUserId, intendedUserId } = req.params;
+// Get latest notifications
+router.get("/latest/:userId/:count", async (req, res) => {
+  const { userId, count } = req.params;
 
-    if (!currentUserId || !intendedUserId)
-      return res.status(400).send("Missing parameter/s");
+  if (!userId || !count || isNaN(parseInt(count)) || parseInt(count) <= 0)
+    return res.status(400).send("Bad Request");
 
-    const currentUser = await Civilian.findById(currentUserId).select(
-      "emergencyContacts"
-    );
+  try {
+    const notifications = await Notification.find({
+      to: userId,
+    })
+      .select("_id type from title body timestamp")
+      .sort({ timestamp: -1 })
+      .limit(parseInt(count));
 
-    if (!currentUser)
-      return res.status(400).send("User with given id not found");
+    if (notifications.length < 1)
+      return res.status(404).send("No notifications found for the user");
 
-    const isEmergencyContact =
-      currentUser.emergencyContacts.includes(intendedUserId);
-
-    return isEmergencyContact
-      ? res.status(200).send("Intended user is already an emergency contact")
-      : res.status(404).send("Intended user is not an emergency contact");
+    return res.status(200).send(notifications);
+  } catch (error) {
+    console.log("Error: ", error);
+    return res.status(500).send("Internal Server Error");
   }
-);
+});
 
+// Check if a request has been already sent to the intended user
 router.get(
   "/search/request/:currentUserId/:intendedUserId",
   async (req, res) => {
     const { currentUserId, intendedUserId } = req.params;
 
     if (!currentUserId || !intendedUserId)
-      return res.status(400).send("Missing parameter/s");
+      return res.status(400).send("Bad Request");
 
     const intendedUser = await Civilian.findById(intendedUserId).select(
       "notifications"
@@ -49,7 +50,7 @@ router.get(
 
     if (!intendedUser)
       return res.status(400).send("Intended user with given id not found");
-
+    // We can refactor this
     const notifications = await Notification.find({
       _id: { $in: intendedUser.notifications }, // Filter notifications by those in the intended user's notifications array
       from: currentUserId, // Filter notifications by the sender
@@ -63,6 +64,55 @@ router.get(
     return res.status(404).send("Request for intended user not sent");
   }
 );
+
+// Get pending add as emergency contact requests for a user
+router.get("/emergency-contact-requests/:userId", async (req, res) => {
+  const { userId } = req.params;
+  if (!userId) return res.status(400).send("Bad request");
+
+  try {
+    const notifications = await Notification.find({
+      to: userId, // Filter notifications by those in the intended user's notifications array
+      type: "emergency-contact-request",
+      responded: false,
+    })
+      .select("from")
+      .populate({
+        path: "from",
+        select: "_id firstName lastName",
+      })
+      .sort({ timestamp: -1 });
+
+    if (notifications.length === 0)
+      return res.status(404).send("No pending emergency contact requets");
+    return res.status(200).send(notifications);
+  } catch (error) {
+    console.log("Error: " + error);
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
+// Change responded to true in a notification
+router.patch("/responded/:notificationId", async (req, res) => {
+  const { notificationId } = req.params;
+
+  if (!notificationId) return res.status(400).send("Bad Request");
+  try {
+    const updatedNotification = await Notification.findByIdAndUpdate(
+      notificationId,
+      { responded: true },
+      { new: true }
+    );
+
+    if (!updatedNotification)
+      return res.status(404).send("Notification with the given id not found");
+
+    return res.status(200).send("Notification updated successfully");
+  } catch (error) {
+    console.log("Error: " + error);
+    return res.status(500).send("Internal server error");
+  }
+});
 
 router.post("/send", async (req, res) => {
   const { error } = validate(req.body);

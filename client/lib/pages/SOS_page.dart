@@ -1,7 +1,12 @@
 import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -129,22 +134,16 @@ class _SOSpageState extends State<SOSpage> {
             value: _chosenModel,
             items: <String>[
               'Accident',
-              'Fludding',
-              'Land Slide',
-              'Flud1ding',
-              'Fludd2ing',
-              'Fluddi3ng',
-              'Fluddin4g',
-              'Fludding5',
-              '1Fludding',
-              'F2ludding',
-              'Fl3udding',
-              'Flu4dding',
-              'Flud5ding',
-              'Fludd6ing',
-              'Fluddi7ng',
-              'Fluddin7g',
-              'Fluddin8g'
+              'Natural Disaster',
+              'Fire Emergency',
+              'Environmental Emergency',
+              'Traffic Accident',
+              'Violent Incident',
+              'Search and Rescue Operation',
+              'Structural Collapse',
+              'Water-related Emergency',
+              'Power Outage',
+              'Other'
             ].map((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -172,12 +171,11 @@ class _SOSpageState extends State<SOSpage> {
   Widget buidTextField() => TextField(
         style: const TextStyle(fontWeight: FontWeight.bold),
         decoration: InputDecoration(
-            hintText: "Not in the List",
+            labelText: "Not in the List",
             filled: true,
-            fillColor: const Color.fromARGB(255, 247, 147, 0),
             border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide.none)),
+              borderRadius: BorderRadius.circular(10),
+            )),
       );
 
 // SOS Button
@@ -185,8 +183,15 @@ class _SOSpageState extends State<SOSpage> {
         width: 130.0,
         height: 40,
         child: FloatingActionButton(
-          onPressed: () {
-            print("Hello World!");
+          onPressed: () async {
+            final downloadUrl = await uploadImageToFirebase();
+
+            if (downloadUrl != null) {
+              // Do something with the downloadUrl, such as:
+              //   - Send in the SOS message
+              //   - Display success to the user
+              print("SOS sent with image: $downloadUrl");
+            }
           },
           backgroundColor: const Color.fromARGB(255, 247, 147, 0),
           elevation: 2.0,
@@ -241,27 +246,75 @@ class _SOSpageState extends State<SOSpage> {
           children: [
             // Recording Status Indicator (if desired)
             //Text(isRecording ? 'Recording...' : 'Ready to Record'),
-            Row(
+            Text(_isRecording ? 'Recording...' : 'Ready to Record'),
+            SizedBox(height: 20),
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
-                  iconSize: 40,
-                  icon: const Icon(
-                      Icons.stop /*isRecording ? Icons.stop : Icons.mic*/),
-                  onPressed: () {} /*=> toggleRecording(context)*/,
-                ),
+                    iconSize: 100,
+                    icon: const Icon(Icons.mic_rounded),
+                    onPressed: () {}),
                 IconButton(
                     iconSize: 40,
                     icon: const Icon(Icons.play_arrow),
-                    onPressed:
-                        () {} /*=>
-                      playRecording(), // Assuming you have playback */
-                    ),
+                    onPressed: () {}),
               ],
             ),
           ],
         ),
       );
+
+  bool _isRecording = false;
+  FlutterSoundRecorder? _recorder = FlutterSoundRecorder();
+  String? _audioFilePath;
+
+// Start/stop recording
+  Future<void> _toggleRecording(StateSetter setState) async {
+    if (_recorder!.isStopped) {
+      await _requestPermission(); // Request microphone permission
+      await _startRecording(setState);
+    } else {
+      await _stopRecording(setState);
+    }
+  }
+
+// Request permission
+  Future<void> _requestPermission() async {
+    final status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      // Handle permission denied scenario.
+      throw RecordingPermissionException('Microphone permission denied');
+    }
+  }
+
+// Start recording
+  Future<void> _startRecording(StateSetter setState) async {
+    await _recorder!.openRecorder();
+
+    // Generate a temporary file path
+    final tempDir = await getTemporaryDirectory();
+    _audioFilePath = '${tempDir.path}/sos_audio_${DateTime.now()}.aac';
+
+    try {
+      await _recorder!.startRecorder(toFile: _audioFilePath);
+      setState(() => _isRecording = true);
+    } catch (e) {
+      // Handle errors
+      print('Error starting recording: $e');
+    }
+  }
+
+// Stop recording
+  Future<void> _stopRecording(StateSetter setState) async {
+    await _recorder!.stopRecorder();
+    setState(() => _isRecording = false);
+  }
+
+// Play recording (add implementation if needed)
+  Future<void> _playRecording() async {
+    // ... (implement audio player logic here)
+  }
 
 // Choose from gallery
   Future pickImage(ImageSource source) async {
@@ -273,6 +326,23 @@ class _SOSpageState extends State<SOSpage> {
       setState(() => this.image = imageTemporary);
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
+    }
+  }
+
+  Future<String?> uploadImageToFirebase() async {
+    if (image == null) return null; // Early exit if no image
+
+    final storageRef = FirebaseStorage.instance.ref();
+    final imagesRef = storageRef.child("sos_images/${DateTime.now()}.jpg");
+
+    try {
+      await imagesRef.putFile(image!); // Upload!
+      final downloadURL = await imagesRef.getDownloadURL();
+      return downloadURL;
+    } on FirebaseException catch (e) {
+      // Handle errors (consider showing a dialog or a snackbar)
+      print("Upload failed: $e");
+      return null;
     }
   }
 }

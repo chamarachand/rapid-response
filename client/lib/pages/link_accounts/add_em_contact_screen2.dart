@@ -26,7 +26,7 @@ class _AddUserPageState extends State<AddUserPage> {
   isEmergencyContact() async {
     try {
       var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/notification/search/emcontact/${_accessToken["id"]}/${widget._user["_id"]}"));
+          "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/${_accessToken["id"]}/${widget._user["_id"]}"));
       if (response.statusCode == 200) {
         setState(() {
           _alreadyEmergencyContact = true;
@@ -46,7 +46,7 @@ class _AddUserPageState extends State<AddUserPage> {
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
-        print("false"); //remove this
+        _requestAlreadySent = false;
       }
     } catch (error) {
       print("Error: $error");
@@ -79,6 +79,32 @@ class _AddUserPageState extends State<AddUserPage> {
             ));
   }
 
+  showNotificationSuccessDialog(String firstName, String lastName) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "Request Sent Successfully!",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: Text(
+                "Emergency contact request has been sent to $firstName $lastName",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.check,
+                color: Colors.green,
+                size: 40,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -88,7 +114,6 @@ class _AddUserPageState extends State<AddUserPage> {
   initializeData() async {
     await recieveAccessToken();
     isEmergencyContact();
-    isRequestSent();
   }
 
   @override
@@ -136,6 +161,7 @@ class _AddUserPageState extends State<AddUserPage> {
                 )
               : ElevatedButton(
                   onPressed: () async {
+                    await (isRequestSent());
                     if (_requestAlreadySent) {
                       return showRequestAlreadySentDialog();
                     }
@@ -153,6 +179,8 @@ class _AddUserPageState extends State<AddUserPage> {
                           }));
                       if (response.statusCode == 200) {
                         print("Notification send successfully");
+                        showNotificationSuccessDialog(widget._user["firstName"],
+                            widget._user["lastName"]);
                       } else {
                         print(response.statusCode);
                       }
