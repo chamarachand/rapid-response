@@ -46,6 +46,8 @@ dependencies:
   firebase_messaging: ^14.7.17
   flutter_local_notifications: ^16.3.2
   firebase_analytics: ^10.8.7
+  permission_handler: ^11.3.0
+  flutter_sound: ^9.2.13
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +74,9 @@ flutter:
   assets:
     - assets\RR_logo.png
     - assets\family.png
+    - assets\contact-info.png
+    - assets\security.png
+    - assets\register.png
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

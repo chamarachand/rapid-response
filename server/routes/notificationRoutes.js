@@ -10,6 +10,31 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+// Get latest notifications
+router.get("/latest/:userId/:count", async (req, res) => {
+  const { userId, count } = req.params;
+
+  if (!userId || !count || isNaN(parseInt(count)) || parseInt(count) <= 0)
+    return res.status(400).send("Bad Request");
+
+  try {
+    const notifications = await Notification.find({
+      to: userId,
+    })
+      .select("_id type from title body timestamp")
+      .sort({ timestamp: -1 })
+      .limit(parseInt(count));
+
+    if (notifications.length < 1)
+      return res.status(404).send("No notifications found for the user");
+
+    return res.status(200).send(notifications);
+  } catch (error) {
+    console.log("Error: ", error);
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
 // Check if a request has been already sent to the intended user
 router.get(
   "/search/request/:currentUserId/:intendedUserId",

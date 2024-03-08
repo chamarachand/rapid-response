@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
+  
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -10,6 +15,9 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
   final TextEditingController _DescriptionController = TextEditingController();
+  
+   
+  String imageUrl = '';
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,28 @@ class _ReportScreenState extends State<ReportScreen> {
                     foregroundColor: Colors.black,
                     backgroundColor: Colors.orange,
                     fixedSize: const Size(1000, 50)),
-                onPressed: () {},
+                onPressed: () async {
+                  ImagePicker imagePicker = ImagePicker();
+                  XFile? file = await imagePicker.pickImage(source:ImageSource.camera);
+                  print('${file?.path}');
+
+                  String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+                  Reference referenceRoot = FirebaseStorage.instance.ref();
+                  Reference referenceDirImages = referenceRoot.child('image');
+
+                  Reference referenceImageToUpload = referenceDirImages.child(uniqueFileName);
+
+                  try{
+                    await referenceImageToUpload.putFile(File(file!.path));
+                    imageUrl = await referenceImageToUpload.getDownloadURL();
+                    print(imageUrl);
+                  } catch(error){
+
+                  }
+
+
+                },
                 child: const Text('+ add Image'),
               ),
             ),
@@ -110,4 +139,5 @@ class _ReportScreenState extends State<ReportScreen> {
     // Implement navigation logic based on the selected bottom navigation bar item
     // You can use Navigator to push or pop screens based on the selected index
   }
+  
 }
