@@ -14,4 +14,16 @@ class UserSecureStorage {
   static void deleteAccessToken() async {
     await _storage.delete(key: "accessToken");
   }
+
+  static void setIdToken(String token) async {
+    await _storage.write(key: "idToken", value: token);
+  }
+
+  static Future<String?> getIdToken() async {
+    return await _storage.read(key: "idToken");
+  }
+
+  static void deleteIdToken() async {
+    await _storage.delete(key: "idToken");
+  }
 }

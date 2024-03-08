@@ -20,10 +20,10 @@ class ProfileScreen extends State<Profile> {
   var _firstName = "";
 
   void _loadToken() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
+    final id_token = await UserSecureStorage.getAccessToken();
 
-    if (accessToken != null) {
-      var decodedToken = JwtDecoder.decode(accessToken);
+    if (id_token != null) {
+      var decodedToken = JwtDecoder.decode(id_token);
       // Access token claims
       setState(() {
         _firstName = decodedToken["firstName"];
@@ -135,6 +135,31 @@ class ProfileScreen extends State<Profile> {
               ),
             ),
           ),
+          // Row(
+          //   crossAxisAlignment: CrossAxisAlignment.stretch,
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     const Icon(Icons.person),
+          //     Column(
+          //       children: [
+          //         Row(
+          //           children: [
+          //             const Text(
+          //               "Name"
+          //             ),
+          //             IconButton(
+          //               onPressed: (){}, 
+          //               icon: const Icon(Icons.update),
+          //             ),
+          //           ],
+          //         ),
+          //         const Text(
+          //           "Sahan_01"
+          //         ),
+          //       ],
+          //     )
+          //   ],
+          // ),
           const Text(
             "Username: ",
             style: TextStyle(

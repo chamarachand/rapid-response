@@ -37,7 +37,9 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'];
+        final idToken = jsonDecode(response.body)['id_token'];
         UserSecureStorage.setAccessToken(token);
+        UserSecureStorage.setIdToken(idToken);
         _setErrorMsg("");
         if (mounted) {
           Navigator.push(context,

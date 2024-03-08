@@ -11,7 +11,7 @@ class LinkAccountHome extends StatefulWidget {
 }
 
 class _LinkAccountHomeState extends State<LinkAccountHome> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
