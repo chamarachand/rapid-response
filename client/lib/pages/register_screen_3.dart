@@ -6,6 +6,7 @@ import 'register_screen_4.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/custom_widgets/textformfield_decoration_contact.dart';
+import 'package:client/pages/utils/user_type.dart';
 
 class RegisterPage3 extends StatefulWidget {
   const RegisterPage3({super.key});
@@ -21,7 +22,7 @@ class _RegisterPage3State extends State<RegisterPage3> {
 
   @override
   Widget build(BuildContext context) {
-    final civilianProvider = Provider.of<RegistrationProvider>(context);
+    final userProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
         backgroundColor: const Color(0xFFEDF0F6),
@@ -93,10 +94,19 @@ class _RegisterPage3State extends State<RegisterPage3> {
                         onPressed: () {
                           if (!_formKey.currentState!.validate()) return;
 
-                          civilianProvider.updateFirstResponder(
-                            mobileNumber: _phonenoController.text,
-                            email: _emailController.text,
-                          );
+                          if (UserType.getUserType() == UserTypes.civilian) {
+                            userProvider.updateCivilian(
+                              mobileNumber: _phonenoController.text,
+                              email: _emailController.text,
+                            );
+                          } else if (UserType.getUserType() ==
+                              UserTypes.firstResponder) {
+                            userProvider.updateFirstResponder(
+                              mobileNumber: _phonenoController.text,
+                              email: _emailController.text,
+                            );
+                          }
+
                           Navigator.push(
                               context,
                               MaterialPageRoute(

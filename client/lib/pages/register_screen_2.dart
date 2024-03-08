@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:client/pages/utils/user_type.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
