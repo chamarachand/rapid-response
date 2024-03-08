@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'register_screen_4.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
+import 'package:client/custom_widgets/textformfield_decoration_contact.dart';
 
 class RegisterPage3 extends StatefulWidget {
   const RegisterPage3({super.key});
@@ -52,23 +53,15 @@ class _RegisterPage3State extends State<RegisterPage3> {
                       child: TextFormField(
                         controller: _phonenoController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.phone),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          fillColor: const Color.fromARGB(255, 241, 228, 228),
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 18),
-                        ),
+                        decoration: customInputDecorationContact(
+                            const Icon(Icons.phone)),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
                         validator: (value) {
-                          if (value!.isEmpty)
+                          if (value!.isEmpty) {
                             return "Please enter your phone number";
+                          }
                           if (value.length != 10) {
                             return "Please enter a valid phone number";
                           }
@@ -82,17 +75,8 @@ class _RegisterPage3State extends State<RegisterPage3> {
                       child: TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.email),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          fillColor: const Color.fromARGB(255, 241, 228, 228),
-                          filled: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 18),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
+                        decoration: customInputDecorationContact(
+                            const Icon(Icons.email)),
                         inputFormatters: [
                           FilteringTextInputFormatter.deny(
                               RegExp(r'\s')) // Prevent entering spaces
