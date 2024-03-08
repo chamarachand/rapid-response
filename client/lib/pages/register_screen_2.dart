@@ -110,7 +110,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
           key: _formKey,
           child: SingleChildScrollView(
             child: Column(children: [
-              const SizedBox(height: 30),
+              Image.asset("assets/register.png", height: 75),
+              const SizedBox(height: 10),
               const LabelTextRegister("First Name"),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
@@ -201,7 +202,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                         suffixIcon: const Icon(Icons.calendar_month),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 15),
-                        fillColor: const Color.fromARGB(255, 240, 217, 217),
+                        fillColor: const Color.fromARGB(255, 241, 228, 228),
                         filled: true),
                     readOnly: true,
                     onTap: () => _selectDate(context),

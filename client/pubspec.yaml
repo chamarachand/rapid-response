@@ -74,6 +74,7 @@ flutter:
     - assets\family.png
     - assets\contact-info.png
     - assets\security.png
+    - assets\register.png
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

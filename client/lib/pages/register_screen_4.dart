@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'login_screen.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
+import 'package:client/custom_widgets/textformfield_decoration_authinfo.dart';
 
 class RegisterPage4 extends StatefulWidget {
   const RegisterPage4({super.key});
@@ -235,16 +236,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _usernameController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 18),
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    fillColor: const Color.fromARGB(255, 241, 228, 228),
-                    filled: true,
-                  ),
+                  decoration: customInputDecorationAuth(),
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(RegExp(r'\s'))
                   ],
@@ -266,15 +258,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 child: TextFormField(
                   controller: _passwordController,
                   obscureText: true, //hide text
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 18),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      fillColor: const Color.fromARGB(255, 241, 228, 228),
-                      filled: true,
+                  decoration: customInputDecorationAuth(
                       suffixIcon: GestureDetector(
                           onTap: () => showPasswordPolicyDialog(),
                           child: const Icon(Icons.info_rounded))),
@@ -289,16 +273,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                 child: TextFormField(
                     controller: _repasswordController,
                     obscureText: true, //hide text
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 18),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      fillColor: const Color.fromARGB(255, 241, 228, 228),
-                      filled: true,
-                    ),
+                    decoration: customInputDecorationAuth(),
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Please re-enter your password";
