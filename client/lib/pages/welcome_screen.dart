@@ -6,6 +6,7 @@ import 'register_screen_2.dart';
 import 'SOS_page.dart';
 import 'link_accounts/add_em_comtact_screen.dart';
 import 'main_screen.dart';
+import 'register_screen_1.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -38,7 +39,7 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const RegisterPage2())),
+                            builder: (context) => UserTypeSelectionScreen())),
                     child: const Text("Register"))),
             Center(
                 child: ElevatedButton(
