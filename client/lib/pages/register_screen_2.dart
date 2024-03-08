@@ -94,7 +94,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
     return Scaffold(
         backgroundColor: const Color(0xFFEDF0F6),
         appBar: AppBar(
-          backgroundColor: Color(0xFF8497B0),
+          backgroundColor: const Color(0xFF8497B0),
           title: const Row(children: [
             Text("Register"),
             Padding(

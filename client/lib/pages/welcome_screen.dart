@@ -39,7 +39,7 @@ class WelcomePage extends StatelessWidget {
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => UserTypeSelectionScreen())),
+                            builder: (context) => const UserTypeSelection())),
                     child: const Text("Register"))),
             Center(
                 child: ElevatedButton(

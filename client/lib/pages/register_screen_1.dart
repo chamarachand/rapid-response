@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:client/pages/register_screen_2.dart';
 import 'package:client/pages/utils/user_type.dart';
 
-class UserTypeSelectionScreen extends StatefulWidget {
+class UserTypeSelection extends StatefulWidget {
+  const UserTypeSelection({super.key});
+
   @override
-  _UserTypeSelectionScreenState createState() =>
-      _UserTypeSelectionScreenState();
+  State<UserTypeSelection> createState() => _UserTypeSelectionState();
 }
 
-class _UserTypeSelectionScreenState extends State<UserTypeSelectionScreen> {
+class _UserTypeSelectionState extends State<UserTypeSelection> {
   UserTypes? _selectedUserType;
 
   @override
