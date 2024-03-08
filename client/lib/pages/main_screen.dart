@@ -104,6 +104,7 @@ class MainMenuScreen extends State<MainMenu> {
                                 title: const Center(child: Text('Logout')),
                                 onTap: () {
                                   UserSecureStorage.deleteAccessToken();
+                                  UserSecureStorage.deleteIdToken();
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(

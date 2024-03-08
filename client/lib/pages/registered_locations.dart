@@ -129,7 +129,7 @@ class Register_Location extends State<RegisterLocation> {
         backgroundColor: const Color(0xFF8497B0),
       ),
       body: Text(
-        "Sahan",
+        "",
       ),
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xFFD9D9D9),
