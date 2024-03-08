@@ -21,5 +21,5 @@ app.use("/api/notification", notificationRoutes);
 app.use("/api/linked-accounts", linkedAccountRoutes);
 
 // Connecting to the port
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Listening to port ${port}..`));
