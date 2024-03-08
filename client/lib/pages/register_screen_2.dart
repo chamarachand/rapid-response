@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:client/pages/utils/user_type.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'register_screen_3.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/custom_widgets/textformfield_decoration_register1.dart';
+import 'package:client/pages/utils/user_type.dart';
 
 class RegisterPage2 extends StatefulWidget {
   const RegisterPage2({super.key});
@@ -89,7 +91,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
   @override
   Widget build(BuildContext context) {
-    final civilianProvider = Provider.of<RegistrationProvider>(context);
+    // final civilianProvider = Provider.of<RegistrationProvider>(context);
+    final userProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
         backgroundColor: const Color(0xFFEDF0F6),
@@ -216,12 +219,24 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
                     if (!await validateNic()) return;
 
-                    civilianProvider.updateFirstResponder(
-                        firstName: _fnameController.text,
-                        lastName: _lnameController.text,
-                        nicNumber: _nicnoController.text,
-                        gender: _genderController.text,
-                        dateOfBirth: DateTime.parse(_birthdateController.text));
+                    if (UserType.getUserType() == UserTypes.civilian) {
+                      userProvider.updateCivilian(
+                          firstName: _fnameController.text,
+                          lastName: _lnameController.text,
+                          nicNumber: _nicnoController.text,
+                          gender: _genderController.text,
+                          dateOfBirth:
+                              DateTime.parse(_birthdateController.text));
+                    } else if (UserType.getUserType() ==
+                        UserTypes.firstResponder) {
+                      userProvider.updateFirstResponder(
+                          firstName: _fnameController.text,
+                          lastName: _lnameController.text,
+                          nicNumber: _nicnoController.text,
+                          gender: _genderController.text,
+                          dateOfBirth:
+                              DateTime.parse(_birthdateController.text));
+                    }
 
                     if (mounted) {
                       Navigator.push(
