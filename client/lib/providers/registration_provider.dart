@@ -51,6 +51,8 @@ class RegistrationProvider extends ChangeNotifier {
     _firstResponder.birthDay = dateOfBirth ?? _firstResponder.birthDay;
     _firstResponder.phoneNumber = mobileNumber ?? _firstResponder.phoneNumber;
     _firstResponder.type = type ?? _firstResponder.type;
+    _firstResponder.workId = workId ?? _firstResponder.workId;
+    _firstResponder.workAddress = workAddress ?? _firstResponder.workAddress;
     _firstResponder.email = email ?? _firstResponder.email;
     _firstResponder.username = username ?? _firstResponder.username;
     _firstResponder.password = password ?? _firstResponder.password;
