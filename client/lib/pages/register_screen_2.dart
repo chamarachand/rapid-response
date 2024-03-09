@@ -119,7 +119,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _fnameController,
-                  decoration: customInputDecoration(),
+                  decoration: customInputDecoration(8, 15),
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(
                         RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
@@ -139,7 +139,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _lnameController,
-                  decoration: customInputDecoration(),
+                  decoration: customInputDecoration(8, 15),
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(
                         RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
@@ -158,7 +158,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _nicnoController,
-                  decoration: customInputDecoration(),
+                  decoration: customInputDecoration(8, 15),
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(
                         RegExp(r'\s')) // Prevent entering spaces
@@ -181,7 +181,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
               Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                   child: DropdownButtonFormField(
-                    decoration: customInputDecoration(),
+                    decoration: customInputDecoration(8, 15),
                     items: ['Male', 'Female']
                         .map((gender) => DropdownMenuItem(
                             value: gender, child: Text(gender)))

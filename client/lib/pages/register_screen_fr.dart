@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'package:client/pages/register_screen_4.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
-import 'package:client/custom_widgets/textformfield_decoration_authinfo.dart';
+import 'package:client/custom_widgets/textformfield_decoration_register1.dart';
 
 class RegisterPageFR extends StatefulWidget {
   const RegisterPageFR({super.key});
@@ -48,10 +48,9 @@ class _RegisterScreenFRState extends State<RegisterPageFR> {
               Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                   child: DropdownButtonFormField(
-                    decoration: customInputDecorationAuth(),
+                    decoration: customInputDecoration(8, 15),
                     hint: const Text(
                       "Select First Responder Type",
-                      style: TextStyle(fontSize: 14),
                     ),
                     items: ['Police', 'Paramedic', 'Fire']
                         .map((gender) => DropdownMenuItem(
@@ -67,7 +66,7 @@ class _RegisterScreenFRState extends State<RegisterPageFR> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _workIdController,
-                  decoration: customInputDecorationAuth(),
+                  decoration: customInputDecoration(8, 15),
                   validator: (value) {
                     value = value!.trim();
                     if (value.isEmpty) return "This field is required";
@@ -82,7 +81,8 @@ class _RegisterScreenFRState extends State<RegisterPageFR> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                     controller: _workAddressController,
-                    decoration: customInputDecorationAuth(),
+                    decoration: customInputDecoration(8, 15,
+                        hintText: "Ex: Gampaha Police Station"),
                     validator: (value) => (value!.trim() == "")
                         ? "This field cannot be emtpy"
                         : null),

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'register_screen_4.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
-import 'package:client/custom_widgets/textformfield_decoration_contact.dart';
+import 'package:client/custom_widgets/textformfield_decoration_register1.dart';
 import 'package:client/pages/utils/user_type.dart';
 
 class RegisterPage3 extends StatefulWidget {
@@ -55,8 +55,8 @@ class _RegisterPage3State extends State<RegisterPage3> {
                       child: TextFormField(
                         controller: _phonenoController,
                         keyboardType: TextInputType.number,
-                        decoration: customInputDecorationContact(
-                            const Icon(Icons.phone)),
+                        decoration: customInputDecoration(8, 18,
+                            prefixIcon: Icon(Icons.phone)),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
@@ -77,8 +77,8 @@ class _RegisterPage3State extends State<RegisterPage3> {
                       child: TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: customInputDecorationContact(
-                            const Icon(Icons.email)),
+                        decoration: customInputDecoration(8, 18,
+                            prefixIcon: Icon(Icons.email)),
                         inputFormatters: [
                           FilteringTextInputFormatter.deny(
                               RegExp(r'\s')) // Prevent entering spaces

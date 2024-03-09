@@ -74,15 +74,16 @@ class _RegisterScreen4State extends State<RegisterPage4> {
     }
   }
 
-  registerCivilian(RegistrationProvider provider) async {
+  registerUser(RegistrationProvider provider) async {
     try {
       var response = await http.post(
           Uri.parse(
-              "http://10.0.2.2:3000/api/${UserType.getUserType() == UserTypes.civilian ? "civilian" : "first-responder"}"),
+              "http://10.0.2.2:3000/api/${isCivilian ? "civilian" : "first-responder"}"),
           headers: {
-            'Content-Type': 'application/json', // Add this line
+            'Content-Type': 'application/json',
           },
-          body: jsonEncode(provider.civilian));
+          body: jsonEncode(
+              isCivilian ? provider.civilian : provider.firstResponder));
       if (response.statusCode == 201) {
         //change this not to depend on the status code
         showSuccessAlertDialog();
@@ -294,15 +295,17 @@ class _RegisterScreen4State extends State<RegisterPage4> {
 
                     if (await userExists(_usernameController.text)) return;
 
-                    if (UserType.getUserType() == UserTypes.civilian) {
-                      userProvider.updateCivilian(
-                        username: _usernameController.text,
-                        password: _passwordController.text,
-                      );
-                    }
+                    isCivilian
+                        ? userProvider.updateCivilian(
+                            username: _usernameController.text,
+                            password: _passwordController.text,
+                          )
+                        : userProvider.updateFirstResponder(
+                            username: _usernameController.text,
+                            password: _passwordController.text,
+                          );
 
-                    await registerCivilian(
-                        userProvider); // check whether 'await' is necessary
+                    await registerUser(userProvider);
                   },
                   child: const Text("Register"))
             ]),
