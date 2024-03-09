@@ -1,12 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -244,77 +242,24 @@ class _SOSpageState extends State<SOSpage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Recording Status Indicator (if desired)
-            //Text(isRecording ? 'Recording...' : 'Ready to Record'),
-            Text(_isRecording ? 'Recording...' : 'Ready to Record'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
                     iconSize: 100,
-                    icon: const Icon(Icons.mic_rounded),
+                    icon: const Icon(Icons.mic),
                     onPressed: () {}),
                 IconButton(
-                    iconSize: 40,
-                    icon: const Icon(Icons.play_arrow),
-                    onPressed: () {}),
+                  iconSize: 40,
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () {},
+                )
               ],
             ),
           ],
         ),
       );
-
-  bool _isRecording = false;
-  FlutterSoundRecorder? _recorder = FlutterSoundRecorder();
-  String? _audioFilePath;
-
-// Start/stop recording
-  Future<void> _toggleRecording(StateSetter setState) async {
-    if (_recorder!.isStopped) {
-      await _requestPermission(); // Request microphone permission
-      await _startRecording(setState);
-    } else {
-      await _stopRecording(setState);
-    }
-  }
-
-// Request permission
-  Future<void> _requestPermission() async {
-    final status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      // Handle permission denied scenario.
-      throw RecordingPermissionException('Microphone permission denied');
-    }
-  }
-
-// Start recording
-  Future<void> _startRecording(StateSetter setState) async {
-    await _recorder!.openRecorder();
-
-    // Generate a temporary file path
-    final tempDir = await getTemporaryDirectory();
-    _audioFilePath = '${tempDir.path}/sos_audio_${DateTime.now()}.aac';
-
-    try {
-      await _recorder!.startRecorder(toFile: _audioFilePath);
-      setState(() => _isRecording = true);
-    } catch (e) {
-      // Handle errors
-      print('Error starting recording: $e');
-    }
-  }
-
-// Stop recording
-  Future<void> _stopRecording(StateSetter setState) async {
-    await _recorder!.stopRecorder();
-    setState(() => _isRecording = false);
-  }
-
-// Play recording (add implementation if needed)
-  Future<void> _playRecording() async {
-    // ... (implement audio player logic here)
-  }
 
 // Choose from gallery
   Future pickImage(ImageSource source) async {

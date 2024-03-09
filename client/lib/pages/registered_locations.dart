@@ -1,8 +1,8 @@
 import 'package:client/pages/profile_screen.dart';
-import 'package:client/pages/registered_locations.dart';
+//import 'package:client/pages/registered_locations.dart';
 import 'package:flutter/material.dart';
-import 'SOS_page.dart';
-import 'report_incident_screen.dart';
+//import 'SOS_page.dart';
+//import 'report_incident_screen.dart';
 import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -16,8 +16,9 @@ class RegisterLocation extends StatefulWidget {
 
 class Register_Location extends State<RegisterLocation> {
   int _selectedIndex = 1;
-  
-  final profileImg = "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
+
+  final profileImg =
+      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
   var _firstName = "";
 
@@ -68,59 +69,58 @@ class Register_Location extends State<RegisterLocation> {
                 return Container(
                   alignment: Alignment.center,
                   child: PopupMenuButton(
-                      icon: SizedBox(
-                        height: appBarHeight,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.person),
-                            Text(
-                              _firstName,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                          ],
-                        ),
+                    icon: SizedBox(
+                      height: appBarHeight,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.person),
+                          Text(
+                            _firstName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ),
+                        ],
                       ),
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                        PopupMenuItem(
+                    ),
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                      PopupMenuItem(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SizedBox(
-                                  width: appBarHeight - 20,
-                                  height: appBarHeight - 20,
-                                  child: const Text(
-                                    "Registered Locations",
-                                    ),
-                                  ), 
-                              const SizedBox(height: 25),       
-                              ListTile(
-                                title: const Center(child: Text('View Profile')),
-                                onTap: () => Navigator.push(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: appBarHeight - 20,
+                            height: appBarHeight - 20,
+                            child: const Text(
+                              "Registered Locations",
+                            ),
+                          ),
+                          const SizedBox(height: 25),
+                          ListTile(
+                            title: const Center(child: Text('View Profile')),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Profile())),
+                          ),
+                          ListTile(
+                            title: const Center(child: Text('Logout')),
+                            onTap: () {
+                              UserSecureStorage.deleteAccessToken();
+                              Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const Profile())),
-                              ),
-                              ListTile(
-                                title: const Center(child: Text('Logout')),
-                                onTap: () {
-                                  UserSecureStorage.deleteAccessToken();
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const WelcomePage()),
-                                      (route) => false);
-                                },
-                              ),
-                            ],
-                          )
-                        ),
-                      ],
-                    ),
+                                      builder: (context) =>
+                                          const WelcomePage()),
+                                  (route) => false);
+                            },
+                          ),
+                        ],
+                      )),
+                    ],
+                  ),
                 );
               },
             ),
