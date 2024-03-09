@@ -6,14 +6,23 @@ const responderValues = ["Police", "Paramedic", "Fire"]; // Add more
 
 const firstResponderSchema = new mongoose.Schema({
   ...userSchema.obj,
-  responderType: { type: String, enum: responderValues, required: true },
-  departmentName: {
+  type: { type: String, enum: responderValues, required: true },
+  workId: { type: String, maxlength: 32, required: true },
+  workAddress: {
     type: String,
     minlength: 5,
     maxlength: 255,
     required: true,
   },
-  departmentId: { type: String, maxlength: 32, required: true },
+  linkedContacts: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FirstResponder",
+      },
+    ],
+    default: [],
+  },
 });
 
 firstResponderSchema.methods.generateAuthToken = function () {
@@ -27,11 +36,11 @@ const FirstResponder = mongoose.model("FirstResponder", firstResponderSchema);
 
 function validateFirstResponder(user) {
   const firstResponderValidationSchema = userValidationSchema.keys({
-    responderType: Joi.string()
+    type: Joi.string()
       .valid(...responderValues)
       .required(),
-    departmentName: Joi.string().min(5).max(255).required(),
-    departmentId: Joi.string().max(32).required(),
+    workId: Joi.string().max(32).required(),
+    workAddress: Joi.string().min(5).max(255).required(),
   });
   return firstResponderValidationSchema.validate(user);
 }

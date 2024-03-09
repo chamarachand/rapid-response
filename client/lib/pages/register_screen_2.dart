@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'register_screen_3.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/custom_widgets/textformfield_decoration_register1.dart';
+import 'package:client/pages/utils/user_type.dart';
 
 class RegisterPage2 extends StatefulWidget {
   const RegisterPage2({super.key});
@@ -89,12 +90,13 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
   @override
   Widget build(BuildContext context) {
-    final civilianProvider = Provider.of<RegistrationProvider>(context);
+    // final civilianProvider = Provider.of<RegistrationProvider>(context);
+    final userProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
         backgroundColor: const Color(0xFFEDF0F6),
         appBar: AppBar(
-          backgroundColor: Color(0xFF8497B0),
+          backgroundColor: const Color(0xFF8497B0),
           title: const Row(children: [
             Text("Register"),
             Padding(
@@ -117,7 +119,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _fnameController,
-                  decoration: customInputDecoration(),
+                  decoration: customInputDecoration(8, 15),
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(
                         RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
@@ -137,7 +139,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _lnameController,
-                  decoration: customInputDecoration(),
+                  decoration: customInputDecoration(8, 15),
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(
                         RegExp(r'^\s+|[^\sa-zA-Z]+|\s\s+'))
@@ -156,7 +158,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                 child: TextFormField(
                   controller: _nicnoController,
-                  decoration: customInputDecoration(),
+                  decoration: customInputDecoration(8, 15),
                   inputFormatters: [
                     FilteringTextInputFormatter.deny(
                         RegExp(r'\s')) // Prevent entering spaces
@@ -179,7 +181,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
               Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 15),
                   child: DropdownButtonFormField(
-                    decoration: customInputDecoration(),
+                    decoration: customInputDecoration(8, 15),
                     items: ['Male', 'Female']
                         .map((gender) => DropdownMenuItem(
                             value: gender, child: Text(gender)))
@@ -216,12 +218,24 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
                     if (!await validateNic()) return;
 
-                    civilianProvider.updateUser(
-                        firstName: _fnameController.text,
-                        lastName: _lnameController.text,
-                        nicNumber: _nicnoController.text,
-                        gender: _genderController.text,
-                        dateOfBirth: DateTime.parse(_birthdateController.text));
+                    if (UserType.getUserType() == UserTypes.civilian) {
+                      userProvider.updateCivilian(
+                          firstName: _fnameController.text,
+                          lastName: _lnameController.text,
+                          nicNumber: _nicnoController.text,
+                          gender: _genderController.text,
+                          dateOfBirth:
+                              DateTime.parse(_birthdateController.text));
+                    } else if (UserType.getUserType() ==
+                        UserTypes.firstResponder) {
+                      userProvider.updateFirstResponder(
+                          firstName: _fnameController.text,
+                          lastName: _lnameController.text,
+                          nicNumber: _nicnoController.text,
+                          gender: _genderController.text,
+                          dateOfBirth:
+                              DateTime.parse(_birthdateController.text));
+                    }
 
                     if (mounted) {
                       Navigator.push(

@@ -79,6 +79,8 @@ flutter:
     - assets\contact-info.png
     - assets\security.png
     - assets\register.png
+    - assets\user-type.png
+    - assets\first-responders.png
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
