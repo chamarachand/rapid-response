@@ -14,6 +14,15 @@ const firstResponderSchema = new mongoose.Schema({
     maxlength: 255,
     required: true,
   },
+  linkedContacts: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FirstResponder",
+      },
+    ],
+    default: [],
+  },
 });
 
 firstResponderSchema.methods.generateAuthToken = function () {
