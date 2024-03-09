@@ -48,6 +48,8 @@ dependencies:
   firebase_analytics: ^10.8.7
   permission_handler: ^11.3.0
   flutter_sound: ^9.2.13
+  firebase_storage: ^11.6.9
+  firebase_auth: ^4.17.8
 
 dev_dependencies:
   flutter_test:
