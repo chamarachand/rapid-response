@@ -50,6 +50,7 @@ dependencies:
   flutter_sound: ^9.2.13
   firebase_storage: ^11.6.9
   firebase_auth: ^4.17.8
+  firebase_app_check: ^0.2.1+17
 
 dev_dependencies:
   flutter_test:
