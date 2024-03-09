@@ -42,8 +42,11 @@ class _LoginPageState extends State<LoginPage> {
         UserSecureStorage.setIdToken(idToken);
         _setErrorMsg("");
         if (mounted) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: ((context) => const MainMenu())));
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainMenu()),
+            (route) => false, // Clear all routes in the stack
+          );
         }
       } else if (response.statusCode == 400 || response.statusCode == 401) {
         _setErrorMsg("Invalid username or password");
