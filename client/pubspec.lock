@@ -184,6 +184,14 @@ packages:
       sha256: "17b841e1b000c3441b8ffceca88f468e078d0443db9643e77541bdfb7a3fd16b"
       url: "https://pub.dev"
     source: hosted
+    version: "0.5.5+19"
+  firebase_auth:
+    dependency: "direct main"
+    description:
+      name: firebase_auth
+      sha256: "17b841e1b000c3441b8ffceca88f468e078d0443db9643e77541bdfb7a3fd16b"
+      url: "https://pub.dev"
+    source: hosted
     version: "4.17.8"
   firebase_auth_platform_interface:
     dependency: transitive
@@ -248,7 +256,7 @@ packages:
       sha256: fc21e771166860c55b103701c5ac7cdb2eec28897b97c42e6e5703cbedf9e02e
       url: "https://pub.dev"
     source: hosted
-    version: "3.6.8"
+    version: "3.6.6"
   firebase_storage:
     dependency: "direct main"
     description:
