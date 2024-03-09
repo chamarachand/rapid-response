@@ -23,5 +23,5 @@ app.use("/api/linked-accounts", linkedAccountRoutes);
 //app.use("/api/sos-Report", sosReport);
 
 // Connecting to the port
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening to port ${port}..`));
