@@ -1,10 +1,11 @@
-// ignore_for_file: avoid_print
-
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -247,19 +248,103 @@ class _SOSpageState extends State<SOSpage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
-                    iconSize: 100,
-                    icon: const Icon(Icons.mic),
-                    onPressed: () {}),
+                  iconSize: 100,
+                  icon: Icon(recorder.isRecording ? Icons.stop : Icons.mic),
+                  onPressed: () async {
+                    if (recorder.isRecording) {
+                      await stopRecorder();
+                    } else {
+                      await startRecorder();
+                    }
+                    setState(() {});
+                  },
+                ),
                 IconButton(
                   iconSize: 40,
                   icon: const Icon(Icons.play_arrow),
-                  onPressed: () {},
+                  onPressed: () => startPlayer(),
                 )
               ],
             ),
           ],
         ),
       );
+
+  FlutterSoundRecorder recorder = FlutterSoundRecorder();
+  FlutterSoundPlayer player = FlutterSoundPlayer();
+
+  Future<void> startRecorder() async {
+    // Request microphone permission (if needed)
+    var status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw 'Microphone permission not granted';
+    }
+
+    await recorder.openRecorder();
+    recorder.startRecorder(
+      toFile: 'audio', // Change the file name or extension if desired
+    );
+  }
+
+  Future<void> stopRecorder() async {
+    String? path = await recorder.stopRecorder();
+    print('Recorded audio saved at: $path');
+  }
+
+  Future<void> startPlayer() async {
+    String? path = await recorder.getRecordURL(
+        path: 'audio'); // Adjust the file path if needed
+    if (path != null) {
+      await player.openPlayer();
+      await player.startPlayer(
+        fromURI: path,
+        whenFinished: () {
+          setState(() {});
+        },
+      );
+    } else {
+      print("No recording found to play");
+    }
+  }
+
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    player.closePlayer();
+    super.dispose();
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   initRecorder();
+  // }
+
+  // @override
+  // void dispose() {
+  //   recorder.closeRecorder();
+
+  //   super.dispose();
+  // }
+
+  // Future initRecorder() async {
+  //   final status = await Permission.microphone.request();
+
+  //   if (status != PermissionStatus.granted) {
+  //     throw 'Microphone permission not granted';
+  //   }
+
+  //   await recorder.openRecorder();
+  // }
+
+  // Future record() async {
+  //   await recorder.startRecorder(toFile: 'audio');
+  // }
+
+  // Future stop() async {
+  //   await recorder.stopRecorder();
+  // }
 
 // Choose from gallery
   Future pickImage(ImageSource source) async {
