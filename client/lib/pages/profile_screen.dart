@@ -58,10 +58,10 @@ class ProfileScreen extends State<Profile> {
           mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Icon(
                   iconData,
-                  size: 30,),
+                  size: 35,),
                 ),
               Expanded(
                 child: Column(
@@ -79,10 +79,6 @@ class ProfileScreen extends State<Profile> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          IconButton(
-                            onPressed: (){}, 
-                            icon: const Icon(Icons.edit),
-                          ),
                         ],
                       ),
                       Text(
@@ -95,6 +91,10 @@ class ProfileScreen extends State<Profile> {
                       ),
                     ],
                   )
+              ),
+              IconButton(
+                onPressed: (){}, 
+                icon: const Icon(Icons.edit),
               ),
             ],
           ),

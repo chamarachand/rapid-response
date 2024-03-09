@@ -198,7 +198,7 @@ class MainMenuScreen extends State<MainMenu> {
             onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const RegisterLocation())),
+                        builder: (context) => const RegisteredLocation())),
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
                 padding:

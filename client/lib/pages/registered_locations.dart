@@ -1,20 +1,19 @@
-import 'package:client/pages/profile_screen.dart';
-import 'package:client/pages/registered_locations.dart';
 import 'package:flutter/material.dart';
-import 'SOS_page.dart';
-import 'report_incident_screen.dart';
-import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
 
-class RegisterLocation extends StatefulWidget {
-  const RegisterLocation({super.key});
+class RegisteredLocation extends StatefulWidget {
+  const RegisteredLocation({super.key});
   @override
-  Register_Location createState() => Register_Location();
+  DispalyRegisteredLocations createState() => DispalyRegisteredLocations();
 }
 
-class Register_Location extends State<RegisterLocation> {
+class DispalyRegisteredLocations extends State<RegisteredLocation> {
+  List<String> locationTags = ['Home', 'Office', 'School', 'Work', 'Neigbhor'];
+  List<String> locationData = ['Main house at 156/A', 'Workplace', 'High School', 'aeduih awjfj ab ckjcbasas cas c asc sac as c as csa c asc as cas c', 'asnd as asc as csacas cs ac as cas c sa csacsacsac  sac sa cs ac as'];
+
+
   int _selectedIndex = 1;
   
   final profileImg = "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
@@ -40,97 +39,109 @@ class Register_Location extends State<RegisterLocation> {
   }
 
   @override
+  Widget buildRegisteredLocationDisplay(String locationTag, String locationData){
+    return Container(
+      margin: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(255, 185, 217, 243), 
+        border: Border.all(color: Color.fromARGB(255, 111, 91, 223), width: 5), 
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Icon(
+                  Icons.location_on,
+                  size: 50,),
+                ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            locationTag,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 0, 0, 0),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        locationData,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  )
+              ),
+              IconButton(
+                onPressed: (){}, 
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.black,
+                  size: 55,
+                ),
+              ),
+            ],
+          ),
+      )
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Builder(
-              builder: (BuildContext context) {
-                double appBarHeight = AppBar().preferredSize.height;
-                return Container(
-                  alignment: Alignment.center,
-                  child: IconButton(
-                    icon: SizedBox(
-                      width: appBarHeight - 20,
-                      height: appBarHeight - 20,
-                      child: Image.asset('assets/RR_logo.png'),
-                    ),
-                    onPressed: () {},
-                  ),
-                );
-              },
-            ),
-            Builder(
-              builder: (BuildContext context) {
-                double appBarHeight = AppBar().preferredSize.height;
-                return Container(
-                  alignment: Alignment.center,
-                  child: PopupMenuButton(
-                      icon: SizedBox(
-                        height: appBarHeight,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.person),
-                            Text(
-                              _firstName,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                        PopupMenuItem(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SizedBox(
-                                  width: appBarHeight - 20,
-                                  height: appBarHeight - 20,
-                                  child: const Text(
-                                    "Registered Locations",
-                                    ),
-                                  ), 
-                              const SizedBox(height: 25),       
-                              ListTile(
-                                title: const Center(child: Text('View Profile')),
-                                onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const Profile())),
-                              ),
-                              ListTile(
-                                title: const Center(child: Text('Logout')),
-                                onTap: () {
-                                  UserSecureStorage.deleteAccessToken();
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const WelcomePage()),
-                                      (route) => false);
-                                },
-                              ),
-                            ],
-                          )
-                        ),
-                      ],
-                    ),
-                );
-              },
-            ),
-          ],
+        title: const Text(
+          'Registered Locations',
+          style: TextStyle(
+            color: Color.fromRGBO(0, 0, 0, 1),
+            fontSize: 25,
+            fontWeight: FontWeight.normal,
+          ),
         ),
-        backgroundColor: const Color(0xFF8497B0),
+        backgroundColor: Color.fromARGB(255, 1, 111, 255),
+        ),
+      body: Stack(
+        children: [
+          ListView.builder(
+            itemCount: locationTags.length,
+            itemBuilder: (BuildContext context, int index) {
+              return buildRegisteredLocationDisplay(locationTags[index], locationData[index]);
+            },
+          ),
+          Positioned(
+            bottom: 10,
+            right: -15,
+            child: ElevatedButton(
+              onPressed: (){},
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(), 
+                backgroundColor: const Color.fromARGB(255, 1, 111, 255),
+              ),
+              child: const Icon(
+                Icons.add,
+                size: 55,
+                ),
+            ),
+            )
+        ],
       ),
-      body: Text(
-        "",
-      ),
+      
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xFFD9D9D9),
           currentIndex: _selectedIndex,
