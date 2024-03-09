@@ -251,6 +251,7 @@ class _SOSpageState extends State<SOSpage> {
                   iconSize: 100,
                   icon: Icon(recorder.isRecording ? Icons.stop : Icons.mic),
                   onPressed: () async {
+                    await requestMicrophonePermission();
                     if (recorder.isRecording) {
                       await stopRecorder();
                     } else {
@@ -273,13 +274,17 @@ class _SOSpageState extends State<SOSpage> {
   FlutterSoundRecorder recorder = FlutterSoundRecorder();
   FlutterSoundPlayer player = FlutterSoundPlayer();
 
-  Future<void> startRecorder() async {
-    // Request microphone permission (if needed)
+  Future<void> requestMicrophonePermission() async {
     var status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
       throw 'Microphone permission not granted';
+    } else {
+      await startRecorder(); // Call the recording method if permission is granted
     }
+  }
 
+  Future<void> startRecorder() async {
+    // Request microphone permission (if needed)
     await recorder.openRecorder();
     recorder.startRecorder(
       toFile: 'audio', // Change the file name or extension if desired
