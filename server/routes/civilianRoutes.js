@@ -12,6 +12,8 @@ router.get("/", (req, res) => {
 router.get("/search", async (req, res) => {
   try {
     const serachTerm = req.query.username;
+    if (serachTerm === "") return res.send([]);
+
     const users = await Civilian.find({
       username: { $regex: serachTerm, $options: "i" },
     });
