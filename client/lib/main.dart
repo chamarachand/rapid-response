@@ -18,8 +18,7 @@ Future<void> main() async {
           apiKey: 'AIzaSyB3-XWUh108BvTcdwiuC1jJgTtJGB0H1zQ',
           appId: '1:198757308599:android:65fe518f39f3c266769532',
           messagingSenderId: '198757308599',
-          projectId: 'rapid-response-802d3')
-    );
+          projectId: 'rapid-response-802d3'));
 
   await FirebaseAPI().initNotifications();
   flutterLocalNotificationsPlugin.initialize(const InitializationSettings(

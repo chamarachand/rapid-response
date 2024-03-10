@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -19,6 +20,12 @@ class _SOSpageState extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
 
   File? image;
+
+  bool _showTextField = false;
+  String sosType = 'None';
+  final _textController = TextEditingController();
+  String? _currentAddress;
+  Position? _currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +62,7 @@ class _SOSpageState extends State<SOSpage> {
                       ),
                       // Drop Down
                       buildDropdownMenu(),
-                      const SizedBox(height: 30),
-                      // Not in the List Widget
-                      buidTextField(),
+                      if (_showTextField) buidTextField(),
                       const SizedBox(height: 30),
                     ],
                   ),
@@ -149,9 +154,10 @@ class _SOSpageState extends State<SOSpage> {
                 child: Text(value),
               );
             }).toList(),
-            onChanged: (String? newValue) {
+            onChanged: (String? sosType) {
               setState(() {
-                _chosenModel = newValue!;
+                _chosenModel = sosType!;
+                _showTextField = sosType == 'Other';
               });
             },
             hint: const Text(
@@ -167,15 +173,20 @@ class _SOSpageState extends State<SOSpage> {
       );
 
 // Not in the List Widget
-  Widget buidTextField() => TextField(
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-            labelText: "Not in the List",
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            )),
-      );
+  Widget buidTextField() =>
+      Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+        const SizedBox(height: 30),
+        TextField(
+          controller: _textController,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          decoration: InputDecoration(
+              labelText: "Not in the List",
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              )),
+        )
+      ]);
 
 // SOS Button
   Widget testWidget1() => SizedBox(
@@ -183,14 +194,7 @@ class _SOSpageState extends State<SOSpage> {
         height: 40,
         child: FloatingActionButton(
           onPressed: () async {
-            final downloadUrl = await uploadImageToFirebase();
-
-            if (downloadUrl != null) {
-              // Do something with the downloadUrl, such as:
-              //   - Send in the SOS message
-              //   - Display success to the user
-              print("SOS sent with image: $downloadUrl");
-            }
+            sosButtonPressed();
           },
           backgroundColor: const Color.fromARGB(255, 247, 147, 0),
           elevation: 2.0,
@@ -257,7 +261,6 @@ class _SOSpageState extends State<SOSpage> {
                     } else {
                       await startRecorder();
                     }
-                    setState(() {});
                   },
                 ),
                 IconButton(
@@ -285,15 +288,24 @@ class _SOSpageState extends State<SOSpage> {
 
   Future<void> startRecorder() async {
     // Request microphone permission (if needed)
+    await requestMicrophonePermission(); // Assuming you have this function
+
+    // Check if recorder is already running
+    if (recorder.isRecording) {
+      print('Recorder is already running!');
+      return;
+    }
+
     await recorder.openRecorder();
-    recorder.startRecorder(
-      toFile: 'audio', // Change the file name or extension if desired
-    );
+    await recorder.startRecorder(toFile: 'audio');
   }
 
   Future<void> stopRecorder() async {
-    String? path = await recorder.stopRecorder();
-    print('Recorded audio saved at: $path');
+    // Ensure recorder state is checked
+    if (recorder.isRecording) {
+      String? path = await recorder.stopRecorder();
+      print('Recorded audio saved at: $path');
+    }
   }
 
   Future<void> startPlayer() async {
@@ -318,38 +330,6 @@ class _SOSpageState extends State<SOSpage> {
     player.closePlayer();
     super.dispose();
   }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   initRecorder();
-  // }
-
-  // @override
-  // void dispose() {
-  //   recorder.closeRecorder();
-
-  //   super.dispose();
-  // }
-
-  // Future initRecorder() async {
-  //   final status = await Permission.microphone.request();
-
-  //   if (status != PermissionStatus.granted) {
-  //     throw 'Microphone permission not granted';
-  //   }
-
-  //   await recorder.openRecorder();
-  // }
-
-  // Future record() async {
-  //   await recorder.startRecorder(toFile: 'audio');
-  // }
-
-  // Future stop() async {
-  //   await recorder.stopRecorder();
-  // }
 
 // Choose from gallery
   Future pickImage(ImageSource source) async {
@@ -379,5 +359,71 @@ class _SOSpageState extends State<SOSpage> {
       print("Upload failed: $e");
       return null;
     }
+  }
+
+  Future sosButtonPressed() async {
+    if (sosType == 'Other') {
+      sosType = _textController.text;
+    }
+    //image, voice, emergencyType, location
+
+    final imageURL = await uploadImageToFirebase();
+
+    _printCurrentPosition();
+
+    if (imageURL != null) {
+      // Do something with the downloadUrl, such as:
+      //   - Send in the SOS message
+      //   - Display success to the user
+      print("SOS sent with image: $imageURL");
+    }
+
+    print("SOS Type : $sosType");
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<void> _printCurrentPosition() async {
+    print('LAT: ${_currentPosition?.latitude ?? ""}');
+    print('LNG: ${_currentPosition?.longitude ?? ""}');
+    print('ADDRESS: ${_currentAddress ?? ""}');
   }
 }
