@@ -69,30 +69,44 @@ class ProfileScreen extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 70, 70, 70),
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.edit),
-                  ),
-                ],
-              ),
-              Text(
-                data,
-                style: const TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 15,
-                  fontWeight: FontWeight.normal,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: Icon(
+                  iconData,
+                  size: 35,),
                 ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 70, 70, 70),
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        data,
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 0, 0, 0),
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  )
+              ),
+              IconButton(
+                onPressed: (){}, 
+                icon: const Icon(Icons.edit),
               ),
             ],
           )),
