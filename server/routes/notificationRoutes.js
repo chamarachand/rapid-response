@@ -166,7 +166,10 @@ router.post("/send", async (req, res) => {
     Civilian.findById(to).select("fcmToken"),
     FirstResponder.findById(to).select("fcmToken"),
   ]);
-  if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
+  if (!fcmToken)
+    return res
+      .status(202)
+      .send("Notification accepted; Reciever FCM token not found");
 
   try {
     admin.messaging().send({

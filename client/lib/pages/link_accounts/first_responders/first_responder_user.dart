@@ -124,7 +124,7 @@ class _AddUserPageState extends State<AddUserPage> {
         // title: Text(widget._user["firstName"] + " " + widget._user["lastName"]),
         title: const Row(
           children: [
-            Text("Add as Supervisee", style: TextStyle(fontSize: 18)),
+            Text("Add as Supervisee"),
             Padding(
               padding: EdgeInsets.only(left: 8),
               child: Icon(Icons.people, size: 30),
@@ -180,6 +180,11 @@ class _AddUserPageState extends State<AddUserPage> {
                           }));
                       if (response.statusCode == 200) {
                         print("Notification send successfully");
+                        showNotificationSuccessDialog(widget._user["firstName"],
+                            widget._user["lastName"]);
+                      } else if (response.statusCode == 202) {
+                        print(
+                            "Notification saved successfully. But no FCM token found");
                         showNotificationSuccessDialog(widget._user["firstName"],
                             widget._user["lastName"]);
                       } else {
