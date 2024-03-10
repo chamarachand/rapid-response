@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
+import 'package:client/pages/link_accounts/civilians/add_em_comtact_screen.dart';
 
 class RegisteredLocation extends StatefulWidget {
   const RegisteredLocation({super.key});
@@ -11,8 +11,13 @@ class RegisteredLocation extends StatefulWidget {
 
 class DispalyRegisteredLocations extends State<RegisteredLocation> {
   List<String> locationTags = ['Home', 'Office', 'School', 'Work', 'Neigbhor'];
-  List<String> locationData = ['Main house at 156/A', 'Workplace', 'High School', 'aeduih awjfj ab ckjcbasas cas c asc sac as c as csa c asc as cas c', 'asnd as asc as csacas cs ac as cas c sa csacsacsac  sac sa cs ac as'];
-
+  List<String> locationData = [
+    'Main house at 156/A',
+    'Workplace',
+    'High School',
+    'aeduih awjfj ab ckjcbasas cas c asc sac as c as csa c asc as cas c',
+    'asnd as asc as csacas cs ac as cas c sa csacsacsac  sac sa cs ac as'
+  ];
 
   int _selectedIndex = 1;
 
@@ -40,57 +45,59 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
   }
 
   @override
-  Widget buildRegisteredLocationDisplay(String locationTag, String locationData){
+  Widget buildRegisteredLocationDisplay(
+      String locationTag, String locationData) {
     return Container(
-      margin: const EdgeInsets.all(6),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 185, 217, 243), 
-        border: Border.all(color: Color.fromARGB(255, 111, 91, 223), width: 5), 
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.end,
+        margin: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 185, 217, 243),
+          border:
+              Border.all(color: Color.fromARGB(255, 111, 91, 223), width: 5),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Icon(
                   Icons.location_on,
-                  size: 50,),
+                  size: 50,
                 ),
+              ),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            locationTag,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
                       Text(
-                        locationData,
+                        locationTag,
                         style: const TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
-                  )
-              ),
+                  ),
+                  Text(
+                    locationData,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 0, 0, 0),
+                      fontSize: 15,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              )),
               IconButton(
-                onPressed: (){}, 
+                onPressed: () {},
                 icon: const Icon(
                   Icons.delete,
                   color: Colors.black,
@@ -99,8 +106,7 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
               ),
             ],
           ),
-      )
-    );
+        ));
   }
 
   @override
@@ -116,33 +122,33 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
           ),
         ),
         backgroundColor: Color.fromARGB(255, 1, 111, 255),
-        ),
+      ),
       body: Stack(
         children: [
           ListView.builder(
             itemCount: locationTags.length,
             itemBuilder: (BuildContext context, int index) {
-              return buildRegisteredLocationDisplay(locationTags[index], locationData[index]);
+              return buildRegisteredLocationDisplay(
+                  locationTags[index], locationData[index]);
             },
           ),
           Positioned(
             bottom: 10,
             right: -15,
             child: ElevatedButton(
-              onPressed: (){},
+              onPressed: () {},
               style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(), 
+                shape: const CircleBorder(),
                 backgroundColor: const Color.fromARGB(255, 1, 111, 255),
               ),
               child: const Icon(
                 Icons.add,
                 size: 55,
-                ),
+              ),
             ),
-            )
+          )
         ],
       ),
-      
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: const Color(0xFFD9D9D9),
           currentIndex: _selectedIndex,
