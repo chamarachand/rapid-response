@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'SOS_page.dart';
-//import 'report_incident_screen.dart';
-//import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
@@ -14,10 +11,10 @@ class Profile extends StatefulWidget {
 
 class ProfileScreen extends State<Profile> {
   int _selectedIndex = 1;
-
-  final profileImg =
-      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
-
+  
+  final profileImg = "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
+ 
+  
   var _username = "";
   var _firstName = "";
   var _lastName = "";
@@ -49,25 +46,13 @@ class ProfileScreen extends State<Profile> {
   }
 
   @override
-  Widget buildUserInfoDisplay(IconData iconData, String title, String data) {
+  Widget buildUserInfoDisplay(IconData iconData, String title, String data){
     return Expanded(
-        child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              iconData,
-              size: 30,
-            ),
-          ),
-          Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 5),
@@ -109,10 +94,9 @@ class ProfileScreen extends State<Profile> {
                 icon: const Icon(Icons.edit),
               ),
             ],
-          )),
-        ],
-      ),
-    ));
+          ),
+      )
+    );
   }
 
   @override
@@ -151,19 +135,18 @@ class ProfileScreen extends State<Profile> {
                 bottom: 5,
                 right: 100,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: (){},
                   style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
+                    shape: const CircleBorder(), 
                     backgroundColor: Colors.black,
                   ),
                   child: const Icon(Icons.camera_alt),
                 ),
-              )
+                )
             ],
           ),
           buildUserInfoDisplay(Icons.person, "Username", _username),
-          buildUserInfoDisplay(
-              Icons.info_outline, "Name", "$_firstName $_lastName"),
+          buildUserInfoDisplay(Icons.info_outline, "Name", "$_firstName $_lastName"),
           buildUserInfoDisplay(Icons.credit_card, "NIC Number", _nicNo),
           buildUserInfoDisplay(Icons.phone, "Contact Number", _phnNo),
           buildUserInfoDisplay(Icons.email, "Email Address", _email),
@@ -213,5 +196,5 @@ class ProfileScreen extends State<Profile> {
     setState(() {
       _selectedIndex = index;
     });
-  }
+  }  
 }
