@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'SOS_page.dart';
-import 'report_incident_screen.dart';
-import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
