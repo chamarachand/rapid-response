@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -15,6 +16,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
   String locationMessage = 'Current Location';
   late String lat;
   late String long;
+  late String address = "Address loading...";
 
   int _selectedIndex = 1;
 
@@ -41,6 +43,18 @@ class RegisterNewLocation extends State<RegisterLocation> {
     _loadToken();
   }
 
+  // Future<String> getAddressFromLatLong(double latitude, double longitude) async {
+  //   try {
+  //     List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+  //     Placemark place = placemarks.first;
+  //     String address = '${place.street}, ${place.locality}, ${place.country}';
+  //     return address;
+  //   } catch (e) {
+  //     print('Error getting address from coordinates: $e');
+  //     return "Address not found";
+  //   }
+  // }
+
   Future<Position> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -59,6 +73,23 @@ class RegisterNewLocation extends State<RegisterLocation> {
       return Future.error('Location permission is permanently denied. We cannot access yoour location.');
     }
 
+    Geolocator.getPositionStream().listen((Position position) async {
+      lat = position.latitude.toString();
+      long = position.longitude.toString();
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        Placemark place = placemarks.first;
+        address = '${place.street}, ${place.locality}, ${place.country}';
+      } catch (e) {
+        // ignore: avoid_print
+        print('Error getting address from coordinates: $e');
+      }
+
+      setState(() {
+        locationMessage = 'Latitude: $lat, Longitude: $long';
+      });
+    });
+
     return await Geolocator.getCurrentPosition();
   }
 
@@ -68,9 +99,17 @@ class RegisterNewLocation extends State<RegisterLocation> {
       distanceFilter: 100,
     );
 
-    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) {
+    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) async {
       lat = position.latitude.toString();
       long = position.longitude.toString();
+      try {
+        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        Placemark place = placemarks.first;
+        address = '${place.street}, ${place.locality}, ${place.country}';
+      } catch (e) {
+        // ignore: avoid_print
+        print('Error getting address from coordinates: $e');
+      }
 
       setState(() {
         locationMessage = 'Latitude: $lat, Longitude: $long';
@@ -104,17 +143,21 @@ class RegisterNewLocation extends State<RegisterLocation> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(locationMessage, textAlign: TextAlign.center,),
+            Text('Address: $address', textAlign: TextAlign.center,),
             const SizedBox(height: 20,),
             ElevatedButton(
               onPressed: (){
                 _getCurrentLocation().then((value) {
                   lat = '${value.latitude}';
                   long = '${value.longitude}';
+                  // adLat = value.latitude;
+                  // adLong = value.longitude;
                   setState(() {
                     locationMessage = 'Latitude: $lat, Longitude: $long';
                   });
                   _liveLocation();
                 });
+                // getAddressFromLatLong(adLat, adLong);
               }, 
               child: Text('Get Current Location'),
               ),
@@ -124,7 +167,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 _openMap(lat, long);
               }, 
               child: const Text('Open Google Map'),
-              ),
+              ),  
           ],
         ),
       ),
