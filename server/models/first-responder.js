@@ -41,6 +41,22 @@ firstResponderSchema.methods.generateAuthToken = function () {
   );
 };
 
+firstResponderSchema.methods.generateIdToken = function () {
+  return jwt.sign(
+    {
+      userType: "first-responder",
+      id: this._id,
+      username: this.username,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      nicNo: this.nicNo,
+      phnNo: this.phoneNumber,
+      email: this.email,
+    },
+    "jwtPrivateKey"
+  );
+};
+
 const FirstResponder = mongoose.model("FirstResponder", firstResponderSchema);
 
 function validateFirstResponder(user) {
