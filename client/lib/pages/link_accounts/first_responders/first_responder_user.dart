@@ -42,7 +42,7 @@ class _AddUserPageState extends State<AddUserPage> {
   isRequestSent() async {
     try {
       var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}"));
+          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}?type=supervisee-request"));
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
@@ -173,9 +173,10 @@ class _AddUserPageState extends State<AddUserPage> {
                           body: jsonEncode({
                             "from": _accessToken["id"],
                             "to": widget._user["_id"],
-                            "title": "Add Emergency Contact Request",
+                            "type": "supervisee-request",
+                            "title": "Add Supervisee Request",
                             "body":
-                                "${_accessToken["firstName"]} sent add as emergency contact request",
+                                "${_accessToken["firstName"]} sent add as supervisee request",
                           }));
                       if (response.statusCode == 200) {
                         print("Notification send successfully");

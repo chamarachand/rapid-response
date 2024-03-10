@@ -116,11 +116,12 @@ router.patch("/responded/:notificationId", async (req, res) => {
   }
 });
 
+// send request notifications
 router.post("/send", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { from, to, title, body } = req.body;
+  const { from, to, type, title, body } = req.body;
   let notification;
 
   // Save to db - notifications collection
@@ -128,7 +129,7 @@ router.post("/send", async (req, res) => {
     notification = new Notification({
       from: from,
       to: to,
-      type: "emergency-contact-request",
+      type: type,
       title: title,
       body: body,
       timestamp: new Date().toLocaleString(),
@@ -161,7 +162,10 @@ router.post("/send", async (req, res) => {
     return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
-  const { fcmToken } = await Civilian.findById(to).select("fcmToken"); // Add if not token logic
+  const { fcmToken } = await Promise.any([
+    Civilian.findById(to).select("fcmToken"),
+    FirstResponder.findById(to).select("fcmToken"),
+  ]);
   if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
 
   try {
