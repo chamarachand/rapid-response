@@ -69,7 +69,8 @@ class WelcomePage extends StatelessWidget {
                         onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RegisterPage2())),
+                                builder: (context) =>
+                                    const UserTypeSelection())),
                         style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 const Color.fromRGBO(51, 153, 255, 1),
