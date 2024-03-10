@@ -52,7 +52,7 @@ dependencies:
   permission_handler: ^11.3.0
   firebase_app_check: ^0.2.1+17
   geolocator: ^11.0.0
-
+  url_launcher: ^6.1.2
 
 dev_dependencies:
   flutter_test:
