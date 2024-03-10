@@ -1,12 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -20,6 +20,12 @@ class _SOSpageState extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
 
   File? image;
+
+  bool _showTextField = false;
+  String sosType = 'None';
+  final _textController = TextEditingController();
+  String? _currentAddress;
+  Position? _currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +62,7 @@ class _SOSpageState extends State<SOSpage> {
                       ),
                       // Drop Down
                       buildDropdownMenu(),
-                      const SizedBox(height: 30),
-                      // Not in the List Widget
-                      buidTextField(),
+                      if (_showTextField) buidTextField(),
                       const SizedBox(height: 30),
                     ],
                   ),
@@ -150,9 +154,10 @@ class _SOSpageState extends State<SOSpage> {
                 child: Text(value),
               );
             }).toList(),
-            onChanged: (String? newValue) {
+            onChanged: (String? sosType) {
               setState(() {
-                _chosenModel = newValue!;
+                _chosenModel = sosType!;
+                _showTextField = sosType == 'Other';
               });
             },
             hint: const Text(
@@ -168,15 +173,20 @@ class _SOSpageState extends State<SOSpage> {
       );
 
 // Not in the List Widget
-  Widget buidTextField() => TextField(
-        style: const TextStyle(fontWeight: FontWeight.bold),
-        decoration: InputDecoration(
-            labelText: "Not in the List",
-            filled: true,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            )),
-      );
+  Widget buidTextField() =>
+      Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+        const SizedBox(height: 30),
+        TextField(
+          controller: _textController,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          decoration: InputDecoration(
+              labelText: "Not in the List",
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              )),
+        )
+      ]);
 
 // SOS Button
   Widget testWidget1() => SizedBox(
@@ -184,14 +194,7 @@ class _SOSpageState extends State<SOSpage> {
         height: 40,
         child: FloatingActionButton(
           onPressed: () async {
-            final downloadUrl = await uploadImageToFirebase();
-
-            if (downloadUrl != null) {
-              // Do something with the downloadUrl, such as:
-              //   - Send in the SOS message
-              //   - Display success to the user
-              print("SOS sent with image: $downloadUrl");
-            }
+            sosButtonPressed();
           },
           backgroundColor: const Color.fromARGB(255, 247, 147, 0),
           elevation: 2.0,
@@ -244,76 +247,88 @@ class _SOSpageState extends State<SOSpage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Recording Status Indicator (if desired)
-            //Text(isRecording ? 'Recording...' : 'Ready to Record'),
-            Text(_isRecording ? 'Recording...' : 'Ready to Record'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 IconButton(
-                    iconSize: 100,
-                    icon: const Icon(Icons.mic_rounded),
-                    onPressed: () {}),
+                  iconSize: 100,
+                  icon: Icon(recorder.isRecording ? Icons.stop : Icons.mic),
+                  onPressed: () async {
+                    await requestMicrophonePermission();
+                    if (recorder.isRecording) {
+                      await stopRecorder();
+                    } else {
+                      await startRecorder();
+                    }
+                  },
+                ),
                 IconButton(
-                    iconSize: 40,
-                    icon: const Icon(Icons.play_arrow),
-                    onPressed: () {}),
+                  iconSize: 40,
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () => startPlayer(),
+                )
               ],
             ),
           ],
         ),
       );
 
-  bool _isRecording = false;
-  FlutterSoundRecorder? _recorder = FlutterSoundRecorder();
-  String? _audioFilePath;
+  FlutterSoundRecorder recorder = FlutterSoundRecorder();
+  FlutterSoundPlayer player = FlutterSoundPlayer();
 
-// Start/stop recording
-  Future<void> _toggleRecording(StateSetter setState) async {
-    if (_recorder!.isStopped) {
-      await _requestPermission(); // Request microphone permission
-      await _startRecording(setState);
-    } else {
-      await _stopRecording(setState);
-    }
-  }
-
-// Request permission
-  Future<void> _requestPermission() async {
-    final status = await Permission.microphone.request();
+  Future<void> requestMicrophonePermission() async {
+    var status = await Permission.microphone.request();
     if (status != PermissionStatus.granted) {
-      // Handle permission denied scenario.
-      throw RecordingPermissionException('Microphone permission denied');
+      throw 'Microphone permission not granted';
+    } else {
+      await startRecorder(); // Call the recording method if permission is granted
     }
   }
 
-// Start recording
-  Future<void> _startRecording(StateSetter setState) async {
-    await _recorder!.openRecorder();
+  Future<void> startRecorder() async {
+    // Request microphone permission (if needed)
+    await requestMicrophonePermission(); // Assuming you have this function
 
-    // Generate a temporary file path
-    final tempDir = await getTemporaryDirectory();
-    _audioFilePath = '${tempDir.path}/sos_audio_${DateTime.now()}.aac';
+    // Check if recorder is already running
+    if (recorder.isRecording) {
+      print('Recorder is already running!');
+      return;
+    }
 
-    try {
-      await _recorder!.startRecorder(toFile: _audioFilePath);
-      setState(() => _isRecording = true);
-    } catch (e) {
-      // Handle errors
-      print('Error starting recording: $e');
+    await recorder.openRecorder();
+    await recorder.startRecorder(toFile: 'audio');
+  }
+
+  Future<void> stopRecorder() async {
+    // Ensure recorder state is checked
+    if (recorder.isRecording) {
+      String? path = await recorder.stopRecorder();
+      print('Recorded audio saved at: $path');
     }
   }
 
-// Stop recording
-  Future<void> _stopRecording(StateSetter setState) async {
-    await _recorder!.stopRecorder();
-    setState(() => _isRecording = false);
+  Future<void> startPlayer() async {
+    String? path = await recorder.getRecordURL(
+        path: 'audio'); // Adjust the file path if needed
+    if (path != null) {
+      await player.openPlayer();
+      await player.startPlayer(
+        fromURI: path,
+        whenFinished: () {
+          setState(() {});
+        },
+      );
+    } else {
+      print("No recording found to play");
+    }
   }
 
-// Play recording (add implementation if needed)
-  Future<void> _playRecording() async {
-    // ... (implement audio player logic here)
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    player.closePlayer();
+    super.dispose();
   }
 
 // Choose from gallery
@@ -344,5 +359,71 @@ class _SOSpageState extends State<SOSpage> {
       print("Upload failed: $e");
       return null;
     }
+  }
+
+  Future sosButtonPressed() async {
+    if (sosType == 'Other') {
+      sosType = _textController.text;
+    }
+    //image, voice, emergencyType, location
+
+    final imageURL = await uploadImageToFirebase();
+
+    _printCurrentPosition();
+
+    if (imageURL != null) {
+      // Do something with the downloadUrl, such as:
+      //   - Send in the SOS message
+      //   - Display success to the user
+      print("SOS sent with image: $imageURL");
+    }
+
+    print("SOS Type : $sosType");
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<void> _printCurrentPosition() async {
+    print('LAT: ${_currentPosition?.latitude ?? ""}');
+    print('LNG: ${_currentPosition?.longitude ?? ""}');
+    print('ADDRESS: ${_currentAddress ?? ""}');
   }
 }

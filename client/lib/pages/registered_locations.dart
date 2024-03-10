@@ -15,8 +15,9 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
 
 
   int _selectedIndex = 1;
-  
-  final profileImg = "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
+
+  final profileImg =
+      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
   var _firstName = "";
 

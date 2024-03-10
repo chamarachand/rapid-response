@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
 import 'login_screen.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
+import 'package:client/pages/utils/user_type.dart';
 import 'package:client/custom_widgets/textformfield_decoration_authinfo.dart';
 
 class RegisterPage4 extends StatefulWidget {
@@ -20,6 +21,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
+  final bool isCivilian = UserType.getUserType() == UserTypes.civilian;
 
   validatePassword(String value) {
     RegExp regex =
@@ -72,14 +74,16 @@ class _RegisterScreen4State extends State<RegisterPage4> {
     }
   }
 
-  registerCivilian(RegistrationProvider provider) async {
+  registerUser(RegistrationProvider provider) async {
     try {
-      var response =
-          await http.post(Uri.parse("http://10.0.2.2:3000/api/civilian"),
-              headers: {
-                'Content-Type': 'application/json', // Add this line
-              },
-              body: jsonEncode(provider.civilian));
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/${isCivilian ? "civilian" : "first-responder"}"),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(
+              isCivilian ? provider.civilian : provider.firstResponder));
       if (response.statusCode == 201) {
         //change this not to depend on the status code
         showSuccessAlertDialog();
@@ -207,7 +211,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
 
   @override
   Widget build(BuildContext context) {
-    final civilianProvider = Provider.of<RegistrationProvider>(context);
+    final userProvider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
       backgroundColor: const Color(0xFFEDF0F6),
@@ -291,12 +295,17 @@ class _RegisterScreen4State extends State<RegisterPage4> {
 
                     if (await userExists(_usernameController.text)) return;
 
-                    civilianProvider.updateUser(
-                      username: _usernameController.text,
-                      password: _passwordController.text,
-                    );
-                    await registerCivilian(
-                        civilianProvider); // check whether 'await' is necessary
+                    isCivilian
+                        ? userProvider.updateCivilian(
+                            username: _usernameController.text,
+                            password: _passwordController.text,
+                          )
+                        : userProvider.updateFirstResponder(
+                            username: _usernameController.text,
+                            password: _passwordController.text,
+                          );
+
+                    await registerUser(userProvider);
                   },
                   child: const Text("Register"))
             ]),
