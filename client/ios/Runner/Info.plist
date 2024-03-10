@@ -51,5 +51,14 @@
 	<string>To choose image</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Used to capture audio for image picker plugin</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs to access your microphone to record audio for SOS alerts.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs to access your photo library to include images in SOS alerts.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to your location to determine your current location when sending an SOS.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs always access to location to update location even in background when sending an SOS.</string>
+
 </dict>
 </plist>
