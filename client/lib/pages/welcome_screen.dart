@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
-import 'register_screen_2.dart';
-import 'SOS_page.dart';
-import 'link_accounts/add_em_comtact_screen.dart';
-import 'main_screen.dart';
+import 'add_event.dart';
 import 'register_screen_1.dart';
 
 class WelcomePage extends StatelessWidget {
@@ -87,6 +84,13 @@ class WelcomePage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Center(
+                        child: ElevatedButton(
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const add_event())),
+                            child: const Text("To Add Event (Test)"))),
                   ])),
         ));
   }
