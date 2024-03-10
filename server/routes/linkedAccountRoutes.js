@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { Civilian } = require("../models/civilian");
+const { FirstResponder } = require("../models/first-responder");
 
 // Get the list of emergency contacts of a particular user
 router.get("/emergency-contacts/:userId", async (req, res) => {
@@ -78,5 +79,27 @@ router.patch(
     }
   }
 );
+
+// First Responders
+
+// Check if the inteded user is already a supervisee
+router.get("/supervisee/:currentUserId/:intendedUserId", async (req, res) => {
+  const { currentUserId, intendedUserId } = req.params;
+
+  if (!currentUserId || !intendedUserId)
+    return res.status(400).send("Bad Request");
+
+  const currentUser = await FirstResponder.findById(currentUserId).select(
+    "superviseeAccounts"
+  );
+
+  if (!currentUser) return res.status(400).send("User with given id not found");
+
+  const isSupervisee = currentUser.superviseeAccounts.includes(intendedUserId);
+
+  return isSupervisee
+    ? res.status(200).send("Intended user is already a supervisee")
+    : res.status(404).send("Intended user is not a supervisee");
+});
 
 module.exports = router;
