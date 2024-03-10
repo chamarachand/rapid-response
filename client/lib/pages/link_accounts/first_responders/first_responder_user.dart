@@ -14,7 +14,7 @@ class AddUserPage extends StatefulWidget {
 
 class _AddUserPageState extends State<AddUserPage> {
   dynamic _accessToken;
-  bool _alreadyEmergencyContact = false;
+  bool _alreadySupervisee = false;
   bool _requestAlreadySent = false;
 
   recieveAccessToken() async {
@@ -23,13 +23,13 @@ class _AddUserPageState extends State<AddUserPage> {
     _accessToken = JwtDecoder.decode(accessToken!);
   }
 
-  isEmergencyContact() async {
+  isSupervisee() async {
     try {
       var response = await http.get(Uri.parse(
           "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/${_accessToken["id"]}/${widget._user["_id"]}"));
       if (response.statusCode == 200) {
         setState(() {
-          _alreadyEmergencyContact = true;
+          _alreadySupervisee = true;
         });
       } else if (response.statusCode == 404) {
         print("false"); //remove this
@@ -113,7 +113,7 @@ class _AddUserPageState extends State<AddUserPage> {
 
   initializeData() async {
     await recieveAccessToken();
-    isEmergencyContact();
+    isSupervisee();
   }
 
   @override
@@ -137,7 +137,7 @@ class _AddUserPageState extends State<AddUserPage> {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const CircleAvatar(
             backgroundImage: NetworkImage(
-                "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29uJTIwYXZhdGFyfGVufDB8fDB8fHww"),
+                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
             radius: 70,
           ),
           const SizedBox(height: 20),
@@ -147,7 +147,7 @@ class _AddUserPageState extends State<AddUserPage> {
           ),
           Text(widget._user["username"]),
           const SizedBox(height: 40),
-          _alreadyEmergencyContact
+          _alreadySupervisee
               ? const Padding(
                   padding: EdgeInsets.only(top: 15),
                   child: Card(
@@ -191,7 +191,7 @@ class _AddUserPageState extends State<AddUserPage> {
                   child: const Text("Send Request"),
                 ),
           const SizedBox(height: 8),
-          if (!_alreadyEmergencyContact)
+          if (!_alreadySupervisee)
             ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
         ]),
       ),
