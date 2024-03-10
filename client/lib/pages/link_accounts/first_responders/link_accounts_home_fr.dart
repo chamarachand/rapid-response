@@ -27,7 +27,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
               children: [
                 Card(
                   child: ListTile(
-                    title: const Text("My Emergency Contacts"),
+                    title: const Text("My Supervisors"),
                     onTap: () {
                       Navigator.push(
                           context,
@@ -41,7 +41,21 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                 ),
                 Card(
                   child: ListTile(
-                    title: const Text("Emergency Contact Requests"),
+                    title: const Text("My Supervisees"),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) =>
+                                  const MyEmergencyContacts())));
+                    },
+                    tileColor: const Color(0xFFF7D8D8),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    title: const Text("Supervisee Requests"),
                     onTap: () {
                       Navigator.push(
                           context,
