@@ -26,7 +26,7 @@ class _MySupervisorsState extends State<MySupervisors> {
     } else if (response.statusCode == 404) {
       return [];
     } else {
-      throw Exception('Failed to load emergency contacts');
+      throw Exception('Failed to load supervisees');
     }
   }
 

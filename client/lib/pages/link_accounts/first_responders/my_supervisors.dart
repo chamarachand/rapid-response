@@ -26,7 +26,7 @@ class _MySupervisorsState extends State<MySupervisors> {
     } else if (response.statusCode == 404) {
       return [];
     } else {
-      throw Exception('Failed to load emergency contacts');
+      throw Exception('Failed to load supervisors');
     }
   }
 
@@ -43,7 +43,7 @@ class _MySupervisorsState extends State<MySupervisors> {
         backgroundColor: const Color(0xFFadd8e6),
         title: const Row(
           children: [
-            Text("Emergency Contacts"),
+            Text("Supervisor Accounts"),
             Padding(
               padding: EdgeInsets.only(left: 10),
               child: Icon(
@@ -64,7 +64,7 @@ class _MySupervisorsState extends State<MySupervisors> {
           } else {
             final emergencyContacts = snapshot.data!;
             if (emergencyContacts.isEmpty) {
-              return const Center(child: Text('No emergency contacts'));
+              return const Center(child: Text('No supervisors'));
             }
             return ListView.builder(
               itemCount: emergencyContacts.length,
