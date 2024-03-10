@@ -8,13 +8,13 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/link_account_home.dart';
 
-class MainMenu extends StatefulWidget {
-  const MainMenu({super.key});
+class MainMenuFR extends StatefulWidget {
+  const MainMenuFR({super.key});
   @override
-  MainMenuScreen createState() => MainMenuScreen();
+  MainMenuScreenFR createState() => MainMenuScreenFR();
 }
 
-class MainMenuScreen extends State<MainMenu> {
+class MainMenuScreenFR extends State<MainMenuFR> {
   int _selectedIndex = 1;
 
   var _firstName = "";
@@ -257,7 +257,7 @@ class MainMenuScreen extends State<MainMenu> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const MainMenu())));
+                          builder: ((context) => const MainMenuFR())));
                 },
               ),
               label: 'Home',

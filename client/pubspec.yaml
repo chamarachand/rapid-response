@@ -46,10 +46,13 @@ dependencies:
   firebase_messaging: ^14.7.17
   flutter_local_notifications: ^16.3.2
   firebase_analytics: ^10.8.7
-  permission_handler: ^11.3.0
-  flutter_sound: ^9.2.13
   firebase_storage: ^11.6.9
   firebase_auth: ^4.17.8
+  flutter_sound: ^9.2.13
+  permission_handler: ^11.3.0
+  firebase_app_check: ^0.2.1+17
+  geolocator: ^11.0.0
+
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +83,9 @@ flutter:
     - assets\security.png
     - assets\register.png
     - assets\doctor_2.png
+    - assets\user-type.png
+    - assets\first-responders.png
+
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

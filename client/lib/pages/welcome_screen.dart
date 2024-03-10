@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'register_screen_2.dart';
+import 'SOS_page.dart';
+import 'link_accounts/add_em_comtact_screen.dart';
+import 'main_screen.dart';
+import 'register_screen_1.dart';
 
 
 class WelcomePage extends StatelessWidget {
