@@ -40,13 +40,15 @@ router.get(
   "/search/request/:currentUserId/:intendedUserId",
   async (req, res) => {
     const { currentUserId, intendedUserId } = req.params;
+    const { type } = req.query;
 
-    if (!currentUserId || !intendedUserId)
+    if (!currentUserId || !intendedUserId || !type)
       return res.status(400).send("Bad Request");
 
-    const intendedUser = await Civilian.findById(intendedUserId).select(
-      "notifications"
-    );
+    const intendedUser = await Promise.any([
+      Civilian.findById(intendedUserId).select("notifications"),
+      FirstResponder.findById(intendedUserId).select("notifications"),
+    ]);
 
     if (!intendedUser)
       return res.status(400).send("Intended user with given id not found");
@@ -54,7 +56,7 @@ router.get(
     const notifications = await Notification.find({
       _id: { $in: intendedUser.notifications }, // Filter notifications by those in the intended user's notifications array
       from: currentUserId, // Filter notifications by the sender
-      type: "emergency-contact-request",
+      type: type,
       responded: false,
     });
 
