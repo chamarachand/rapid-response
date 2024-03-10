@@ -14,7 +14,16 @@ const firstResponderSchema = new mongoose.Schema({
     maxlength: 255,
     required: true,
   },
-  linkedContacts: {
+  supervisorAccounts: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FirstResponder",
+      },
+    ],
+    default: [],
+  },
+  superviseeAccounts: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,

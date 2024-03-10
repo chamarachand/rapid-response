@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:client/pages/link_accounts/civilians/add_em_comtact_screen.dart';
+import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
 import 'package:client/pages/link_accounts/civilians/my_emergency_contacts.dart';
 import 'package:client/pages/link_accounts/civilians/emergency_contact_requests.dart';
 

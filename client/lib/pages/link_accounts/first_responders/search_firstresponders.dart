@@ -24,7 +24,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
     try {
       var response = await http.get(
         Uri.parse(
-            "http://10.0.2.2:3000/api/civilian/search?username=$_searchQuery"),
+            "http://10.0.2.2:3000/api/first-responder/search?username=$_searchQuery"),
         headers: {
           'Content-Type': 'application/json',
         },
