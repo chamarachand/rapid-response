@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
 const { userSchema, userValidationSchema } = require("../common/sharedSchema");
 
 const responderValues = ["Police", "Paramedic", "Fire"]; // Add more

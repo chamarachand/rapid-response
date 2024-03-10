@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
-import 'package:client/pages/link_accounts/civilians/my_emergency_contacts.dart';
+import 'package:client/pages/link_accounts/first_responders/my_supervisors.dart';
 import 'package:client/pages/link_accounts/civilians/emergency_contact_requests.dart';
 
 class LinkAccountHome extends StatefulWidget {
@@ -32,8 +32,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) =>
-                                  const MyEmergencyContacts())));
+                              builder: ((context) => const MySupervisors())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),
@@ -46,8 +45,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) =>
-                                  const MyEmergencyContacts())));
+                              builder: ((context) => const MySupervisors())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),

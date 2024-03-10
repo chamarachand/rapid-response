@@ -4,14 +4,14 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 
-class MyEmergencyContacts extends StatefulWidget {
-  const MyEmergencyContacts({super.key});
+class MySupervisors extends StatefulWidget {
+  const MySupervisors({super.key});
 
   @override
-  State<MyEmergencyContacts> createState() => _MyEmergencyContactsState();
+  State<MySupervisors> createState() => _MySupervisorsState();
 }
 
-class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
+class _MySupervisorsState extends State<MySupervisors> {
   Future<List<dynamic>>? _futureEmergencyContacts;
 
   Future<List<dynamic>> getEmergencyContacts() async {

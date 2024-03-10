@@ -83,7 +83,7 @@ router.patch(
 // First Responders
 
 // Get the list of supervisors of a particular first responder
-router.get("/supervisor/:userId", async (req, res) => {
+router.get("/supervisors/:userId", async (req, res) => {
   const { userId } = req.params;
   if (!userId) return res.status(400).send("Bad request");
 
