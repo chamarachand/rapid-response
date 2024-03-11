@@ -46,7 +46,6 @@ class _AddUserPageState extends State<AddUserPage> {
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
-        print("404 here");
         _requestAlreadySent = false;
       } else {
         print(response.statusCode);
