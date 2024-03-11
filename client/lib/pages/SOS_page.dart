@@ -452,7 +452,7 @@ class _SOSpageState extends State<SOSpage> {
       }
     };
 
-    String backendUrl = 'http://localhost:27017/api/sos-report';
+    String backendUrl = 'http://10.0.2.2:3000/api/sos-report';
 
     try {
       http.Response response = await http.post(
