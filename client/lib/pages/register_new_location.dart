@@ -13,10 +13,14 @@ class RegisterLocation extends StatefulWidget {
 }
 
 class RegisterNewLocation extends State<RegisterLocation> {
-  String locationMessage = 'Current Location';
-  late String lat;
-  late String long;
+  late double lat;
+  late double long;
   late String address = "Address loading...";
+  String? newAddress;
+  late String addressTag;
+  bool showLocationInputs = false;
+  TextEditingController latitudeController = TextEditingController();
+  TextEditingController longitudeController = TextEditingController();
 
   int _selectedIndex = 1;
 
@@ -43,19 +47,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
     _loadToken();
   }
 
-  // Future<String> getAddressFromLatLong(double latitude, double longitude) async {
-  //   try {
-  //     List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-  //     Placemark place = placemarks.first;
-  //     String address = '${place.street}, ${place.locality}, ${place.country}';
-  //     return address;
-  //   } catch (e) {
-  //     print('Error getting address from coordinates: $e');
-  //     return "Address not found";
-  //   }
-  // }
-
-  Future<Position> _getCurrentLocation() async {
+  Future<void> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return Future.error('Location service disabled');
@@ -73,55 +65,103 @@ class RegisterNewLocation extends State<RegisterLocation> {
       return Future.error('Location permission is permanently denied. We cannot access yoour location.');
     }
 
-    Geolocator.getPositionStream().listen((Position position) async {
-      lat = position.latitude.toString();
-      long = position.longitude.toString();
-      try {
-        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-        Placemark place = placemarks.first;
-        address = '${place.street}, ${place.locality}, ${place.country}';
-      } catch (e) {
-        // ignore: avoid_print
-        print('Error getting address from coordinates: $e');
-      }
-
-      setState(() {
-        locationMessage = 'Latitude: $lat, Longitude: $long';
-      });
+    // Get current position
+    Position position = await Geolocator.getCurrentPosition();
+    setState(() {
+      lat = position.latitude;
+      long = position.longitude;
     });
-
-    return await Geolocator.getCurrentPosition();
+    _setLocation(lat, long);
   }
 
-  void _liveLocation() {
-    LocationSettings locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
-    );
+  // Future<Position> _getCurrentLocation() async {
+  //   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return Future.error('Location service disabled');
+  //   }
 
-    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) async {
-      lat = position.latitude.toString();
-      long = position.longitude.toString();
-      try {
-        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-        Placemark place = placemarks.first;
-        address = '${place.street}, ${place.locality}, ${place.country}';
-      } catch (e) {
-        // ignore: avoid_print
-        print('Error getting address from coordinates: $e');
+  //   LocationPermission permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       return Future.error('Location permission denied');
+  //     }
+  //   }
+
+  //   if (permission == LocationPermission.deniedForever) {
+  //     return Future.error('Location permission is permanently denied. We cannot access yoour location.');
+  //   }
+
+  //   Geolocator.getPositionStream().listen((Position position) async {
+  //     slat = position.latitude.toString();
+  //     slong = position.longitude.toString();
+  //     try {
+  //       List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+  //       Placemark place = placemarks.first;
+  //       address = '${place.street}, ${place.locality}, ${place.country}';
+  //     } catch (e) {
+  //       // ignore: avoid_print
+  //       print('Error getting address from coordinates: $e');
+  //     }
+
+  //     setState(() {
+  //       locationMessage = 'Latitude: $slat, Longitude: $slong';
+  //     });
+  //   });
+
+  //   return await Geolocator.getCurrentPosition();
+  // }
+
+  // void _liveLocation() {
+  //   LocationSettings locationSettings = const LocationSettings(
+  //     accuracy: LocationAccuracy.high,
+  //     distanceFilter: 100,
+  //   );
+
+  //   Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) async {
+  //     slat = position.latitude.toString();
+  //     slong = position.longitude.toString();
+  //     try {
+  //       List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+  //       Placemark place = placemarks.first;
+  //       address = '${place.street}, ${place.locality}, ${place.country}';
+  //     } catch (e) {
+  //       // ignore: avoid_print
+  //       print('Error getting address from coordinates: $e');
+  //     }
+
+  //     setState(() {
+  //       locationMessage = 'Latitude: $slat, Longitude: $slong';
+  //     });
+  //   });
+  // }
+
+  // Future<void> _openMap(String slat, String slong) async {
+  //   String googleURL = 'https://www.google.com/maps/search/?api=1&query=$slat,$slong';
+  //   await canLaunchUrlString(googleURL)
+  //     ? await launchUrlString(googleURL)
+  //     : throw 'Could not launch $googleURL';
+  // }
+
+  Future<void> _setLocation(double lat, double long) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
+      Placemark place = placemarks.first;
+      if (placemarks != null && placemarks.isNotEmpty) {
+        setState(() {
+          newAddress = '${place.street}, ${place.locality}, ${place.country}';
+        });
+      } else {
+        setState(() {
+          newAddress = 'No Address Found';
+        });
       }
-
+    } catch (e) {
+      print('Error: $e');
       setState(() {
-        locationMessage = 'Latitude: $lat, Longitude: $long';
+        newAddress = 'Error Fetching Address';
       });
-    });
-  }
-
-  Future<void> _openMap(String lat, String long) async {
-    String googleURL = 'https://www.google.com/maps/search/?api=1&query=$lat,$long';
-    await canLaunchUrlString(googleURL)
-      ? await launchUrlString(googleURL)
-      : throw 'Could not launch $googleURL';
+    }
   }
 
   @override
@@ -138,36 +178,146 @@ class RegisterNewLocation extends State<RegisterLocation> {
         ),
         backgroundColor: Color.fromARGB(255, 0, 88, 202),
         ),
-      body: Center(
+      // body: Center(
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text(locationMessage, textAlign: TextAlign.center,),
+      //       Text('Address: $address', textAlign: TextAlign.center,),
+      //       const SizedBox(height: 20,),
+      //       ElevatedButton(
+      //         onPressed: (){
+      //           _getCurrentLocation().then((value) {
+      //             lat = '${value.latitude}';
+      //             long = '${value.longitude}';
+      //             setState(() {
+      //               locationMessage = 'Latitude: $lat, Longitude: $long';
+      //             });
+      //             _liveLocation();
+      //           });
+      //         }, 
+      //         child: Text('Get Current Location'),
+      //         ),
+      //       const SizedBox(height: 20,),
+      //       ElevatedButton(
+      //         onPressed: (){
+      //           _openMap(lat, long);
+      //         }, 
+      //         child: const Text('Open Google Map'),
+      //         ),  
+      //     ],
+      //   ),
+      // ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(locationMessage, textAlign: TextAlign.center,),
-            Text('Address: $address', textAlign: TextAlign.center,),
-            const SizedBox(height: 20,),
-            ElevatedButton(
-              onPressed: (){
-                _getCurrentLocation().then((value) {
-                  lat = '${value.latitude}';
-                  long = '${value.longitude}';
-                  // adLat = value.latitude;
-                  // adLong = value.longitude;
-                  setState(() {
-                    locationMessage = 'Latitude: $lat, Longitude: $long';
-                  });
-                  _liveLocation();
-                });
-                // getAddressFromLatLong(adLat, adLong);
-              }, 
-              child: Text('Get Current Location'),
+            const Text(
+              'Location Tag',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const TextField(
+              decoration: InputDecoration(labelText: 'Enter Name Tag For Location'),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Address',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Text(newAddress ?? address), // Display the new address if set, otherwise use the existing address
+            const SizedBox(height: 20),
+            const Text(
+              'Location',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: (){
+                    _getCurrentLocation().then((value) {
+                    });
+                  }, 
+                  child: const Text('Current Location'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      showLocationInputs = true;
+                    });
+                  },
+                  child: const Text('Set Location'),
+                ),
+              ],
+            ),
+            const Spacer(),
+            if (showLocationInputs)
+              Column(
+                children: [
+                  TextField(
+                    controller: latitudeController,
+                    decoration: InputDecoration(labelText: 'Latitude'),
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: longitudeController,
+                    decoration: InputDecoration(labelText: 'Longitude'),
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            showLocationInputs = false;
+                          });
+                        },
+                        child: Text('Back'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          double? lat = double.tryParse(latitudeController.text);
+                          double? long = double.tryParse(longitudeController.text);
+                          if (lat == null || long == null || lat < -90 || lat > 90 || long < -180 || long > 180) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text('Invalid Input'),
+                                  content: Text('Please enter valid latitude (-90 to 90) and longitude (-180 to 180) values.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          } else {
+                            _setLocation(lat, long);
+                            setState(() {
+                              showLocationInputs = false;
+                            });
+                          }
+                        },
+                        child: Text('Set'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            const SizedBox(height: 20,),
+            SizedBox(height: 20),
             ElevatedButton(
-              onPressed: (){
-                _openMap(lat, long);
-              }, 
-              child: const Text('Open Google Map'),
-              ),  
+              onPressed: () {
+                // Handle confirm
+              },
+              child: Text('Confirm'),
+            ),
           ],
         ),
       ),
