@@ -3,7 +3,7 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/add_em_comtact_screen.dart';
+import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class RegisterLocation extends StatefulWidget {
