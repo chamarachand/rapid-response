@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 
 class ReportScreen extends StatefulWidget {
@@ -18,14 +19,42 @@ class ReportScreen extends StatefulWidget {
 class _ReportScreenState extends State<ReportScreen> {
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
   final TextEditingController _DescriptionController = TextEditingController();
-  List<Reference> _uploadedFiles = [];
+  final SpeechToText _speechToText = SpeechToText();
 
-  
+  bool _speechEnabled = false;
+  String _wordsSpoken = "";
    
   String imageUrl = '';
   File? image;
 
   @override
+  void initState() {
+    super.initState();
+    initSpeech();
+  }
+
+  void initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  void _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {
+    });
+  }
+
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  void _onSpeechResult(result) {
+    setState(() {
+      _wordsSpoken = "${result.recognizedWords}";
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -59,18 +88,12 @@ class _ReportScreenState extends State<ReportScreen> {
                     foregroundColor: Colors.black,
                     backgroundColor: Colors.orange,
                     fixedSize: const Size(1000, 50)),
-                onPressed: () {},
-                child: const Text('+ add Video'),
-              ),
-            ),
-            Container(
-              padding: textFieldPadding,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.orange,
-                    fixedSize: const Size(1000, 50)),
-                onPressed: () {},
+                onPressed: () {
+                   showDialog(
+                   context: context,
+                  builder: (BuildContext context) => Speechtotext()
+                  );
+                },
                 child: const Text('+ add Voice'),
               ),
             ),
@@ -124,9 +147,6 @@ class _ReportScreenState extends State<ReportScreen> {
     final downloadUrl = await uploadImageToFirebase();
 
             if (downloadUrl != null) {
-              // Do something with the downloadUrl, such as:
-              //   - Send in the SOS message
-              //   - Display success to the user
               print("Incident Report Photo sent with image: $downloadUrl");
             }
   }
@@ -135,6 +155,52 @@ class _ReportScreenState extends State<ReportScreen> {
     // Implement navigation logic based on the selected bottom navigation bar item
     // You can use Navigator to push or pop screens based on the selected index
   }
+  Widget Speechtotext() {
+  return AlertDialog(
+    title: Text(
+      'Speech to Text',
+      style: TextStyle(color: Colors.black),
+    ),
+    content: Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(16),
+          child: Text(
+            _speechToText.isListening
+                ? "listening..."
+                : _speechEnabled
+                    ? "Tap the microphone to start listening..."
+                    : "Speech not available",
+            style: TextStyle(fontSize: 20.0),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Text(
+              _wordsSpoken,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ),
+        ),
+      ],
+    ),
+    actions: [
+      FloatingActionButton(
+        onPressed: _speechToText.isListening ? _stopListening : _startListening,
+        child: Icon(
+          _speechToText.isNotListening ? Icons.mic_off : Icons.mic,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.red, // Customize color as needed
+        foregroundColor: Colors.white, // Customize foreground color as needed
+      ),
+    ],
+  );
+}
 
 // Popup window when pressed camera icon
   Widget popup() => AlertDialog(
