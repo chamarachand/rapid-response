@@ -6,7 +6,7 @@ import 'report_incident_screen.dart';
 import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
+import 'package:client/pages/link_accounts/first_responders/link_accounts_home_fr.dart';
 
 class MainMenuFR extends StatefulWidget {
   const MainMenuFR({super.key});
@@ -243,7 +243,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => LinkAccountHome())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',
