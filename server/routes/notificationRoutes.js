@@ -45,16 +45,18 @@ router.get(
     if (!currentUserId || !intendedUserId || !type)
       return res.status(400).send("Bad Request");
 
-    const intendedUser = await Promise.any([
+    const [civilian, firstResponder] = await Promise.all([
       Civilian.findById(intendedUserId).select("notifications"),
       FirstResponder.findById(intendedUserId).select("notifications"),
     ]);
 
-    if (!intendedUser)
+    const user = civilian || firstResponder;
+
+    if (!user)
       return res.status(400).send("Intended user with given id not found");
     // We can refactor this
     const notifications = await Notification.find({
-      _id: { $in: intendedUser.notifications }, // Filter notifications by those in the intended user's notifications array
+      _id: { $in: user.notifications }, // Filter notifications by those in the intended user's notifications array
       from: currentUserId, // Filter notifications by the sender
       type: type,
       responded: false,
@@ -81,15 +83,39 @@ router.get("/requests/:userId", async (req, res) => {
       responded: false,
     })
       .select("from")
-      .populate({
-        path: "from",
-        select: "_id firstName lastName",
-      })
+      // .populate({
+      //   path: "from",
+      //   select: "_id firstName lastName",
+      // })
       .sort({ timestamp: -1 });
 
     if (notifications.length === 0)
       return res.status(404).send("No pending supervisee requets");
-    return res.status(200).send(notifications);
+
+    const formattedNotifications = [];
+    for (const notification of notifications) {
+      const civilian = await Civilian.findById(notification.from).select(
+        "_id firstName lastName"
+      );
+
+      const fr = await FirstResponder.findById(notification.from).select(
+        "_id firstName lastName"
+      );
+      const user = civilian || fr;
+
+      const formattedNotification = {
+        _id: notification._id,
+        from: {
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        },
+      };
+
+      formattedNotifications.push(formattedNotification);
+    }
+
+    return res.status(200).send(formattedNotifications);
   } catch (error) {
     console.log("Error: " + error);
     return res.status(500).send("Internal Server Error");
@@ -164,10 +190,13 @@ router.post("/send", async (req, res) => {
     return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
-  const { fcmToken } = await Promise.any([
+  const { fcmTokenCivilian, fcmTokenFirstResponder } = await Promise.all([
     Civilian.findById(to).select("fcmToken"),
     FirstResponder.findById(to).select("fcmToken"),
   ]);
+
+  const fcmToken = fcmTokenCivilian || fcmTokenFirstResponder;
+
   if (!fcmToken)
     return res
       .status(202)

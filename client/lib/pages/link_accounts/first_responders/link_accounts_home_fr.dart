@@ -1,3 +1,4 @@
+import 'package:client/pages/link_accounts/first_responders/my_supervisees.dart';
 import 'package:client/pages/link_accounts/first_responders/supervisee_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
@@ -45,7 +46,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) => const MySupervisors())));
+                              builder: ((context) => const MySupervisees())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),

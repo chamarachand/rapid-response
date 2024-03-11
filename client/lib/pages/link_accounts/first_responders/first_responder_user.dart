@@ -151,10 +151,10 @@ class _AddUserPageState extends State<AddUserPage> {
               ? const Padding(
                   padding: EdgeInsets.only(top: 15),
                   child: Card(
-                    color: Colors.green,
+                    color: Colors.blue,
                     child: Padding(
                       padding: EdgeInsets.all(12),
-                      child: Text("Emergency Contact!",
+                      child: Text("Supervisee!",
                           style: TextStyle(fontSize: 24, color: Colors.white)),
                     ),
                   ),

@@ -4,17 +4,17 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 
-class MySupervisors extends StatefulWidget {
-  const MySupervisors({super.key});
+class MySupervisees extends StatefulWidget {
+  const MySupervisees({super.key});
 
   @override
-  State<MySupervisors> createState() => _MySupervisorsState();
+  State<MySupervisees> createState() => _MySuperviseesState();
 }
 
-class _MySupervisorsState extends State<MySupervisors> {
-  Future<List<dynamic>>? _futureEmergencyContacts;
+class _MySuperviseesState extends State<MySupervisees> {
+  Future<List<dynamic>>? _futureSupervisees;
 
-  Future<List<dynamic>> getEmergencyContacts() async {
+  Future<List<dynamic>> getSupervisees() async {
     final accessToken = await UserSecureStorage.getAccessToken();
     final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
@@ -33,7 +33,7 @@ class _MySupervisorsState extends State<MySupervisors> {
   @override
   void initState() {
     super.initState();
-    _futureEmergencyContacts = getEmergencyContacts();
+    _futureSupervisees = getSupervisees();
   }
 
   @override
@@ -55,21 +55,21 @@ class _MySupervisorsState extends State<MySupervisors> {
         ),
       ),
       body: FutureBuilder(
-        future: _futureEmergencyContacts,
+        future: _futureSupervisees,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text("Error loading data"));
           } else {
-            final emergencyContacts = snapshot.data!;
-            if (emergencyContacts.isEmpty) {
+            final supervisees = snapshot.data!;
+            if (supervisees.isEmpty) {
               return const Center(child: Text('No supervisees'));
             }
             return ListView.builder(
-              itemCount: emergencyContacts.length,
+              itemCount: supervisees.length,
               itemBuilder: (context, index) {
-                var user = emergencyContacts[index];
+                var user = supervisees[index];
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 0),

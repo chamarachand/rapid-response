@@ -38,7 +38,7 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
     }
   }
 
-  addAsEmergencyContact(String requestedUserId) async {
+  addAsSupervisee(String requestedUserId) async {
     final accessToken = await UserSecureStorage.getAccessToken();
     final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
@@ -71,7 +71,7 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
                 TextButton(
                     onPressed: () async {
                       await updateNotificationStatus(notificationId);
-                      await addAsEmergencyContact(requestedUserId);
+                      await addAsSupervisee(requestedUserId);
                       if (mounted) {
                         Navigator.pop(context);
                       }
@@ -161,6 +161,7 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
             return const Center(child: Text("Error loading data"));
           } else {
             final requests = snapshot.data!;
+            print(requests);
             if (requests.isEmpty) {
               return const Center(child: Text('No supervisee requests'));
             }

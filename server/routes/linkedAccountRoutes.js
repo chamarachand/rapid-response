@@ -88,17 +88,17 @@ router.get("/supervisors/:userId", async (req, res) => {
   if (!userId) return res.status(400).send("Bad request");
 
   try {
-    const { supervisors } = await FirstResponder.findById(userId)
+    const { supervisorAccounts } = await FirstResponder.findById(userId)
       .select("supervisorAccounts")
       .populate({
         path: "supervisorAccounts",
         select: "firstName lastName phoneNumber email",
       });
 
-    if (!supervisors || supervisors.length === 0)
+    if (!supervisorAccounts || supervisorAccounts.length === 0)
       return res.status(404).send("No supervisors found");
 
-    return res.status(200).send(supervisors);
+    return res.status(200).send(supervisorAccounts);
   } catch (error) {
     console.log("Error: " + error);
     return res.status(500).send("Internal Server Error");
@@ -111,17 +111,17 @@ router.get("/supervisees/:userId", async (req, res) => {
   if (!userId) return res.status(400).send("Bad request");
 
   try {
-    const { supervisees } = await FirstResponder.findById(userId)
+    const { superviseeAccounts } = await FirstResponder.findById(userId)
       .select("superviseeAccounts")
       .populate({
         path: "superviseeAccounts",
         select: "firstName lastName phoneNumber email",
       });
 
-    if (!supervisees || supervisees.length === 0)
+    if (!superviseeAccounts || superviseeAccounts.length === 0)
       return res.status(404).send("No supervisees found");
 
-    return res.status(200).send(supervisees);
+    return res.status(200).send(superviseeAccounts);
   } catch (error) {
     console.log("Error: " + error);
     return res.status(500).send("Internal Server Error");
