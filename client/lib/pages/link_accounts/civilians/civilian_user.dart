@@ -42,11 +42,13 @@ class _AddUserPageState extends State<AddUserPage> {
   isRequestSent() async {
     try {
       var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}"));
+          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}?type=emergency-contact-request"));
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
         _requestAlreadySent = false;
+      } else {
+        print(response.statusCode);
       }
     } catch (error) {
       print("Error: $error");
@@ -119,6 +121,7 @@ class _AddUserPageState extends State<AddUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         // title: Text(widget._user["firstName"] + " " + widget._user["lastName"]),
@@ -173,6 +176,7 @@ class _AddUserPageState extends State<AddUserPage> {
                           body: jsonEncode({
                             "from": _accessToken["id"],
                             "to": widget._user["_id"],
+                            "type": "emergency-contact-request",
                             "title": "Add Emergency Contact Request",
                             "body":
                                 "${_accessToken["firstName"]} sent add as emergency contact request",

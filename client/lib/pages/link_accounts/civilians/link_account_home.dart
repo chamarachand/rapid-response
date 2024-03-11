@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
-import 'package:client/pages/link_accounts/my_emergency_contacts.dart';
-import 'package:client/pages/link_accounts/emergency_contact_requests.dart';
+import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
+import 'package:client/pages/link_accounts/civilians/my_emergency_contacts.dart';
+import 'package:client/pages/link_accounts/civilians/emergency_contact_requests.dart';
 
 class LinkAccountHome extends StatefulWidget {
   const LinkAccountHome({super.key});
@@ -16,6 +16,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
           title: const Text("Linked Accounts"),
           backgroundColor: const Color(0xFFadd8e6)),

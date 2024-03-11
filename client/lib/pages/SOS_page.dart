@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:client/storage/user_secure_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -24,8 +28,12 @@ class _SOSpageState extends State<SOSpage> {
   bool _showTextField = false;
   String sosType = 'None';
   final _textController = TextEditingController();
-  String? _currentAddress;
-  Position? _currentPosition;
+  String imageURL = 'None';
+  String voiceURL = 'None';
+  late String lat;
+  late String long;
+  late Position currentLocation;
+  String locationMessage = 'Current Location of the User';
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +201,18 @@ class _SOSpageState extends State<SOSpage> {
         width: 130.0,
         height: 40,
         child: FloatingActionButton(
-          onPressed: () async {
+          onPressed: () {
+            // getCurrentLocation().then((currentLocation) {
+            //   sendDataToBackend();
+            //   lat = '${currentLocation.latitude}';
+            //   long = '${currentLocation.longitude}';
+            //   _printCurrentPosition();
+            //   setState(() {
+            //     locationMessage = 'Latitude: $lat, Longitude: $long';
+            //   });
+            //   sosButtonPressed();
+            //   sendDataToBackend();
+            // });
             sosButtonPressed();
           },
           backgroundColor: const Color.fromARGB(255, 247, 147, 0),
@@ -367,8 +386,9 @@ class _SOSpageState extends State<SOSpage> {
     }
     //image, voice, emergencyType, location
 
-    final imageURL = await uploadImageToFirebase();
+    imageURL = (await uploadImageToFirebase())!;
 
+    sendDataToBackend();
     _printCurrentPosition();
 
     if (imageURL != null) {
@@ -381,49 +401,76 @@ class _SOSpageState extends State<SOSpage> {
     print("SOS Type : $sosType");
   }
 
-  Future<bool> _handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  Future<Position> getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
-      return false;
+      return Future.error('Location services are disabled.');
     }
-    permission = await Geolocator.checkPermission();
+
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-        return false;
+        return Future.error('Location Permissions are denied');
       }
     }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
-      return false;
-    }
-    return true;
-  }
 
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-    if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-      setState(() => _currentPosition = position);
-    }).catchError((e) {
-      debugPrint(e);
-    });
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permission are permanently denied, we cannot request permission.');
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 
   Future<void> _printCurrentPosition() async {
-    print('LAT: ${_currentPosition?.latitude ?? ""}');
-    print('LNG: ${_currentPosition?.longitude ?? ""}');
-    print('ADDRESS: ${_currentAddress ?? ""}');
+    print('Latitude: $lat');
+    print('Longitude: $long');
+    // print('LAT: ${_currentPosition?.latitude ?? ""}');
+    // print('LNG: ${_currentPosition?.longitude ?? ""}');
+    // print('ADDRESS: ${_currentAddress ?? ""}');
+  }
+
+  void sendDataToBackend() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final decodedAccessToken = JwtDecoder.decode(accessToken!);
+    String? id = decodedAccessToken["id"];
+    String? image = imageURL;
+    String? voice = voiceURL; // Adjust if needed
+    String? emergencyType = sosType;
+    Position? location = currentLocation;
+
+    Map<String, dynamic> dataToSend = {
+      'id': id,
+      'image': image,
+      'voice': voice,
+      'emergencyType': emergencyType,
+      'location': {
+        // Assuming GeoJSON format
+        'type': 'Point',
+        'coordinates': [location.longitude, location.latitude],
+      }
+    };
+
+    String backendUrl = 'http://10.0.2.2:3000/api/sos-report';
+
+    try {
+      http.Response response = await http.post(
+        Uri.parse(backendUrl),
+        headers: {
+          'Content-type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        }, // If needed
+        body: jsonEncode(dataToSend),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('Data sent successfully!');
+      } else {
+        print('Error sending data: ${response.statusCode} - ${response.body}');
+      }
+    } catch (error) {
+      print('Error sending data: $error');
+    }
   }
 }

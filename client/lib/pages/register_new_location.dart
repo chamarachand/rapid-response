@@ -61,7 +61,8 @@ class RegisterNewLocation extends State<RegisterLocation> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permission is permanently denied. We cannot access yoour location.');
+      return Future.error(
+          'Location permission is permanently denied. We cannot access yoour location.');
     }
 
     // Get current position
@@ -85,6 +86,8 @@ class RegisterNewLocation extends State<RegisterLocation> {
         setState(() {
           newAddress = 'No Address Found';
         });
+
+
       }
     } catch (e) {
       print('Error: $e');
@@ -110,6 +113,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
         ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -221,9 +225,8 @@ class RegisterNewLocation extends State<RegisterLocation> {
           ],
         ),
       ),
-      
       bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9), 
+          backgroundColor: const Color(0xFFD9D9D9),
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           items: [
