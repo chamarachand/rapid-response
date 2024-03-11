@@ -68,14 +68,16 @@ router.get(
 );
 
 // Get pending add as emergency contact requests for a user
-router.get("/emergency-contact-requests/:userId", async (req, res) => {
+router.get("/requests/:userId", async (req, res) => {
   const { userId } = req.params;
-  if (!userId) return res.status(400).send("Bad request");
+  const { type } = req.query;
+
+  if (!userId || !type) return res.status(400).send("Bad request");
 
   try {
     const notifications = await Notification.find({
       to: userId, // Filter notifications by those in the intended user's notifications array
-      type: "emergency-contact-request",
+      type: type,
       responded: false,
     })
       .select("from")
@@ -86,7 +88,7 @@ router.get("/emergency-contact-requests/:userId", async (req, res) => {
       .sort({ timestamp: -1 });
 
     if (notifications.length === 0)
-      return res.status(404).send("No pending emergency contact requets");
+      return res.status(404).send("No pending supervisee requets");
     return res.status(200).send(notifications);
   } catch (error) {
     console.log("Error: " + error);

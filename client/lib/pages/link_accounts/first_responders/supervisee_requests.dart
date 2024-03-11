@@ -19,14 +19,14 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
     final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
     final response = await http.get(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/supervisee-requests/${decodedAccessToken["id"]}"));
+        "http://10.0.2.2:3000/api/notification/requests/${decodedAccessToken["id"]}?type=supervisee-request"));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else if (response.statusCode == 404) {
       return [];
     } else {
-      throw Exception('Failed to load supervisee accounts');
+      throw Exception('Failed to load supervisee requests');
     }
   }
 

@@ -2,7 +2,6 @@ import 'package:client/pages/link_accounts/first_responders/supervisee_requests.
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
 import 'package:client/pages/link_accounts/first_responders/my_supervisors.dart';
-import 'package:client/pages/link_accounts/civilians/emergency_contact_requests.dart';
 
 class LinkAccountHome extends StatefulWidget {
   const LinkAccountHome({super.key});
