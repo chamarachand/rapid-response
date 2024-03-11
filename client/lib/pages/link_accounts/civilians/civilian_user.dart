@@ -46,7 +46,10 @@ class _AddUserPageState extends State<AddUserPage> {
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
+        print("404 here");
         _requestAlreadySent = false;
+      } else {
+        print(response.statusCode);
       }
     } catch (error) {
       print("Error: $error");
@@ -174,6 +177,7 @@ class _AddUserPageState extends State<AddUserPage> {
                           body: jsonEncode({
                             "from": _accessToken["id"],
                             "to": widget._user["_id"],
+                            "type": "emergency-contact-request",
                             "title": "Add Emergency Contact Request",
                             "body":
                                 "${_accessToken["firstName"]} sent add as emergency contact request",
