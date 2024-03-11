@@ -43,7 +43,7 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
     final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
     final response = await http.patch(Uri.parse(
-        "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/add/${decodedAccessToken["id"]}/$requestedUserId"));
+        "http://10.0.2.2:3000/api/linked-accounts/supervisee-accounts/add/${decodedAccessToken["id"]}/$requestedUserId"));
 
     if (response.statusCode == 200) {
       return true;
@@ -178,13 +178,13 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
                           child: ListTile(
                             leading: const CircleAvatar(
                               backgroundImage: NetworkImage(
-                                  "https://i.scdn.co/image/ab676161000051747d5aa798103bfb8562427274"),
+                                  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
                               radius: 24,
                             ),
                             title: Text(request["from"]["firstName"] +
                                 " " +
                                 request["from"]["lastName"]),
-                            subtitle: const Text("Emergency contact request"),
+                            subtitle: const Text("Supervisee request"),
                             onTap: () => {
                               showSampleDialog(
                                   request["_id"], request["from"]["_id"])
