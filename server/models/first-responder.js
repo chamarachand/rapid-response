@@ -37,7 +37,12 @@ const firstResponderSchema = new mongoose.Schema({
 
 firstResponderSchema.methods.generateAuthToken = function () {
   return jwt.sign(
-    { userType: "civilian", username: this.username },
+    {
+      userType: "first-responder",
+      id: this._id,
+      username: this.username,
+      firstName: this.firstName,
+    },
     "jwtPrivateKey" // Change this to config.get("jwtPrvateKey")
   );
 };
