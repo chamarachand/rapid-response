@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class RegisterLocation extends StatefulWidget {
   const RegisterLocation({super.key});
@@ -74,75 +73,6 @@ class RegisterNewLocation extends State<RegisterLocation> {
     _setLocation(lat, long);
   }
 
-  // Future<Position> _getCurrentLocation() async {
-  //   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  //   if (!serviceEnabled) {
-  //     return Future.error('Location service disabled');
-  //   }
-
-  //   LocationPermission permission = await Geolocator.checkPermission();
-  //   if (permission == LocationPermission.denied) {
-  //     permission = await Geolocator.requestPermission();
-  //     if (permission == LocationPermission.denied) {
-  //       return Future.error('Location permission denied');
-  //     }
-  //   }
-
-  //   if (permission == LocationPermission.deniedForever) {
-  //     return Future.error('Location permission is permanently denied. We cannot access yoour location.');
-  //   }
-
-  //   Geolocator.getPositionStream().listen((Position position) async {
-  //     slat = position.latitude.toString();
-  //     slong = position.longitude.toString();
-  //     try {
-  //       List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-  //       Placemark place = placemarks.first;
-  //       address = '${place.street}, ${place.locality}, ${place.country}';
-  //     } catch (e) {
-  //       // ignore: avoid_print
-  //       print('Error getting address from coordinates: $e');
-  //     }
-
-  //     setState(() {
-  //       locationMessage = 'Latitude: $slat, Longitude: $slong';
-  //     });
-  //   });
-
-  //   return await Geolocator.getCurrentPosition();
-  // }
-
-  // void _liveLocation() {
-  //   LocationSettings locationSettings = const LocationSettings(
-  //     accuracy: LocationAccuracy.high,
-  //     distanceFilter: 100,
-  //   );
-
-  //   Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) async {
-  //     slat = position.latitude.toString();
-  //     slong = position.longitude.toString();
-  //     try {
-  //       List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-  //       Placemark place = placemarks.first;
-  //       address = '${place.street}, ${place.locality}, ${place.country}';
-  //     } catch (e) {
-  //       // ignore: avoid_print
-  //       print('Error getting address from coordinates: $e');
-  //     }
-
-  //     setState(() {
-  //       locationMessage = 'Latitude: $slat, Longitude: $slong';
-  //     });
-  //   });
-  // }
-
-  // Future<void> _openMap(String slat, String slong) async {
-  //   String googleURL = 'https://www.google.com/maps/search/?api=1&query=$slat,$slong';
-  //   await canLaunchUrlString(googleURL)
-  //     ? await launchUrlString(googleURL)
-  //     : throw 'Could not launch $googleURL';
-  // }
-
   Future<void> _setLocation(double lat, double long) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
@@ -178,36 +108,6 @@ class RegisterNewLocation extends State<RegisterLocation> {
         ),
         backgroundColor: Color.fromARGB(255, 0, 88, 202),
         ),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       Text(locationMessage, textAlign: TextAlign.center,),
-      //       Text('Address: $address', textAlign: TextAlign.center,),
-      //       const SizedBox(height: 20,),
-      //       ElevatedButton(
-      //         onPressed: (){
-      //           _getCurrentLocation().then((value) {
-      //             lat = '${value.latitude}';
-      //             long = '${value.longitude}';
-      //             setState(() {
-      //               locationMessage = 'Latitude: $lat, Longitude: $long';
-      //             });
-      //             _liveLocation();
-      //           });
-      //         }, 
-      //         child: Text('Get Current Location'),
-      //         ),
-      //       const SizedBox(height: 20,),
-      //       ElevatedButton(
-      //         onPressed: (){
-      //           _openMap(lat, long);
-      //         }, 
-      //         child: const Text('Open Google Map'),
-      //         ),  
-      //     ],
-      //   ),
-      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
