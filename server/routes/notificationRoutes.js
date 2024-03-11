@@ -190,12 +190,12 @@ router.post("/send", async (req, res) => {
     return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
-  const [fcmTokenCivilian, fcmTokenFirstResponder] = await Promise.all([
-    Civilian.findById(to).select("fcmToken"),
-    FirstResponder.findById(to).select("fcmToken"),
-  ]);
+  // const [fcmTokenCivilian, fcmTokenFirstResponder] = await Promise.all([
+  //   Civilian.findById(to).select("fcmToken"),
+  //   FirstResponder.findById(to).select("fcmToken"),
+  // ]);
 
-  fcmToken = fcmTokenCivilian.fcmToken || fcmTokenFirstResponder.fcmToken;
+  fcmToken = user.fcmToken;
 
   if (!fcmToken)
     return res
