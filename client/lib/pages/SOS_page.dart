@@ -17,19 +17,19 @@ class SOSpage extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  _SOSpageState createState() => _SOSpageState();
+  emergency createState() => emergency();
 }
 
-class _SOSpageState extends State<SOSpage> {
+class emergency extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
 
   File? image;
 
   bool _showTextField = false;
-  String sosType = 'None';
+  String? sosType;
   final _textController = TextEditingController();
-  String imageURL = 'None';
-  String voiceURL = 'None';
+  String? imageURL;
+  String? voiceURL;
   late String lat;
   late String long;
   late Position currentLocation;
@@ -76,7 +76,7 @@ class _SOSpageState extends State<SOSpage> {
                   ),
                 ),
                 // SOS Button
-                testWidget1()
+                sosButton()
               ],
             ),
           ),
@@ -103,10 +103,13 @@ class _SOSpageState extends State<SOSpage> {
     );
   }
 
-// Camera Button
+// Camera Button and related functions
+// popup window
+// choose image from gallery
+// take picture from camera
   Widget cameraButtonBuilder() => CircleAvatar(
       radius: 55,
-      backgroundColor: const Color.fromARGB(255, 247, 147, 0),
+      backgroundColor: Colors.orange,
       child: IconButton(
         onPressed: () {
           showDialog(
@@ -119,112 +122,7 @@ class _SOSpageState extends State<SOSpage> {
         color: const Color.fromARGB(255, 43, 43, 43),
       ));
 
-// Mic Button
-  Widget micButtonBuilder() => CircleAvatar(
-      radius: 55,
-      backgroundColor: const Color.fromARGB(255, 247, 147, 0),
-      child: IconButton(
-        onPressed: () => showDialog(
-            context: context, builder: (context) => popupMicContent(context)),
-        icon: const Icon(Icons.mic),
-        iconSize: 60,
-        color: const Color.fromARGB(255, 43, 43, 43),
-      ));
-
-// Drop Down Widget
-  Widget buildDropdownMenu() => Container(
-        decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 247, 147, 0),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: DropdownButton<String>(
-            focusColor: Colors.transparent,
-            isExpanded: true,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-            value: _chosenModel,
-            items: <String>[
-              'Accident',
-              'Natural Disaster',
-              'Fire Emergency',
-              'Environmental Emergency',
-              'Traffic Accident',
-              'Violent Incident',
-              'Search and Rescue Operation',
-              'Structural Collapse',
-              'Water-related Emergency',
-              'Power Outage',
-              'Other'
-            ].map((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? sosType) {
-              setState(() {
-                _chosenModel = sosType!;
-                _showTextField = sosType == 'Other';
-              });
-            },
-            hint: const Text(
-              "Emergency Type",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            dropdownColor: const Color.fromARGB(255, 247, 147, 0),
-          ),
-        ),
-      );
-
-// Not in the List Widget
-  Widget buidTextField() =>
-      Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        const SizedBox(height: 30),
-        TextField(
-          controller: _textController,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-          decoration: InputDecoration(
-              labelText: "Not in the List",
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-              )),
-        )
-      ]);
-
-// SOS Button
-  Widget testWidget1() => SizedBox(
-        width: 130.0,
-        height: 40,
-        child: FloatingActionButton(
-          onPressed: () {
-            // getCurrentLocation().then((currentLocation) {
-            //   sendDataToBackend();
-            //   lat = '${currentLocation.latitude}';
-            //   long = '${currentLocation.longitude}';
-            //   _printCurrentPosition();
-            //   setState(() {
-            //     locationMessage = 'Latitude: $lat, Longitude: $long';
-            //   });
-            //   sosButtonPressed();
-            //   sendDataToBackend();
-            // });
-            sosButtonPressed();
-          },
-          backgroundColor: const Color.fromARGB(255, 247, 147, 0),
-          elevation: 2.0,
-          child: const Text(
-            'Send SOS',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-          ),
-        ),
-      );
-
-// Popup window when pressed camera icon
+  // Popup window when pressed camera icon
   Widget popupCameraContent() => AlertDialog(
         title: const Text('Camera Options'),
         content: Column(
@@ -260,7 +158,33 @@ class _SOSpageState extends State<SOSpage> {
         ),
       );
 
-// Popup window when pressed mic icon
+  // Choose from gallery
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
+
+// Mic Button and related functions
+// popup window when pressed mic button
+  Widget micButtonBuilder() => CircleAvatar(
+      radius: 55,
+      backgroundColor: Colors.orange,
+      child: IconButton(
+        onPressed: () => showDialog(
+            context: context, builder: (context) => popupMicContent(context)),
+        icon: const Icon(Icons.mic),
+        iconSize: 60,
+        color: const Color.fromARGB(255, 43, 43, 43),
+      ));
+
+  // Popup window when pressed mic icon
   Widget popupMicContent(BuildContext context) => AlertDialog(
         title: const Text('Record Voice'),
         content: Column(
@@ -350,57 +274,106 @@ class _SOSpageState extends State<SOSpage> {
     super.dispose();
   }
 
-// Choose from gallery
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
+// Drop Down Widget
+  Widget buildDropdownMenu() => Container(
+        decoration: const BoxDecoration(
+          color: Colors.orange,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: DropdownButton<String>(
+            focusColor: Colors.transparent,
+            isExpanded: true,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            value: _chosenModel,
+            items: <String>[
+              'Accident',
+              'Natural Disaster',
+              'Fire Emergency',
+              'Environmental Emergency',
+              'Traffic Accident',
+              'Violent Incident',
+              'Search and Rescue Operation',
+              'Structural Collapse',
+              'Water-related Emergency',
+              'Power Outage',
+              'Other'
+            ].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? sosType) {
+              setState(() {
+                _chosenModel = sosType!;
+                _showTextField = sosType == 'Other';
+              });
+            },
+            hint: const Text(
+              "Emergency Type",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            dropdownColor: const Color.fromARGB(255, 247, 147, 0),
+          ),
+        ),
+      );
 
-      final imageTemporary = File(image.path);
-      setState(() => this.image = imageTemporary);
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
+// Not in the List Widget
+  Widget buidTextField() =>
+      Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+        const SizedBox(height: 30),
+        TextField(
+          controller: _textController,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+          decoration: InputDecoration(
+              labelText: "Not in the List",
+              filled: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              )),
+        )
+      ]);
 
-  Future<String?> uploadImageToFirebase() async {
-    if (image == null) return null; // Early exit if no image
-
-    final storageRef = FirebaseStorage.instance.ref();
-    final imagesRef = storageRef.child("sos_images/${DateTime.now()}.jpg");
-
-    try {
-      await imagesRef.putFile(image!); // Upload!
-      final downloadURL = await imagesRef.getDownloadURL();
-      return downloadURL;
-    } on FirebaseException catch (e) {
-      // Handle errors (consider showing a dialog or a snackbar)
-      print("Upload failed: $e");
-      return null;
-    }
-  }
+// SOS Button
+  Widget sosButton() => SizedBox(
+        width: 130.0,
+        height: 40,
+        child: FloatingActionButton(
+          onPressed: () async {
+            sosButtonPressed();
+          },
+          backgroundColor: Colors.orange,
+          elevation: 2.0,
+          child: const Text(
+            'Send SOS',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ),
+        ),
+      );
 
   Future sosButtonPressed() async {
     if (sosType == 'Other') {
       sosType = _textController.text;
     }
-    //image, voice, emergencyType, location
-
+    print(sosType);
     imageURL = (await uploadImageToFirebase())!;
 
     sendDataToBackend();
     _printCurrentPosition();
 
     if (imageURL != null) {
-      // Do something with the downloadUrl, such as:
-      //   - Send in the SOS message
-      //   - Display success to the user
       print("SOS sent with image: $imageURL");
     }
 
     print("SOS Type : $sosType");
   }
 
+// Get Location
   Future<Position> getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -426,11 +399,27 @@ class _SOSpageState extends State<SOSpage> {
   Future<void> _printCurrentPosition() async {
     print('Latitude: $lat');
     print('Longitude: $long');
-    // print('LAT: ${_currentPosition?.latitude ?? ""}');
-    // print('LNG: ${_currentPosition?.longitude ?? ""}');
-    // print('ADDRESS: ${_currentAddress ?? ""}');
   }
 
+// Send image and voice file to firebase and return urls.
+  Future<String?> uploadImageToFirebase() async {
+    if (image == null) return null; // Early exit if no image
+
+    final storageRef = FirebaseStorage.instance.ref();
+    final imagesRef = storageRef.child("sos_images/${DateTime.now()}.jpg");
+
+    try {
+      await imagesRef.putFile(image!); // Upload!
+      final downloadURL = await imagesRef.getDownloadURL();
+      return downloadURL;
+    } on FirebaseException catch (e) {
+      // Handle errors (consider showing a dialog or a snackbar)
+      print("Upload failed: $e");
+      return null;
+    }
+  }
+
+// Send data to backend imageURL, voiceURL, emergencyType, currentLocation
   void sendDataToBackend() async {
     final accessToken = await UserSecureStorage.getAccessToken();
     final decodedAccessToken = JwtDecoder.decode(accessToken!);
@@ -452,7 +441,7 @@ class _SOSpageState extends State<SOSpage> {
       }
     };
 
-    String backendUrl = 'http://localhost:27017/api/sos-report';
+    String backendUrl = 'http://10.0.2.2:3000/api/sos-report';
 
     try {
       http.Response response = await http.post(

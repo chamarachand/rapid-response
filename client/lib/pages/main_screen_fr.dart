@@ -6,7 +6,7 @@ import 'report_incident_screen.dart';
 import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/link_account_home.dart';
+import 'package:client/pages/link_accounts/first_responders/link_accounts_home_fr.dart';
 
 class MainMenuFR extends StatefulWidget {
   const MainMenuFR({super.key});
@@ -66,58 +66,57 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                 return Container(
                   alignment: Alignment.center,
                   child: PopupMenuButton(
-                      icon: SizedBox(
-                        height: appBarHeight,
-                        child: Row(
-                          children: [
-                            const Icon(Icons.person),
-                            Text(
-                              _firstName,
-                              style: const TextStyle(
-                                fontSize: 20,
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                ),
-                              ),
-                          ],
-                        ),
+                    icon: SizedBox(
+                      height: appBarHeight,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.person),
+                          Text(
+                            _firstName,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              color: Color.fromARGB(255, 0, 0, 0),
+                            ),
+                          ),
+                        ],
                       ),
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                        PopupMenuItem(
+                    ),
+                    itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                      PopupMenuItem(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              SizedBox(
-                                  width: appBarHeight - 20,
-                                  height: appBarHeight - 20,
-                                  child: Image.asset('assets/RR_logo.png'),
-                                  ), 
-                              const SizedBox(height: 25),       
-                              ListTile(
-                                title: const Center(child: Text('View Profile')),
-                                onTap: () => Navigator.push(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: appBarHeight - 20,
+                            height: appBarHeight - 20,
+                            child: Image.asset('assets/RR_logo.png'),
+                          ),
+                          const SizedBox(height: 25),
+                          ListTile(
+                            title: const Center(child: Text('View Profile')),
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const Profile())),
+                          ),
+                          ListTile(
+                            title: const Center(child: Text('Logout')),
+                            onTap: () {
+                              UserSecureStorage.deleteAccessToken();
+                              UserSecureStorage.deleteIdToken();
+                              Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => const Profile())),
-                              ),
-                              ListTile(
-                                title: const Center(child: Text('Logout')),
-                                onTap: () {
-                                  UserSecureStorage.deleteAccessToken();
-                                  UserSecureStorage.deleteIdToken();
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const WelcomePage()),
-                                      (route) => false);
-                                },
-                              ),
-                            ],
-                          )
-                        ),
-                      ],
-                    ),
+                                      builder: (context) =>
+                                          const WelcomePage()),
+                                  (route) => false);
+                            },
+                          ),
+                        ],
+                      )),
+                    ],
+                  ),
                 );
               },
             ),
@@ -196,9 +195,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
           const SizedBox(height: 25),
           ElevatedButton(
             onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisteredLocation())),
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const RegisteredLocation())),
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
                 padding:
@@ -244,7 +243,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => LinkAccountHome())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',

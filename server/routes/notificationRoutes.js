@@ -40,21 +40,25 @@ router.get(
   "/search/request/:currentUserId/:intendedUserId",
   async (req, res) => {
     const { currentUserId, intendedUserId } = req.params;
+    const { type } = req.query;
 
-    if (!currentUserId || !intendedUserId)
+    if (!currentUserId || !intendedUserId || !type)
       return res.status(400).send("Bad Request");
 
-    const intendedUser = await Civilian.findById(intendedUserId).select(
-      "notifications"
-    );
+    const [civilian, firstResponder] = await Promise.all([
+      Civilian.findById(intendedUserId).select("notifications"),
+      FirstResponder.findById(intendedUserId).select("notifications"),
+    ]);
 
-    if (!intendedUser)
+    const user = civilian || firstResponder;
+
+    if (!user)
       return res.status(400).send("Intended user with given id not found");
     // We can refactor this
     const notifications = await Notification.find({
-      _id: { $in: intendedUser.notifications }, // Filter notifications by those in the intended user's notifications array
+      _id: { $in: user.notifications }, // Filter notifications by those in the intended user's notifications array
       from: currentUserId, // Filter notifications by the sender
-      type: "emergency-contact-request",
+      type: type,
       responded: false,
     });
 
@@ -65,27 +69,53 @@ router.get(
   }
 );
 
-// Get pending add as emergency contact requests for a user
-router.get("/emergency-contact-requests/:userId", async (req, res) => {
+// Get pending add as requests for a user
+router.get("/requests/:userId", async (req, res) => {
   const { userId } = req.params;
-  if (!userId) return res.status(400).send("Bad request");
+  const { type } = req.query;
+
+  if (!userId || !type) return res.status(400).send("Bad request");
 
   try {
     const notifications = await Notification.find({
       to: userId, // Filter notifications by those in the intended user's notifications array
-      type: "emergency-contact-request",
+      type: type,
       responded: false,
     })
       .select("from")
-      .populate({
-        path: "from",
-        select: "_id firstName lastName",
-      })
+      // .populate({
+      //   path: "from",
+      //   select: "_id firstName lastName",
+      // })
       .sort({ timestamp: -1 });
 
     if (notifications.length === 0)
-      return res.status(404).send("No pending emergency contact requets");
-    return res.status(200).send(notifications);
+      return res.status(404).send("No pending supervisee requets");
+
+    const formattedNotifications = [];
+    for (const notification of notifications) {
+      const civilian = await Civilian.findById(notification.from).select(
+        "_id firstName lastName"
+      );
+
+      const fr = await FirstResponder.findById(notification.from).select(
+        "_id firstName lastName"
+      );
+      const user = civilian || fr;
+
+      const formattedNotification = {
+        _id: notification._id,
+        from: {
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        },
+      };
+
+      formattedNotifications.push(formattedNotification);
+    }
+
+    return res.status(200).send(formattedNotifications);
   } catch (error) {
     console.log("Error: " + error);
     return res.status(500).send("Internal Server Error");
@@ -114,11 +144,12 @@ router.patch("/responded/:notificationId", async (req, res) => {
   }
 });
 
+// send request notifications
 router.post("/send", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const { from, to, title, body } = req.body;
+  const { from, to, type, title, body } = req.body;
   let notification;
 
   // Save to db - notifications collection
@@ -126,7 +157,7 @@ router.post("/send", async (req, res) => {
     notification = new Notification({
       from: from,
       to: to,
-      type: "emergency-contact-request",
+      type: type,
       title: title,
       body: body,
       timestamp: new Date().toLocaleString(),
@@ -159,8 +190,17 @@ router.post("/send", async (req, res) => {
     return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
-  const { fcmToken } = await Civilian.findById(to).select("fcmToken"); // Add if not token logic
-  if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
+  const { fcmTokenCivilian, fcmTokenFirstResponder } = await Promise.all([
+    Civilian.findById(to).select("fcmToken"),
+    FirstResponder.findById(to).select("fcmToken"),
+  ]);
+
+  const fcmToken = fcmTokenCivilian || fcmTokenFirstResponder;
+
+  if (!fcmToken)
+    return res
+      .status(202)
+      .send("Notification accepted; Reciever FCM token not found");
 
   try {
     admin.messaging().send({
