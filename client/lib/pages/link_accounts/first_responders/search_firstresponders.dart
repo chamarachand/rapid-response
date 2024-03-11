@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:client/pages/link_accounts/add_em_contact_screen2.dart';
+import 'package:client/pages/link_accounts/first_responders/first_responder_user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,7 +24,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
     try {
       var response = await http.get(
         Uri.parse(
-            "http://10.0.2.2:3000/api/civilian/search?username=$_searchQuery"),
+            "http://10.0.2.2:3000/api/first-responder/search?username=$_searchQuery"),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -42,16 +42,18 @@ class _UserSearchPageState extends State<UserSearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
         title: const Row(
           children: [
-            Text("Add Emergency"),
+            Text("Add Supervisee"),
             Padding(
               padding: EdgeInsets.only(left: 8),
               child: Icon(Icons.people, size: 32),
             )
           ],
         ),
+        backgroundColor: const Color(0xFFadd8e6),
       ),
       body: Column(children: [
         Padding(
@@ -63,7 +65,15 @@ class _UserSearchPageState extends State<UserSearchPage> {
             onChanged: _updateSearchQuery,
           ),
         ),
-        Expanded(child: UserList(_searchResults))
+        _searchQuery == ""
+            ? const Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Search First Responders by their Username")
+                    ]),
+              )
+            : Expanded(child: UserList(_searchResults))
       ]),
     );
   }

@@ -8,6 +8,23 @@ router.get("/", (req, res) => {
   res.send("This is first responder api");
 });
 
+router.get("/search", async (req, res) => {
+  try {
+    const serachTerm = req.query.username;
+    if (serachTerm === "") return res.send([]);
+
+    const users = await FirstResponder.find({
+      username: { $regex: serachTerm, $options: "i" },
+    });
+
+    if (users.length === 0) return res.status(404).send("No users found");
+
+    res.send(users); // Change this to send only necessary details
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+});
+
 router.post("/", async (req, res) => {
   try {
     const { error } = validate(req.body);

@@ -20,7 +20,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
     final response = await http.get(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/emergency-contact-requests/${decodedAccessToken["id"]}"));
+        "http://10.0.2.2:3000/api/notification/requests/${decodedAccessToken["id"]}?type=emergency-contact-request"));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -138,6 +138,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
         backgroundColor: const Color(0xFFadd8e6),
         title: const Row(

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
+const jwt = require("jsonwebtoken");
 const { userSchema, userValidationSchema } = require("../common/sharedSchema");
 
 const responderValues = ["Police", "Paramedic", "Fire"]; // Add more
@@ -14,7 +15,16 @@ const firstResponderSchema = new mongoose.Schema({
     maxlength: 255,
     required: true,
   },
-  linkedContacts: {
+  supervisorAccounts: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FirstResponder",
+      },
+    ],
+    default: [],
+  },
+  superviseeAccounts: {
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -27,8 +37,29 @@ const firstResponderSchema = new mongoose.Schema({
 
 firstResponderSchema.methods.generateAuthToken = function () {
   return jwt.sign(
-    { userType: "civilian", username: this.username },
+    {
+      userType: "first-responder",
+      id: this._id,
+      username: this.username,
+      firstName: this.firstName,
+    },
     "jwtPrivateKey" // Change this to config.get("jwtPrvateKey")
+  );
+};
+
+firstResponderSchema.methods.generateIdToken = function () {
+  return jwt.sign(
+    {
+      userType: "first-responder",
+      id: this._id,
+      username: this.username,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      nicNo: this.nicNo,
+      phnNo: this.phoneNumber,
+      email: this.email,
+    },
+    "jwtPrivateKey"
   );
 };
 
