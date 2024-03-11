@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
+import 'package:client/pages/register_new_location.dart';
 
 class RegisteredLocation extends StatefulWidget {
   const RegisteredLocation({super.key});
@@ -129,7 +130,10 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
             bottom: 10,
             right: -15,
             child: ElevatedButton(
-              onPressed: (){},
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const RegisterLocation())),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(), 
                 backgroundColor: const Color.fromARGB(255, 1, 111, 255),
