@@ -67,7 +67,7 @@ router.get(
   }
 );
 
-// Get pending add as emergency contact requests for a user
+// Get pending add as requests for a user
 router.get("/requests/:userId", async (req, res) => {
   const { userId } = req.params;
   const { type } = req.query;

@@ -148,4 +148,42 @@ router.get("/supervisee/:currentUserId/:intendedUserId", async (req, res) => {
     : res.status(404).send("Intended user is not a supervisee");
 });
 
+// Add the current user as a supervisee of the requested user
+router.patch(
+  "/supervisee-accounts/add/:currentUserId/:requestedUserId",
+  async (req, res) => {
+    const { currentUserId, requestedUserId } = req.params;
+
+    try {
+      if (!currentUserId || !requestedUserId)
+        return res.status(400).send("Bad Request");
+
+      // Can add validations for checking the userId is valid ObjectId
+
+      const updatedSupervisor = await FirstResponder.findByIdAndUpdate(
+        requestedUserId,
+        { $push: { superviseeAccounts: currentUserId } },
+        { new: true }
+      );
+
+      if (!updatedSupervisor)
+        return res.status(404).send("Supervisor with the given id not found");
+
+      const updatedSupervisee = await FirstResponder.findByIdAndUpdate(
+        currentUserId,
+        { $push: { supervisorAccounts: requestedUserId } },
+        { new: true }
+      );
+
+      if (!updatedSupervisee)
+        return res.status(404).send("Supervisee with the given id not found");
+
+      res.status(200).send("Supervisee account added successfully");
+    } catch (error) {
+      console.log("Error: " + error);
+      res.status(500).send("Internal server error");
+    }
+  }
+);
+
 module.exports = router;
