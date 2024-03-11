@@ -184,23 +184,14 @@ router.post("/send", async (req, res) => {
     ),
   ]);
 
-  const user = civilian || firstResponder;
+  let user = civilian || firstResponder;
 
   if (!user)
     return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
-  const { fcmTokenCivilian, fcmTokenFirstResponder } = await Promise.all([
-    Civilian.findById(to).select("fcmToken"),
-    FirstResponder.findById(to).select("fcmToken"),
-  ]);
-
-  const fcmToken = fcmTokenCivilian || fcmTokenFirstResponder;
-
-  if (!fcmToken)
-    return res
-      .status(202)
-      .send("Notification accepted; Reciever FCM token not found");
+  const { fcmToken } = await Civilian.findById(to).select("fcmToken"); // Add if not token logic
+  if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
 
   try {
     admin.messaging().send({
