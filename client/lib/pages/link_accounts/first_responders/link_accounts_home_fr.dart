@@ -1,3 +1,4 @@
+import 'package:client/pages/link_accounts/first_responders/supervisee_requests.dart';
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
 import 'package:client/pages/link_accounts/first_responders/my_supervisors.dart';
@@ -59,7 +60,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                           context,
                           MaterialPageRoute(
                               builder: ((context) =>
-                                  const EmergencyContactRequets())));
+                                  const SuperviseeRequests())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),
