@@ -138,6 +138,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
         backgroundColor: const Color(0xFFadd8e6),
         title: const Row(

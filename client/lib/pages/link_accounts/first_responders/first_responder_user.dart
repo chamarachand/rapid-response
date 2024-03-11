@@ -119,7 +119,7 @@ class _AddUserPageState extends State<AddUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
         // title: Text(widget._user["firstName"] + " " + widget._user["lastName"]),
         title: const Row(

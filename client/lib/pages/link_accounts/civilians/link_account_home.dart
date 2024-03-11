@@ -16,6 +16,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
           title: const Text("Linked Accounts"),
           backgroundColor: const Color(0xFFadd8e6)),

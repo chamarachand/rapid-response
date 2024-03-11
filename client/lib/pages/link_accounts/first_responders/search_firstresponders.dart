@@ -42,16 +42,18 @@ class _UserSearchPageState extends State<UserSearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
         title: const Row(
           children: [
-            Text("Add Emergency"),
+            Text("Add Supervisee"),
             Padding(
               padding: EdgeInsets.only(left: 8),
               child: Icon(Icons.people, size: 32),
             )
           ],
         ),
+        backgroundColor: const Color(0xFFadd8e6),
       ),
       body: Column(children: [
         Padding(
@@ -63,7 +65,15 @@ class _UserSearchPageState extends State<UserSearchPage> {
             onChanged: _updateSearchQuery,
           ),
         ),
-        Expanded(child: UserList(_searchResults))
+        _searchQuery == ""
+            ? const Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Search First Responders by their Username")
+                    ]),
+              )
+            : Expanded(child: UserList(_searchResults))
       ]),
     );
   }
