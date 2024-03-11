@@ -3,7 +3,7 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
+import 'package:client/pages/link_accounts/civilians/add_em_comtact_screen.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class RegisterLocation extends StatefulWidget {
@@ -70,14 +70,16 @@ class RegisterNewLocation extends State<RegisterLocation> {
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permission is permanently denied. We cannot access yoour location.');
+      return Future.error(
+          'Location permission is permanently denied. We cannot access yoour location.');
     }
 
     Geolocator.getPositionStream().listen((Position position) async {
       lat = position.latitude.toString();
       long = position.longitude.toString();
       try {
-        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
         Placemark place = placemarks.first;
         address = '${place.street}, ${place.locality}, ${place.country}';
       } catch (e) {
@@ -99,11 +101,13 @@ class RegisterNewLocation extends State<RegisterLocation> {
       distanceFilter: 100,
     );
 
-    Geolocator.getPositionStream(locationSettings: locationSettings).listen((Position position) async {
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position position) async {
       lat = position.latitude.toString();
       long = position.longitude.toString();
       try {
-        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
         Placemark place = placemarks.first;
         address = '${place.street}, ${place.locality}, ${place.country}';
       } catch (e) {
@@ -118,10 +122,11 @@ class RegisterNewLocation extends State<RegisterLocation> {
   }
 
   Future<void> _openMap(String lat, String long) async {
-    String googleURL = 'https://www.google.com/maps/search/?api=1&query=$lat,$long';
+    String googleURL =
+        'https://www.google.com/maps/search/?api=1&query=$lat,$long';
     await canLaunchUrlString(googleURL)
-      ? await launchUrlString(googleURL)
-      : throw 'Could not launch $googleURL';
+        ? await launchUrlString(googleURL)
+        : throw 'Could not launch $googleURL';
   }
 
   @override
@@ -137,16 +142,24 @@ class RegisterNewLocation extends State<RegisterLocation> {
           ),
         ),
         backgroundColor: Color.fromARGB(255, 0, 88, 202),
-        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(locationMessage, textAlign: TextAlign.center,),
-            Text('Address: $address', textAlign: TextAlign.center,),
-            const SizedBox(height: 20,),
+            Text(
+              locationMessage,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              'Address: $address',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
-              onPressed: (){
+              onPressed: () {
                 _getCurrentLocation().then((value) {
                   lat = '${value.latitude}';
                   long = '${value.longitude}';
@@ -158,22 +171,23 @@ class RegisterNewLocation extends State<RegisterLocation> {
                   _liveLocation();
                 });
                 // getAddressFromLatLong(adLat, adLong);
-              }, 
+              },
               child: Text('Get Current Location'),
-              ),
-            const SizedBox(height: 20,),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
-              onPressed: (){
+              onPressed: () {
                 _openMap(lat, long);
-              }, 
+              },
               child: const Text('Open Google Map'),
-              ),  
+            ),
           ],
         ),
       ),
-      
       bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9), 
+          backgroundColor: const Color(0xFFD9D9D9),
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           items: [
