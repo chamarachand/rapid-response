@@ -54,6 +54,9 @@ dependencies:
   geolocator: ^11.0.0
   geocoding: ^2.0.1
   url_launcher: ^6.1.2
+  speech_to_text: ^6.6.0
+
+
 
 dev_dependencies:
   flutter_test:
@@ -83,8 +86,10 @@ flutter:
     - assets\contact-info.png
     - assets\security.png
     - assets\register.png
+    - assets\doctor_2.png
     - assets\user-type.png
     - assets\first-responders.png
+
     # - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
