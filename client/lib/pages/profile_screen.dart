@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
+import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -11,10 +11,10 @@ class Profile extends StatefulWidget {
 
 class ProfileScreen extends State<Profile> {
   int _selectedIndex = 1;
-  
-  final profileImg = "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
- 
-  
+
+  final profileImg =
+      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
+
   var _username = "";
   var _firstName = "";
   var _lastName = "";
@@ -46,57 +46,56 @@ class ProfileScreen extends State<Profile> {
   }
 
   @override
-  Widget buildUserInfoDisplay(IconData iconData, String title, String data){
+  Widget buildUserInfoDisplay(IconData iconData, String title, String data) {
     return Expanded(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
+        child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Icon(
+              iconData,
+              size: 35,
+            ),
+          ),
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: Icon(
-                  iconData,
-                  size: 35,),
-                ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            title,
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 70, 70, 70),
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        data,
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 70, 70, 70),
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              IconButton(
-                onPressed: (){}, 
-                icon: const Icon(Icons.edit),
+              Text(
+                data,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ],
+          )),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.edit),
           ),
-      )
-    );
+        ],
+      ),
+    ));
   }
 
   @override
@@ -135,18 +134,19 @@ class ProfileScreen extends State<Profile> {
                 bottom: 5,
                 right: 100,
                 child: ElevatedButton(
-                  onPressed: (){},
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(), 
+                    shape: const CircleBorder(),
                     backgroundColor: Colors.black,
                   ),
                   child: const Icon(Icons.camera_alt),
                 ),
-                )
+              )
             ],
           ),
           buildUserInfoDisplay(Icons.person, "Username", _username),
-          buildUserInfoDisplay(Icons.info_outline, "Name", "$_firstName $_lastName"),
+          buildUserInfoDisplay(
+              Icons.info_outline, "Name", "$_firstName $_lastName"),
           buildUserInfoDisplay(Icons.credit_card, "NIC Number", _nicNo),
           buildUserInfoDisplay(Icons.phone, "Contact Number", _phnNo),
           buildUserInfoDisplay(Icons.email, "Email Address", _email),
@@ -196,5 +196,5 @@ class ProfileScreen extends State<Profile> {
     setState(() {
       _selectedIndex = index;
     });
-  }  
+  }
 }

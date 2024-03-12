@@ -1,9 +1,11 @@
 import 'package:client/pages/login_textfields.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 import 'register_screen_2.dart';
 import 'package:client/pages/main_screen.dart';
+import 'package:client/pages/main_screen_fr.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:client/api/firebase_api.dart';
 
@@ -38,13 +40,18 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final token = jsonDecode(response.body)['token'];
         final idToken = jsonDecode(response.body)['id_token'];
+        final decodedToken = JwtDecoder.decode(token);
         UserSecureStorage.setAccessToken(token);
         UserSecureStorage.setIdToken(idToken);
+
         _setErrorMsg("");
         if (mounted) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const MainMenu()),
+            MaterialPageRoute(
+                builder: (context) => decodedToken['userType'] == 'civilian'
+                    ? const MainMenu()
+                    : const MainMenuFR()),
             (route) => false, // Clear all routes in the stack
           );
         }

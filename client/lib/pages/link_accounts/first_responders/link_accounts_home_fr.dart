@@ -1,7 +1,8 @@
+import 'package:client/pages/link_accounts/first_responders/my_supervisees.dart';
+import 'package:client/pages/link_accounts/first_responders/supervisee_requests.dart';
 import 'package:flutter/material.dart';
-import 'package:client/pages/link_accounts/add_em_comtact_screen.dart';
-import 'package:client/pages/link_accounts/my_emergency_contacts.dart';
-import 'package:client/pages/link_accounts/emergency_contact_requests.dart';
+import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
+import 'package:client/pages/link_accounts/first_responders/my_supervisors.dart';
 
 class LinkAccountHome extends StatefulWidget {
   const LinkAccountHome({super.key});
@@ -16,6 +17,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
           title: const Text("Linked Accounts"),
           backgroundColor: const Color(0xFFadd8e6)),
@@ -27,13 +29,12 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
               children: [
                 Card(
                   child: ListTile(
-                    title: const Text("My Emergency Contacts"),
+                    title: const Text("My Supervisors"),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) =>
-                                  const MyEmergencyContacts())));
+                              builder: ((context) => const MySupervisors())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),
@@ -41,13 +42,26 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                 ),
                 Card(
                   child: ListTile(
-                    title: const Text("Emergency Contact Requests"),
+                    title: const Text("My Supervisees"),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => const MySupervisees())));
+                    },
+                    tileColor: const Color(0xFFF7D8D8),
+                    trailing: const Icon(Icons.keyboard_arrow_right),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    title: const Text("Supervisee Requests"),
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: ((context) =>
-                                  const EmergencyContactRequets())));
+                                  const SuperviseeRequests())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),
@@ -61,7 +75,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                 bottom: 30), // Try to use a better approach
             child: Center(
               child: Image.asset(
-                "assets/family.png",
+                "assets/supervisor.png",
               ),
             ),
           )
