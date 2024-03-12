@@ -1,9 +1,5 @@
 import 'dart:convert';
-<<<<<<<< HEAD:client/lib/pages/link_accounts/civilians/add_em_comtact_screen.dart
-import 'package:client/pages/link_accounts/civilians/add_em_contact_screen2.dart';
-========
 import 'package:client/pages/link_accounts/civilians/civilian_user.dart';
->>>>>>>> 2aecb9fb20415bfc87ee89eb3e0ddbf0ed43c2f5:client/lib/pages/link_accounts/civilians/search_civilian.dart
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
