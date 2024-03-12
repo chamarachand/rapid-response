@@ -30,8 +30,8 @@ class emergency extends State<SOSpage> {
   bool _showTextField = false;
   String sosType = 'Accident';
   final _textController = TextEditingController();
-  String? imageURL;
-  String? voiceURL;
+  String imageURL = 'none';
+  String voiceURL = 'none';
   late String lat;
   late String long;
   late Position currentPosition;
@@ -316,20 +316,9 @@ class emergency extends State<SOSpage> {
 
   Future sosButtonPressed() async {
     currentPosition = await getLocation.getCurrentLocation();
-    //lat = currentPosition.latitude.toString();
-    //long = currentPosition.longitude.toString();
-    //print("Position latitude = $lat longitude = $long");
-
     imageURL = (await uploadToFirebase.uploadImageToFirebase(image))!;
 
-    // if (imageURL != null) {
-    //   print("SOS sent with image: $imageURL");
-    // }
-
-    // print("SOS Type : $sosType");
-
     sendDataToBackend();
-    print(sosType);
     _textController.clear();
   }
 
