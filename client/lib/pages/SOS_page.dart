@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:client/pages/SOSFunctions/GetLocation.dart';
+import 'package:client/pages/SOSFunctions/UploadToFirebase.dart';
 import 'package:client/storage/user_secure_storage.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,6 +21,9 @@ class SOSpage extends StatefulWidget {
   emergency createState() => emergency();
 }
 
+GetLocation getLocation = GetLocation();
+UploadToFirebase uploadToFirebase = UploadToFirebase();
+
 class emergency extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
 
@@ -32,7 +36,7 @@ class emergency extends State<SOSpage> {
   String? voiceURL;
   late String lat;
   late String long;
-  late Position currentLocation;
+  late Position currentPosition;
   String locationMessage = 'Current Location of the User';
 
   @override
@@ -217,63 +221,6 @@ class emergency extends State<SOSpage> {
         ),
       );
 
-  FlutterSoundRecorder recorder = FlutterSoundRecorder();
-  FlutterSoundPlayer player = FlutterSoundPlayer();
-
-  Future<void> requestMicrophonePermission() async {
-    var status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      throw 'Microphone permission not granted';
-    } else {
-      await startRecorder(); // Call the recording method if permission is granted
-    }
-  }
-
-  Future<void> startRecorder() async {
-    // Request microphone permission (if needed)
-    await requestMicrophonePermission(); // Assuming you have this function
-
-    // Check if recorder is already running
-    if (recorder.isRecording) {
-      print('Recorder is already running!');
-      return;
-    }
-
-    await recorder.openRecorder();
-    await recorder.startRecorder(toFile: 'audio');
-  }
-
-  Future<void> stopRecorder() async {
-    // Ensure recorder state is checked
-    if (recorder.isRecording) {
-      String? path = await recorder.stopRecorder();
-      print('Recorded audio saved at: $path');
-    }
-  }
-
-  Future<void> startPlayer() async {
-    String? path = await recorder.getRecordURL(
-        path: 'audio'); // Adjust the file path if needed
-    if (path != null) {
-      await player.openPlayer();
-      await player.startPlayer(
-        fromURI: path,
-        whenFinished: () {
-          setState(() {});
-        },
-      );
-    } else {
-      print("No recording found to play");
-    }
-  }
-
-  @override
-  void dispose() {
-    recorder.closeRecorder();
-    player.closePlayer();
-    super.dispose();
-  }
-
 // Drop Down Widget
   Widget buildDropdownMenu() => Container(
         decoration: const BoxDecoration(
@@ -357,66 +304,24 @@ class emergency extends State<SOSpage> {
       );
 
   Future sosButtonPressed() async {
+    currentPosition = await getLocation.getCurrentLocation();
+    lat = currentPosition.latitude.toString();
+    long = currentPosition.longitude.toString();
+    print("Position latitude = $lat longtitude = $long");
+
     if (sosType == 'Other') {
       sosType = _textController.text;
     }
     print(sosType);
-    imageURL = (await uploadImageToFirebase())!;
-
-    sendDataToBackend();
-    _printCurrentPosition();
+    imageURL = (await uploadToFirebase.uploadImageToFirebase(image))!;
 
     if (imageURL != null) {
       print("SOS sent with image: $imageURL");
     }
 
     print("SOS Type : $sosType");
-  }
 
-// Get Location
-  Future<Position> getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location Permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permission are permanently denied, we cannot request permission.');
-    }
-
-    return await Geolocator.getCurrentPosition();
-  }
-
-  Future<void> _printCurrentPosition() async {
-    print('Latitude: $lat');
-    print('Longitude: $long');
-  }
-
-// Send image and voice file to firebase and return urls.
-  Future<String?> uploadImageToFirebase() async {
-    if (image == null) return null; // Early exit if no image
-
-    final storageRef = FirebaseStorage.instance.ref();
-    final imagesRef = storageRef.child("sos_images/${DateTime.now()}.jpg");
-
-    try {
-      await imagesRef.putFile(image!); // Upload!
-      final downloadURL = await imagesRef.getDownloadURL();
-      return downloadURL;
-    } on FirebaseException catch (e) {
-      // Handle errors (consider showing a dialog or a snackbar)
-      print("Upload failed: $e");
-      return null;
-    }
+    sendDataToBackend();
   }
 
 // Send data to backend imageURL, voiceURL, emergencyType, currentLocation
@@ -427,7 +332,7 @@ class emergency extends State<SOSpage> {
     String? image = imageURL;
     String? voice = voiceURL; // Adjust if needed
     String? emergencyType = sosType;
-    Position? location = currentLocation;
+    Position? location = currentPosition;
 
     Map<String, dynamic> dataToSend = {
       'id': id,
@@ -461,5 +366,62 @@ class emergency extends State<SOSpage> {
     } catch (error) {
       print('Error sending data: $error');
     }
+  }
+
+  FlutterSoundRecorder recorder = FlutterSoundRecorder();
+  FlutterSoundPlayer player = FlutterSoundPlayer();
+
+  Future<void> requestMicrophonePermission() async {
+    var status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw 'Microphone permission not granted';
+    } else {
+      await startRecorder(); // Call the recording method if permission is granted
+    }
+  }
+
+  Future<void> startRecorder() async {
+    // Request microphone permission (if needed)
+    await requestMicrophonePermission(); // Assuming you have this function
+
+    // Check if recorder is already running
+    if (recorder.isRecording) {
+      print('Recorder is already running!');
+      return;
+    }
+
+    await recorder.openRecorder();
+    await recorder.startRecorder(toFile: 'audio');
+  }
+
+  Future<void> stopRecorder() async {
+    // Ensure recorder state is checked
+    if (recorder.isRecording) {
+      String? path = await recorder.stopRecorder();
+      print('Recorded audio saved at: $path');
+    }
+  }
+
+  Future<void> startPlayer() async {
+    String? path = await recorder.getRecordURL(
+        path: 'audio'); // Adjust the file path if needed
+    if (path != null) {
+      await player.openPlayer();
+      await player.startPlayer(
+        fromURI: path,
+        whenFinished: () {
+          setState(() {});
+        },
+      );
+    } else {
+      print("No recording found to play");
+    }
+  }
+
+  @override
+  void dispose() {
+    recorder.closeRecorder();
+    player.closePlayer();
+    super.dispose();
   }
 }
