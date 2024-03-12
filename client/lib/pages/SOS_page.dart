@@ -26,11 +26,9 @@ UploadToFirebase uploadToFirebase = UploadToFirebase();
 
 class emergency extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
-
   File? image;
-
   bool _showTextField = false;
-  String? sosType;
+  String sosType = 'Accident';
   final _textController = TextEditingController();
   String? imageURL;
   String? voiceURL;
@@ -256,6 +254,10 @@ class emergency extends State<SOSpage> {
               setState(() {
                 _chosenModel = sosType!;
                 _showTextField = sosType == 'Other';
+                if (sosType == 'Other') {
+                  sosType = _textController.text;
+                }
+                onChangedSOSType(sosType!);
               });
             },
             hint: const Text(
@@ -283,6 +285,11 @@ class emergency extends State<SOSpage> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               )),
+          onChanged: (newText) {
+            setState(() {
+              sosType = newText;
+            });
+          },
         )
       ]);
 
@@ -303,25 +310,27 @@ class emergency extends State<SOSpage> {
         ),
       );
 
+  Future onChangedSOSType(String changedSOSType) async {
+    sosType = changedSOSType;
+  }
+
   Future sosButtonPressed() async {
     currentPosition = await getLocation.getCurrentLocation();
-    lat = currentPosition.latitude.toString();
-    long = currentPosition.longitude.toString();
-    print("Position latitude = $lat longtitude = $long");
+    //lat = currentPosition.latitude.toString();
+    //long = currentPosition.longitude.toString();
+    //print("Position latitude = $lat longitude = $long");
 
-    if (sosType == 'Other') {
-      sosType = _textController.text;
-    }
-    print(sosType);
     imageURL = (await uploadToFirebase.uploadImageToFirebase(image))!;
 
-    if (imageURL != null) {
-      print("SOS sent with image: $imageURL");
-    }
+    // if (imageURL != null) {
+    //   print("SOS sent with image: $imageURL");
+    // }
 
-    print("SOS Type : $sosType");
+    // print("SOS Type : $sosType");
 
     sendDataToBackend();
+    print(sosType);
+    _textController.clear();
   }
 
 // Send data to backend imageURL, voiceURL, emergencyType, currentLocation
@@ -333,6 +342,12 @@ class emergency extends State<SOSpage> {
     String? voice = voiceURL; // Adjust if needed
     String? emergencyType = sosType;
     Position? location = currentPosition;
+
+    print("id: $id");
+    print("image = $image");
+    print("voice = $voice");
+    print("sosType = $emergencyType");
+    print("Position = $location");
 
     Map<String, dynamic> dataToSend = {
       'id': id,
