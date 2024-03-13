@@ -143,7 +143,7 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
                 size: 55,
                 ),
             ),
-            )
+          )
         ],
       ),
       
