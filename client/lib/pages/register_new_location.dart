@@ -139,7 +139,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _getCurrentLocation().then((value) {});
+                    _getCurrentLocation();
                   },
                   child: const Text('Current Location'),
                 ),
