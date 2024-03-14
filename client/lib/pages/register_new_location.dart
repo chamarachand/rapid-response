@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RegisterLocation extends StatefulWidget {
   const RegisterLocation({super.key});
@@ -20,6 +21,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
   bool showLocationInputs = false;
   TextEditingController latitudeController = TextEditingController();
   TextEditingController longitudeController = TextEditingController();
+  late Position _previousPosition;
 
   int _selectedIndex = 1;
 
@@ -46,54 +48,91 @@ class RegisterNewLocation extends State<RegisterLocation> {
     _loadToken();
   }
 
+  Future<void> _requestLocationPermission() async {
+      var status = await Permission.location.request();
+      if (status.isGranted) {
+        _getCurrentLocation();
+      } else {}
+    }
+
   Future<void> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location service disabled');
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permission denied');
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('Location service disabled');
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permission is permanently denied. We cannot access yoour location.');
-    }
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('Location permission denied');
+        }
+      }
 
-    // Get current position
-    Position position = await Geolocator.getCurrentPosition();
-    setState(() {
-      lat = position.latitude;
-      long = position.longitude;
-    });
-    _setLocation(lat, long);
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception(
+            'Location permission is permanently denied. We cannot access your location.');
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      _setLocation(position.latitude, position.longitude);
+
+      setState(() {
+        _previousPosition = position;
+      });
+
+      LocationSettings locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      );
+      // Start listening for location updates
+      Geolocator.getPositionStream(locationSettings: locationSettings)
+      .listen((Position newPosition) {
+        // Calculate distance between new and previous position
+        double distanceInMeters = Geolocator.distanceBetween(
+          _previousPosition.latitude,
+          _previousPosition.longitude,
+          newPosition.latitude,
+          newPosition.longitude,
+        );
+
+        // If user moved more than 100 meters, update previous position
+        if (distanceInMeters > 100) {
+          setState(() {
+            _previousPosition = newPosition;
+          });
+          _setLocation(newPosition.latitude, newPosition.longitude);
+        }
+      }
+      );
+    } catch (e) {}
   }
 
-  Future<void> _setLocation(double lat, double long) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, long);
-      Placemark place = placemarks.first;
-      if (placemarks != null && placemarks.isNotEmpty) {
+  void _setLocation(double nLat, double nLong) {
+    placemarkFromCoordinates(nLat, nLong).then((List<Placemark> placemarks) {
+      if (placemarks.isNotEmpty) {
         setState(() {
+          Placemark place = placemarks.first;
           newAddress = '${place.street}, ${place.locality}, ${place.country}';
+          lat = nLat;
+          long = nLong;
         });
       } else {
         setState(() {
           newAddress = 'No Address Found';
         });
       }
-    } catch (e) {
-      print('Error: $e');
+    }).catchError((e) {
       setState(() {
         newAddress = 'Error Fetching Address';
       });
-    }
+    });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +146,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
             fontWeight: FontWeight.normal,
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 0, 88, 202),
+        backgroundColor: const Color.fromARGB(255, 0, 88, 202),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -139,7 +178,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _getCurrentLocation();
+                    _requestLocationPermission();
                   },
                   child: const Text('Current Location'),
                 ),
@@ -159,14 +198,14 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 children: [
                   TextField(
                     controller: latitudeController,
-                    decoration: InputDecoration(labelText: 'Latitude'),
+                    decoration: const InputDecoration(labelText: 'Latitude'),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   TextField(
                     controller: longitudeController,
-                    decoration: InputDecoration(labelText: 'Longitude'),
+                    decoration: const InputDecoration(labelText: 'Longitude'),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -176,7 +215,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                             showLocationInputs = false;
                           });
                         },
-                        child: Text('Back'),
+                        child: const Text('Back'),
                       ),
                       ElevatedButton(
                         onPressed: () {
@@ -194,15 +233,15 @@ class RegisterNewLocation extends State<RegisterLocation> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text('Invalid Input'),
-                                  content: Text(
+                                  title: const Text('Invalid Input'),
+                                  content: const Text(
                                       'Please enter valid latitude (-90 to 90) and longitude (-180 to 180) values.'),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text('OK'),
+                                      child: const Text('OK'),
                                     ),
                                   ],
                                 );
@@ -215,18 +254,18 @@ class RegisterNewLocation extends State<RegisterLocation> {
                             });
                           }
                         },
-                        child: Text('Set'),
+                        child: const Text('Set'),
                       ),
                     ],
                   ),
                 ],
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 // Handle confirm
               },
-              child: Text('Confirm'),
+              child: const Text('Confirm'),
             ),
           ],
         ),
