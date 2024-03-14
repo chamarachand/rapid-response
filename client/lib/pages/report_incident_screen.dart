@@ -1,7 +1,13 @@
 import 'dart:io';
+<<<<<<< Updated upstream
+=======
+import 'package:client/pages/SOS_page.dart';
+import 'package:client/pages/SpeechtoText.dart';
+>>>>>>> Stashed changes
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -26,6 +32,7 @@ class _ReportScreenState extends State<ReportScreen> {
    
   String imageUrl = '';
   File? image;
+  late Position USer_Current_Position;
 
   @override
   void initState() {
@@ -144,6 +151,9 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Future<void> _submitIncident() async {
+    USer_Current_Position = await getLocation.getCurrentLocation();
+    print(USer_Current_Position);
+
     final downloadUrl = await uploadImageToFirebase();
 
             if (downloadUrl != null) {
