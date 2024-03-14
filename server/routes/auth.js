@@ -33,10 +33,8 @@ router.post("/", async (req, res) => {
     const token = user.generateAuthToken();
     //-sahan- added id token
     const id_token = user.generateIdToken();
-    // res.send(token);
-//-sahan- added id token
+    //-sahan- added id token
     res.send({ token: token, id_token: id_token });
-
   } catch (error) {
     res.status(500).send("Internal server error");
   }
