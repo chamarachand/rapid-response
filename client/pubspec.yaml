@@ -53,7 +53,7 @@ dependencies:
   firebase_app_check: ^0.2.1+17
   geolocator: ^11.0.0
   geocoding: ^2.0.1
-  url_launcher: ^6.1.2
+  url_launcher: ^6.0.6
   speech_to_text: ^6.6.0
 
 
