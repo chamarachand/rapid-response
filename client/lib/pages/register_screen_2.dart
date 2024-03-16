@@ -119,11 +119,11 @@ class _RegisterPage2State extends State<RegisterPage2> {
                 style: TextStyle(fontSize: 20),
               ),
               content: const Text(
-                "A User with the given NIC already exists in the system. If you already have an account, try login",
+                "The selected type of a user with the given NIC already exists in the system",
                 textAlign: TextAlign.center,
               ),
               icon: const Icon(
-                Icons.close_rounded,
+                Icons.warning_rounded,
                 color: Colors.red,
                 size: 40,
               ),
