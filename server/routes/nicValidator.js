@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const Joi = require("joi");
+const { Civilian } = require("../models/civilian");
+const { FirstResponder } = require("../models/first-responder");
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
@@ -17,6 +19,34 @@ router.post("/", async (req, res) => {
     return res.status(200).send("Valid");
 
   return res.status(403).send("Invalid");
+});
+
+router.post("/is-unique", async (req, res) => {
+  const { error } = Joi.object({
+    nicNo: Joi.string()
+      .min(9)
+      .max(12)
+      .regex(/^(?:\d{9}[Vv]|\d{12})$/)
+      .required(),
+  }).validate(req.body);
+
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const { userType } = req.query;
+
+  if (userType !== "civilian" && userType !== "first-responder")
+    return res.status(400).send("Bad Request");
+
+  const { nicNo } = req.body;
+
+  const user =
+    userType === "civilian"
+      ? await Civilian.findOne({ nicNo: nicNo })
+      : await FirstResponder.findOne({ nicNo: nicNo });
+
+  if (user)
+    return res.status(200).send("User with the given id already exists");
+  return res.status(404).send("User with the given id not found");
 });
 
 function getGenderAndDob(nicNo) {
