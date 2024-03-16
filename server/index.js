@@ -24,7 +24,7 @@ app.use("/api/notification", notificationRoutes);
 app.use("/api/linked-accounts", linkedAccountRoutes);
 app.use("/api/sos-report", sosRoutes);
 app.use("/api/incident-report", incidentReportRoutes);
-app.use("/api/area-event", incidentReportRoutes);
+app.use("/api/area-event", areaEventRoutes);
 
 // Connecting to the port
 const port = process.env.PORT || 3000;
