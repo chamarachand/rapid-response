@@ -50,6 +50,27 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
     }
   }
 
+  sendRequestConfirmNotification(String to) async {
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    final response =
+        await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              "from": decodedIdToken["id"],
+              "to": to,
+              "type": "supervisee-request-accept",
+              "title": "Request Accepted",
+              "body":
+                  "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your supervisee"
+            }));
+
+    if (response.statusCode == 200) {
+      print("Notification send successfully!");
+    }
+  }
+
   void showSampleDialog(String notificationId, String requestedUserId) {
     showDialog(
         context: context,
@@ -79,6 +100,7 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
                       setState(() {
                         _requests = getRequests();
                       });
+                      sendRequestConfirmNotification(requestedUserId);
                     },
                     child: const Text("Yes")),
                 TextButton(

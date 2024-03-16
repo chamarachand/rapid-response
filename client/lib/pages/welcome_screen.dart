@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'add_event.dart';
 import 'register_screen_1.dart';
+import 'package:client/pages/incidentPost/incidentPostPage.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -91,6 +92,15 @@ class WelcomePage extends StatelessWidget {
                                 MaterialPageRoute(
                                     builder: (context) => const add_event())),
                             child: const Text("To Add Event (Test)"))),
+                    Center(
+                      child: ElevatedButton(
+                          onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const IncidentPostPage())),
+                          child: const Text("Incident post")),
+                    ),
                   ])),
         ));
   }
