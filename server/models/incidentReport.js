@@ -25,10 +25,10 @@ const IncidentReport = mongoose.model("IncidentReport", incidentReportSchema);
 function validateIncidentReport(incidentReport) {
   const schema = Joi.object({
     victimId: Joi.objectId().required(),
-    location: Joi.string(),
-    image: Joi.string().max(1024),
-    voice: Joi.string(),
-    description: Joi.string().max(9048),
+    location: Joi.string().allow(""),
+    image: Joi.string().max(1024).allow(""),
+    voice: Joi.string().allow(""),
+    description: Joi.string().max(9048).allow(""),
     timeStamp: Joi.date(),
   });
 
