@@ -18,8 +18,7 @@ class Profile extends StatefulWidget {
 class ProfileScreen extends State<Profile> {
   int _selectedIndex = 1;
   File? image;
-
-  final profileImg =
+  String profileImg =
       "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
   var _username = "";
@@ -133,8 +132,8 @@ class ProfileScreen extends State<Profile> {
                     child:image != null
                       ? Image.file(
                           image!,
-                          width: 160,
-                          height: 160,
+                          width: 130,
+                          height: 130,
                           fit: BoxFit.cover,
                         ) :
                     Image.network(
