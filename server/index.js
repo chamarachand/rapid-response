@@ -9,6 +9,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const linkedAccountRoutes = require("./routes/linkedAccountRoutes");
 const sosRoutes = require("./routes/sosRoute");
 const incidentReportRoutes = require("./routes/incidentReportRoutes");
+const areaEventRoutes = require("./routes/areaEventRoutes");
 
 // Database connection
 connection();
@@ -23,6 +24,7 @@ app.use("/api/notification", notificationRoutes);
 app.use("/api/linked-accounts", linkedAccountRoutes);
 app.use("/api/sos-report", sosRoutes);
 app.use("/api/incident-report", incidentReportRoutes);
+app.use("/api/area-event", areaEventRoutes);
 
 // Connecting to the port
 const port = process.env.PORT || 3000;
