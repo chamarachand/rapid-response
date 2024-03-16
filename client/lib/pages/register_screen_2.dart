@@ -64,14 +64,15 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
   uniqueNic() async {
     try {
-      var response =
-          await http.post(Uri.parse("http://10.0.2.2:3000/api/validate-nic"),
-              headers: {
-                'Content-Type': 'application/json', // Add this line
-              },
-              body: jsonEncode({
-                "nicNo": _nicnoController.text,
-              }));
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/validate-nic/is-unique?userType=${UserType.getUserType() == UserTypes.civilian ? "civilian" : "first-responder"}"),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            "nicNo": _nicnoController.text,
+          }));
       if (response.statusCode == 400) {
         return true;
       } else if (response.statusCode == 200) {
