@@ -45,7 +45,7 @@ function validate(notification) {
     title: Joi.string().required(),
     body: Joi.string().required(),
   });
-  return schema.validate();
+  return schema.validate(notification);
 }
 
 module.exports = { Notification, validate };

@@ -62,6 +62,28 @@ class _RegisterPage2State extends State<RegisterPage2> {
     }
   }
 
+  uniqueNic() async {
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/validate-nic/is-unique?userType=${UserType.getUserType() == UserTypes.civilian ? "civilian" : "first-responder"}"),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            "nicNo": _nicnoController.text,
+          }));
+      if (response.statusCode == 400) {
+        return true;
+      } else if (response.statusCode == 200) {
+        showNicAlreadyExistsDialog();
+        return false;
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   void showFailAlertDialog() {
     showDialog(
         context: context,
@@ -76,6 +98,32 @@ class _RegisterPage2State extends State<RegisterPage2> {
               ),
               icon: const Icon(
                 Icons.close_rounded,
+                color: Colors.red,
+                size: 40,
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text("OK"))
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
+  }
+
+  showNicAlreadyExistsDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                "A User with the given NIC Already Exists",
+                style: TextStyle(fontSize: 20),
+              ),
+              content: const Text(
+                "The selected type of a user with the given NIC already exists in the system",
+                textAlign: TextAlign.center,
+              ),
+              icon: const Icon(
+                Icons.warning_rounded,
                 color: Colors.red,
                 size: 40,
               ),
@@ -215,6 +263,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
               ElevatedButton(
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) return;
+
+                    if (!await uniqueNic()) return;
 
                     if (!await validateNic()) return;
 
