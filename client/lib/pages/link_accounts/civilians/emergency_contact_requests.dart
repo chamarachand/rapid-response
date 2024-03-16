@@ -51,6 +51,26 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
+  sendRequestConfirmNotification(String to) async {
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    final response =
+        await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
+            body: jsonEncode({
+              "from": decodedIdToken["id"],
+              "to": to,
+              "type": "emergency-contact-request-accept",
+              "title": "Request Accepted",
+              "body":
+                  "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your emergency contact"
+            }));
+
+    if (response.statusCode == 200) {
+      print("Notification send successfully!");
+    }
+  }
+
   void showSampleDialog(String notificationId, String requestedUserId) {
     showDialog(
         context: context,
@@ -80,6 +100,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                       setState(() {
                         _requests = getRequests();
                       });
+                      sendRequestConfirmNotification(requestedUserId);
                     },
                     child: const Text("Yes")),
                 TextButton(
