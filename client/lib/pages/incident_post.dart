@@ -19,20 +19,23 @@ class Incident_post extends StatelessWidget {
       body: Column(
         children: [
           Align(
-            alignment: Alignment.topLeft,
-            child: Container(
-              height: MediaQuery.of(context).size.height / 20,
-              width: MediaQuery.of(context).size.width / 2,
-              child: ElevatedButton(
-                  onPressed: () {
-                    //button fuctionality
-                    print("button pressed");
-                  },
-                  child: Text("Location"),
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(255, 129, 198, 255)))),
-            ),
+            alignment:Alignment.topLeft,
+          child: Container(
+            height: MediaQuery.of(context).size.height/20,
+            width: MediaQuery.of(context).size.width/2,
+            child: ElevatedButton(
+              onPressed: (){
+                //button fuctionality
+                print("button pressed");
+              },
+               child: Text("Location"),
+               style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>
+                (const Color.fromARGB(255, 129, 198, 255))
+               )
+               
+               ),
+          ),
           ),
           Expanded(
               child: ListView(
