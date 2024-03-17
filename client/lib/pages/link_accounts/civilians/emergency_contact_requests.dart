@@ -14,6 +14,7 @@ class EmergencyContactRequets extends StatefulWidget {
 }
 
 class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
+  late String? _accessToken;
   Future<List<dynamic>>? _requests;
 
   Future<List<dynamic>> getRequests() async {
@@ -36,15 +37,17 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
-  updateNotificationStatus(String notificationId) async {
-    final accessToken = await UserSecureStorage.getAccessToken();
+  void _getAccessToken() async {
+    _accessToken = await UserSecureStorage.getAccessToken();
+  }
 
+  updateNotificationStatus(String notificationId) async {
     final response = await http.patch(
         Uri.parse(
             "http://10.0.2.2:3000/api/notification/responded/$notificationId"),
         headers: {
           'Content-Type': 'application/json',
-          if (accessToken != null) 'x-auth-token': accessToken
+          if (_accessToken != null) 'x-auth-token': _accessToken!
         });
     if (response.statusCode == 200) {
       return true;
@@ -52,14 +55,12 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
   }
 
   addAsEmergencyContact(String requestedUserId) async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-
     final response = await http.patch(
         Uri.parse(
             "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/add/$requestedUserId"),
         headers: {
           'Content-Type': 'application/json',
-          if (accessToken != null) 'x-auth-token': accessToken
+          if (_accessToken != null) 'x-auth-token': _accessToken!
         });
 
     if (response.statusCode == 200) {
@@ -73,7 +74,10 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
 
     final response =
         await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+              'Content-Type': 'application/json',
+              if (_accessToken != null) 'x-auth-token': _accessToken!
+            },
             body: jsonEncode({
               "from": decodedIdToken["id"],
               "to": to,
@@ -147,6 +151,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
   void initState() {
     super.initState();
     _requests = getRequests();
+    _getAccessToken();
   }
 
   @override
