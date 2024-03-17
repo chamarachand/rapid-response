@@ -41,6 +41,7 @@ router.post("/", async (req, res) => {
 
     user = new FirstResponder({ ...req.body, password: hashPassword });
     await user.save();
+    sendRegisterConfirmationMail(user.firstName, user.email);
     res.status(201).send("First responder user registered successfully!"); // we can send  the user as well
   } catch (error) {
     console.log(error);
