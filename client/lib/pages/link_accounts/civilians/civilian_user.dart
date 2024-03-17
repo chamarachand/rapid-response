@@ -47,8 +47,6 @@ class _AddUserPageState extends State<AddUserPage> {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
         _requestAlreadySent = false;
-      } else {
-        print(response.statusCode);
       }
     } catch (error) {
       print("Error: $error");
@@ -70,6 +68,10 @@ class _AddUserPageState extends State<AddUserPage> {
           }));
       if (response.statusCode == 200) {
         print("Notification send successfully");
+        showNotificationSuccessDialog(
+            widget._user["firstName"], widget._user["lastName"]);
+      } else if (response.statusCode == 202) {
+        print("Notification saved successfully. But no FCM token found");
         showNotificationSuccessDialog(
             widget._user["firstName"], widget._user["lastName"]);
       } else {
