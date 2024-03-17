@@ -84,8 +84,8 @@ router.patch(
 // First Responders
 
 // Get the list of supervisors of a particular first responder
-router.get("/supervisors/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/supervisors", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad request");
 
   try {
@@ -108,7 +108,7 @@ router.get("/supervisors/:userId", async (req, res) => {
 
 // Get the list of supervisees of a particular first responder
 router.get("/supervisees", authMiddleware, async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad request");
 
   try {
