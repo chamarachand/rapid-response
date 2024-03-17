@@ -75,7 +75,7 @@ router.get(
 
 // Get pending add as requests for a user
 router.get("/requests", authMiddleware, async (req, res) => {
-  const userId = req.params.id;
+  const userId = req.user.id;
   const { type } = req.query;
 
   if (!userId || !type) return res.status(400).send("Bad request");
@@ -118,7 +118,6 @@ router.get("/requests", authMiddleware, async (req, res) => {
 
       formattedNotifications.push(formattedNotification);
     }
-
     return res.status(200).send(formattedNotifications);
   } catch (error) {
     console.log("Error: " + error);
