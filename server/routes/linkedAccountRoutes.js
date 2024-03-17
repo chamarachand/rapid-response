@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 
 // Get the list of emergency contacts of a particular civilian
-router.get("/emergency-contacts/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/emergency-contacts", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad request");
 
   try {

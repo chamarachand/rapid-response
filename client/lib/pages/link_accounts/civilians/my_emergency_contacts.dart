@@ -16,10 +16,14 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
 
   Future<List<dynamic>> getEmergencyContacts() async {
     final accessToken = await UserSecureStorage.getAccessToken();
-    final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
-    final response = await http.get(Uri.parse(
-        "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/${decodedAccessToken["id"]}"));
+    final response = await http.get(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (accessToken != null) 'x-auth-token': accessToken
+        });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
