@@ -20,10 +20,10 @@ class MainMenuScreen extends State<MainMenu> {
   var _firstName = "";
 
   void _loadToken() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
 
-    if (accessToken != null) {
-      var decodedToken = JwtDecoder.decode(accessToken);
+    if (idToken != null) {
+      var decodedToken = JwtDecoder.decode(idToken);
       // Access token claims
       setState(() {
         _firstName = decodedToken["firstName"];
