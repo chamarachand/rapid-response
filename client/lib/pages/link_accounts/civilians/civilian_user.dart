@@ -15,25 +15,30 @@ class AddUserPage extends StatefulWidget {
 
 class _AddUserPageState extends State<AddUserPage> {
   dynamic _accessToken;
+  dynamic _idToken;
   bool _alreadyEmergencyContact = false;
   bool _requestAlreadySent = false;
 
   recieveAccessToken() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-    _accessToken = JwtDecoder.decode(accessToken!);
+    _accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    _idToken = JwtDecoder.decode(idToken!);
   }
 
   isEmergencyContact() async {
     try {
-      var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/${_accessToken["id"]}/${widget._user["_id"]}"));
+      var response = await http.get(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/${widget._user["_id"]}"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken,
+          });
       if (response.statusCode == 200) {
         setState(() {
           _alreadyEmergencyContact = true;
         });
-      } else if (response.statusCode == 404) {
-        print("false"); //remove this
-      }
+      } else if (response.statusCode == 404) {}
     } catch (error) {
       print("Error: $error");
     }

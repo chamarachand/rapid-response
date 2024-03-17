@@ -29,9 +29,11 @@ router.get("/emergency-contacts", authMiddleware, async (req, res) => {
 
 // Check if the inteded user is already an emergency contact
 router.get(
-  "/emergency-contacts/:currentUserId/:intendedUserId",
+  "/emergency-contacts/:intendedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, intendedUserId } = req.params;
+    const { intendedUserId } = req.params;
+    const currentUserId = req.user.id;
 
     if (!currentUserId || !intendedUserId)
       return res.status(400).send("Missing parameter/s");
