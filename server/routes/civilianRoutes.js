@@ -17,11 +17,11 @@ router.get("/search", authMiddleware, async (req, res) => {
 
     const users = await Civilian.find({
       username: { $regex: serachTerm, $options: "i" },
-    });
+    }).select("firstName lastName username profilePic");
 
     if (users.length === 0) return res.status(404).send("No users found");
 
-    res.send(users); // Change this to send only necessary details
+    res.send(users);
   } catch (error) {
     res.status(500).send("Internal server error");
   }
