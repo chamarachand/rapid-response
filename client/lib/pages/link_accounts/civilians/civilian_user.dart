@@ -46,8 +46,13 @@ class _AddUserPageState extends State<AddUserPage> {
 
   isRequestSent() async {
     try {
-      var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}?type=emergency-contact-request"));
+      var response = await http.get(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/search/request/${widget._user["_id"]}?type=emergency-contact-request"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken,
+          });
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 var admin = require("firebase-admin");
 const serviceAccount = require("../rapid-response-802d3-firebase-adminsdk-n69t0-43af2556f7.json");
+const authMiddleware = require("../middleware/authMiddleware");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 const { Notification, validate } = require("../models/notification");
@@ -37,9 +38,11 @@ router.get("/latest/:userId/:count", async (req, res) => {
 
 // Check if a request has been already sent to the intended user
 router.get(
-  "/search/request/:currentUserId/:intendedUserId",
+  "/search/request/:intendedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, intendedUserId } = req.params;
+    const currentUserId = req.user.id;
+    const { intendedUserId } = req.params;
     const { type } = req.query;
 
     if (!currentUserId || !intendedUserId || !type)
@@ -54,7 +57,7 @@ router.get(
 
     if (!user)
       return res.status(400).send("Intended user with given id not found");
-    // We can refactor this
+
     const notifications = await Notification.find({
       _id: { $in: user.notifications }, // Filter notifications by those in the intended user's notifications array
       from: currentUserId, // Filter notifications by the sender

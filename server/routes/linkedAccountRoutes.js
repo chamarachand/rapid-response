@@ -32,8 +32,8 @@ router.get(
   "/emergency-contacts/:intendedUserId",
   authMiddleware,
   async (req, res) => {
-    const { intendedUserId } = req.params;
     const currentUserId = req.user.id;
+    const { intendedUserId } = req.params;
 
     if (!currentUserId || !intendedUserId)
       return res.status(400).send("Missing parameter/s");
