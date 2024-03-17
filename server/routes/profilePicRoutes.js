@@ -4,7 +4,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 
-router.get("/profile-pic-url", async (req, res) => {
+router.get("/profile-pic-url", authMiddleware, async (req, res) => {
   const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad Request");
 
@@ -24,3 +24,5 @@ router.get("/profile-pic-url", async (req, res) => {
 
   return res.status(200).send(profilePic);
 });
+
+module.exports = router;

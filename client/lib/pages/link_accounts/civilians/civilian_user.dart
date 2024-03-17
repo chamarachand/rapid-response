@@ -16,6 +16,7 @@ class AddUserPage extends StatefulWidget {
 class _AddUserPageState extends State<AddUserPage> {
   dynamic _accessToken;
   dynamic _idToken;
+  String? _profilePicUrl;
   bool _alreadyEmergencyContact = false;
   bool _requestAlreadySent = false;
 
@@ -23,6 +24,24 @@ class _AddUserPageState extends State<AddUserPage> {
     _accessToken = await UserSecureStorage.getAccessToken();
     final idToken = await UserSecureStorage.getIdToken();
     _idToken = JwtDecoder.decode(idToken!);
+  }
+
+  getProfilePicUrl() async {
+    try {
+      var response = await http.get(
+          Uri.parse("http://10.0.2.2:3000/api/profile-pic/profile-pic-url"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken,
+          });
+      if (response.statusCode == 200) {
+        setState(() {
+          _profilePicUrl = response.body;
+        });
+      } else if (response.statusCode == 404) {}
+    } catch (error) {
+      print("Error: $error");
+    }
   }
 
   isEmergencyContact() async {
@@ -128,6 +147,7 @@ class _AddUserPageState extends State<AddUserPage> {
   initializeData() async {
     await recieveAccessToken();
     isEmergencyContact();
+    getProfilePicUrl();
   }
 
   @override
@@ -150,9 +170,10 @@ class _AddUserPageState extends State<AddUserPage> {
       ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29uJTIwYXZhdGFyfGVufDB8fDB8fHww"),
+          CircleAvatar(
+            backgroundImage: _profilePicUrl != null
+                ? NetworkImage(_profilePicUrl!)
+                : const NetworkImage(""),
             radius: 70,
           ),
           const SizedBox(height: 20),
