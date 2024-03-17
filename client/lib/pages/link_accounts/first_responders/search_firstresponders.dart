@@ -1,7 +1,8 @@
 import 'dart:convert';
-import 'package:client/pages/link_accounts/first_responders/first_responder_user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:client/storage/user_secure_storage.dart';
+import 'package:client/pages/link_accounts/first_responders/first_responder_user.dart';
 
 class UserSearchPage extends StatefulWidget {
   const UserSearchPage({super.key});
@@ -11,9 +12,14 @@ class UserSearchPage extends StatefulWidget {
 }
 
 class _UserSearchPageState extends State<UserSearchPage> {
+  late String? _accessToken;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
   List _searchResults = [];
+
+  void _getAccessToken() async {
+    _accessToken = await UserSecureStorage.getAccessToken();
+  }
 
   void _updateSearchQuery(String newQuery) {
     _searchQuery = newQuery;
@@ -27,6 +33,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
             "http://10.0.2.2:3000/api/first-responder/search?username=$_searchQuery"),
         headers: {
           'Content-Type': 'application/json',
+          if (_accessToken != null) 'x-auth-token': _accessToken!
         },
       );
       if (response.statusCode == 200) {
@@ -37,6 +44,12 @@ class _UserSearchPageState extends State<UserSearchPage> {
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAccessToken();
   }
 
   @override

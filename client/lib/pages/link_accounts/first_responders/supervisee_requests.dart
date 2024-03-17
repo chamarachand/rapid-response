@@ -13,14 +13,19 @@ class SuperviseeRequests extends StatefulWidget {
 }
 
 class SuperviseeRequestsState extends State<SuperviseeRequests> {
+  late String? _accessToken;
   Future<List<dynamic>>? _requests;
 
   Future<List<dynamic>> getRequests() async {
     final accessToken = await UserSecureStorage.getAccessToken();
-    final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
-    final response = await http.get(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/requests/${decodedAccessToken["id"]}?type=supervisee-request"));
+    final response = await http.get(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/notification/requests/?type=supervisee-request"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (accessToken != null) 'x-auth-token': accessToken
+        });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -31,20 +36,31 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
     }
   }
 
+  void _getAccessToken() async {
+    _accessToken = await UserSecureStorage.getAccessToken();
+  }
+
   updateNotificationStatus(String notificationId) async {
-    final response = await http.patch(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/responded/$notificationId"));
+    final response = await http.patch(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/notification/responded/$notificationId"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (_accessToken != null) 'x-auth-token': _accessToken!
+        });
     if (response.statusCode == 200) {
       return true;
     }
   }
 
   addAsSupervisee(String requestedUserId) async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-    final decodedAccessToken = JwtDecoder.decode(accessToken!);
-
-    final response = await http.patch(Uri.parse(
-        "http://10.0.2.2:3000/api/linked-accounts/supervisee-accounts/add/${decodedAccessToken["id"]}/$requestedUserId"));
+    final response = await http.patch(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/linked-accounts/supervisee-accounts/add/$requestedUserId"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (_accessToken != null) 'x-auth-token': _accessToken!
+        });
 
     if (response.statusCode == 200) {
       return true;
@@ -57,7 +73,10 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
 
     final response =
         await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+              'Content-Type': 'application/json',
+              if (_accessToken != null) 'x-auth-token': _accessToken!
+            },
             body: jsonEncode({
               "from": decodedIdToken["id"],
               "to": to,
@@ -130,6 +149,7 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
   void initState() {
     super.initState();
     _requests = getRequests();
+    _getAccessToken();
   }
 
   @override

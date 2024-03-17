@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 var admin = require("firebase-admin");
 const serviceAccount = require("../rapid-response-802d3-firebase-adminsdk-n69t0-43af2556f7.json");
+const authMiddleware = require("../middleware/authMiddleware");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 const { Notification, validate } = require("../models/notification");
@@ -11,8 +12,9 @@ admin.initializeApp({
 });
 
 // Get latest notifications
-router.get("/latest/:userId/:count", async (req, res) => {
-  const { userId, count } = req.params;
+router.get("/latest/:count", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+  const { count } = req.params;
 
   if (!userId || !count || isNaN(parseInt(count)) || parseInt(count) <= 0)
     return res.status(400).send("Bad Request");
@@ -37,9 +39,11 @@ router.get("/latest/:userId/:count", async (req, res) => {
 
 // Check if a request has been already sent to the intended user
 router.get(
-  "/search/request/:currentUserId/:intendedUserId",
+  "/search/request/:intendedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, intendedUserId } = req.params;
+    const currentUserId = req.user.id;
+    const { intendedUserId } = req.params;
     const { type } = req.query;
 
     if (!currentUserId || !intendedUserId || !type)
@@ -54,7 +58,7 @@ router.get(
 
     if (!user)
       return res.status(400).send("Intended user with given id not found");
-    // We can refactor this
+
     const notifications = await Notification.find({
       _id: { $in: user.notifications }, // Filter notifications by those in the intended user's notifications array
       from: currentUserId, // Filter notifications by the sender
@@ -70,8 +74,8 @@ router.get(
 );
 
 // Get pending add as requests for a user
-router.get("/requests/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/requests", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
   const { type } = req.query;
 
   if (!userId || !type) return res.status(400).send("Bad request");
@@ -114,7 +118,6 @@ router.get("/requests/:userId", async (req, res) => {
 
       formattedNotifications.push(formattedNotification);
     }
-
     return res.status(200).send(formattedNotifications);
   } catch (error) {
     console.log("Error: " + error);
@@ -123,7 +126,7 @@ router.get("/requests/:userId", async (req, res) => {
 });
 
 // Change responded to true in a notification
-router.patch("/responded/:notificationId", async (req, res) => {
+router.patch("/responded/:notificationId", authMiddleware, async (req, res) => {
   const { notificationId } = req.params;
 
   if (!notificationId) return res.status(400).send("Bad Request");
@@ -145,7 +148,7 @@ router.patch("/responded/:notificationId", async (req, res) => {
 });
 
 // send request notifications
-router.post("/send", async (req, res) => {
+router.post("/send", authMiddleware, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -202,7 +205,7 @@ router.post("/send", async (req, res) => {
       },
     });
     console.log("Notification send successfully");
-    res.send("Send Success");
+    res.status(200).send("Send Success");
   } catch (error) {
     console.error("Error: " + error);
     res.status(500).send("Internal Server Error");

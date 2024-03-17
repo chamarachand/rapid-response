@@ -3,13 +3,14 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const { sendRegisterConfirmationMail } = require("../services/emailService");
 const { Civilian, validate } = require("../models/civilian");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Get
 router.get("/", (req, res) => {
   res.send("This is civilian api");
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search", authMiddleware, async (req, res) => {
   try {
     const serachTerm = req.query.username;
     if (serachTerm === "") return res.send([]);
@@ -63,7 +64,7 @@ router.post("/", async (req, res) => {
 
     user = new Civilian({ ...req.body, password: hashPassword });
     await user.save();
-    // sendRegisterConfirmationMail(user.firstName, user.email);
+    sendRegisterConfirmationMail(user.firstName, user.email);
     res.status(201).send("Civilian user registered successfully!"); // we can send  the user as well
   } catch (error) {
     console.log(error);
