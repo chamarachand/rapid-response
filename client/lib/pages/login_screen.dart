@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
-import 'package:client/pages/register/register_screen_2.dart';
+import 'package:client/pages/register/register_screen_1.dart';
 import 'package:client/pages/main_screen.dart';
 import 'package:client/pages/main_screen_fr.dart';
 import 'package:client/storage/user_secure_storage.dart';
@@ -187,7 +187,8 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: ((context) => const RegisterPage2())));
+                              builder: ((context) =>
+                                  const UserTypeSelection())));
                     },
                     child: const Text(
                       "Don't Have a account? Register",
