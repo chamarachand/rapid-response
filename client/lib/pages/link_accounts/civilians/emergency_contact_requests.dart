@@ -197,8 +197,9 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                       children: [
                         Expanded(
                           child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundImage: NetworkImage(
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(request["from"]
+                                      ["profilePic"] ??
                                   "https://i.scdn.co/image/ab676161000051747d5aa798103bfb8562427274"),
                               radius: 24,
                             ),

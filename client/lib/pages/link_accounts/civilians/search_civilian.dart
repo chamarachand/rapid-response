@@ -115,11 +115,8 @@ class _UserListState extends State<UserList> {
               Expanded(
                   child: ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: user["profilePic"] != null
-                      ? NetworkImage(user["profilePic"])
-                      : const NetworkImage(
-                          "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
-                ),
+                    backgroundImage: NetworkImage(user["profilePic"] ??
+                        "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png")),
                 title: Text(user["username"]),
                 subtitle: Text(user["firstName"] + " " + user["lastName"]),
                 // trailing: const Icon(Icons.open_in_new, size: 22),

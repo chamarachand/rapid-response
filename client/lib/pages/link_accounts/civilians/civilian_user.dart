@@ -172,9 +172,8 @@ class _AddUserPageState extends State<AddUserPage> {
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           CircleAvatar(
-            backgroundImage: _profilePicUrl != null
-                ? NetworkImage(_profilePicUrl!)
-                : const NetworkImage(""),
+            backgroundImage: NetworkImage(_profilePicUrl ??
+                "https://www.transparenttextures.com/patterns/debut-light.png"),
             radius: 70,
           ),
           const SizedBox(height: 20),
