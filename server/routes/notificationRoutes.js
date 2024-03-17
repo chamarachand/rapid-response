@@ -148,7 +148,7 @@ router.patch("/responded/:notificationId", async (req, res) => {
 });
 
 // send request notifications
-router.post("/send", async (req, res) => {
+router.post("/send", authMiddleware, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -205,7 +205,7 @@ router.post("/send", async (req, res) => {
       },
     });
     console.log("Notification send successfully");
-    res.send("Send Success");
+    res.status(200).send("Send Success");
   } catch (error) {
     console.error("Error: " + error);
     res.status(500).send("Internal Server Error");

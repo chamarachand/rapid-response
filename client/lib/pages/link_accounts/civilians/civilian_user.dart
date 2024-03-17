@@ -67,14 +67,17 @@ class _AddUserPageState extends State<AddUserPage> {
     try {
       var response = await http.post(
           Uri.parse("http://10.0.2.2:3000/api/notification/send"),
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken
+          },
           body: jsonEncode({
-            "from": _accessToken["id"],
+            "from": _idToken["id"],
             "to": widget._user["_id"],
             "type": "emergency-contact-request",
             "title": "Add Emergency Contact Request",
             "body":
-                "${_accessToken["firstName"]} sent add as emergency contact request",
+                "${_idToken["firstName"]} ${_idToken["lastName"]} sent add as emergency contact request",
           }));
       if (response.statusCode == 200) {
         print("Notification send successfully");
