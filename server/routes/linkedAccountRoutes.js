@@ -132,8 +132,9 @@ router.get("/supervisees", authMiddleware, async (req, res) => {
 });
 
 // Check if the inteded user is already a supervisee
-router.get("/supervisee/:currentUserId/:intendedUserId", async (req, res) => {
-  const { currentUserId, intendedUserId } = req.params;
+router.get("/supervisee/:intendedUserId", authMiddleware, async (req, res) => {
+  const currentUserId = req.user.id;
+  const { intendedUserId } = req.params;
 
   if (!currentUserId || !intendedUserId)
     return res.status(400).send("Bad Request");
