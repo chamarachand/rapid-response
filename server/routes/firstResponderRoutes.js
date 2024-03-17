@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const { FirstResponder, validate } = require("../models/first-responder");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Get
 router.get("/", (req, res) => {
   res.send("This is first responder api");
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search", authMiddleware, async (req, res) => {
   try {
     const serachTerm = req.query.username;
     if (serachTerm === "") return res.send([]);

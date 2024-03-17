@@ -15,25 +15,30 @@ class AddUserPage extends StatefulWidget {
 
 class _AddUserPageState extends State<AddUserPage> {
   dynamic _accessToken;
+  dynamic _idToken;
   bool _alreadySupervisee = false;
   bool _requestAlreadySent = false;
 
   recieveAccessToken() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-    _accessToken = JwtDecoder.decode(accessToken!);
+    _accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    _idToken = JwtDecoder.decode(idToken!);
   }
 
   isSupervisee() async {
     try {
-      var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/linked-accounts/supervisee/${_accessToken["id"]}/${widget._user["_id"]}"));
+      var response = await http.get(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/linked-accounts/supervisee/${widget._user["_id"]}"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken,
+          });
       if (response.statusCode == 200) {
         setState(() {
           _alreadySupervisee = true;
         });
-      } else if (response.statusCode == 404) {
-        print("false"); //remove this
-      }
+      } else if (response.statusCode == 404) {}
     } catch (error) {
       print("Error: $error");
     }
@@ -41,8 +46,13 @@ class _AddUserPageState extends State<AddUserPage> {
 
   isRequestSent() async {
     try {
-      var response = await http.get(Uri.parse(
-          "http://10.0.2.2:3000/api/notification/search/request/${_accessToken["id"]}/${widget._user["_id"]}?type=supervisee-request"));
+      var response = await http.get(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/search/request/${widget._user["_id"]}?type=supervisee-request"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken,
+          });
       if (response.statusCode == 200) {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
@@ -57,14 +67,17 @@ class _AddUserPageState extends State<AddUserPage> {
     try {
       var response = await http.post(
           Uri.parse("http://10.0.2.2:3000/api/notification/send"),
-          headers: {'Content-Type': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken
+          },
           body: jsonEncode({
-            "from": _accessToken["id"],
+            "from": _idToken["id"],
             "to": widget._user["_id"],
             "type": "supervisee-request",
             "title": "Add Supervisee Request",
             "body":
-                "${_accessToken["firstName"]} sent add as supervisee request",
+                "${_idToken["firstName"]} ${_idToken["lastName"]} sent add as supervisee request",
           }));
       if (response.statusCode == 200) {
         print("Notification send successfully");
