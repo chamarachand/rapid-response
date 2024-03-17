@@ -16,6 +16,7 @@ router.get("/search", authMiddleware, async (req, res) => {
     if (searchTerm === "") return res.send([]);
 
     const currentUserId = req.user.id;
+    if (!currentUserId) return res.status(400).send("Bad request");
 
     const users = await Civilian.find({
       $and: [
