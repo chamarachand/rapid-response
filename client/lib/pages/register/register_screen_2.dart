@@ -8,6 +8,7 @@ import 'register_screen_3.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/custom_widgets/textformfield_decoration_register1.dart';
 import 'package:client/pages/utils/user_type.dart';
+import 'package:client/pages/utils/alert_dialogs.dart';
 
 class RegisterPage2 extends StatefulWidget {
   const RegisterPage2({super.key});
@@ -85,29 +86,15 @@ class _RegisterPage2State extends State<RegisterPage2> {
   }
 
   void showFailAlertDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "NIC Validation Failed!",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "Your given nic does not match with the gender or birthday",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.close_rounded,
-                color: Colors.red,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"))
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+        context,
+        "A User with the given NIC Already Exists",
+        "The selected type of a user with the given NIC already exists in the system",
+        const Icon(
+          Icons.warning_rounded,
+          color: Colors.red,
+          size: 40,
+        ));
   }
 
   showNicAlreadyExistsDialog() {
