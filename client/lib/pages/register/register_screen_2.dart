@@ -88,8 +88,8 @@ class _RegisterPage2State extends State<RegisterPage2> {
   void showFailAlertDialog() {
     showAlertDialog(
         context,
-        "A User with the given NIC Already Exists",
-        "The selected type of a user with the given NIC already exists in the system",
+        "NIC Validation Failed",
+        "Your NIC number does not match with the birthday or gender entered",
         const Icon(
           Icons.warning_rounded,
           color: Colors.red,
@@ -98,29 +98,15 @@ class _RegisterPage2State extends State<RegisterPage2> {
   }
 
   showNicAlreadyExistsDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "A User with the given NIC Already Exists",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "The selected type of a user with the given NIC already exists in the system",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.warning_rounded,
-                color: Colors.red,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"))
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+        context,
+        "A User with the given NIC Already Exists",
+        "The selected type of a user with the given NIC already exists in the system",
+        const Icon(
+          Icons.warning_rounded,
+          color: Colors.red,
+          size: 40,
+        ));
   }
 
   @override
