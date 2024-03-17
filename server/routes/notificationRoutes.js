@@ -12,8 +12,9 @@ admin.initializeApp({
 });
 
 // Get latest notifications
-router.get("/latest/:userId/:count", async (req, res) => {
-  const { userId, count } = req.params;
+router.get("/latest/:count", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+  const { count } = req.params;
 
   if (!userId || !count || isNaN(parseInt(count)) || parseInt(count) <= 0)
     return res.status(400).send("Bad Request");
