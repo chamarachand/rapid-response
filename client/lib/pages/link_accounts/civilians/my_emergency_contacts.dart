@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:client/storage/user_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 
 class MyEmergencyContacts extends StatefulWidget {

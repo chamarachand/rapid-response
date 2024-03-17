@@ -107,8 +107,8 @@ router.get("/supervisors/:userId", async (req, res) => {
 });
 
 // Get the list of supervisees of a particular first responder
-router.get("/supervisees/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/supervisees", authMiddleware, async (req, res) => {
+  const userId = req.params.id;
   if (!userId) return res.status(400).send("Bad request");
 
   try {

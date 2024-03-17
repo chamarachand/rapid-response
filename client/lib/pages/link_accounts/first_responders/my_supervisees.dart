@@ -16,10 +16,13 @@ class _MySuperviseesState extends State<MySupervisees> {
 
   Future<List<dynamic>> getSupervisees() async {
     final accessToken = await UserSecureStorage.getAccessToken();
-    final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
-    final response = await http.get(Uri.parse(
-        "http://10.0.2.2:3000/api/linked-accounts/supervisees/${decodedAccessToken["id"]}"));
+    final response = await http.get(
+        Uri.parse("http://10.0.2.2:3000/api/linked-accounts/supervisees"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (accessToken != null) 'x-auth-token': accessToken
+        });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
