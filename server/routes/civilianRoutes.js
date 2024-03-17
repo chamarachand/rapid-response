@@ -12,11 +12,16 @@ router.get("/", (req, res) => {
 
 router.get("/search", authMiddleware, async (req, res) => {
   try {
-    const serachTerm = req.query.username;
-    if (serachTerm === "") return res.send([]);
+    const searchTerm = req.query.username;
+    if (searchTerm === "") return res.send([]);
+
+    const currentUserId = req.user.id;
 
     const users = await Civilian.find({
-      username: { $regex: serachTerm, $options: "i" },
+      $and: [
+        { _id: { $ne: currentUserId } }, // Exclude current user
+        { username: { $regex: searchTerm, $options: "i" } },
+      ],
     }).select("firstName lastName username profilePic");
 
     if (users.length === 0) return res.status(404).send("No users found");

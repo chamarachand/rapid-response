@@ -170,45 +170,48 @@ class _AddUserPageState extends State<AddUserPage> {
         backgroundColor: const Color(0xFFadd8e6),
       ),
       body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(_profilePicUrl ??
-                "https://www.transparenttextures.com/patterns/debut-light.png"),
-            radius: 70,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            widget._user["firstName"] + " " + widget._user["lastName"],
-            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-          ),
-          Text(widget._user["username"]),
-          const SizedBox(height: 40),
-          _alreadyEmergencyContact
-              ? const Padding(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Card(
-                    color: Colors.green,
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text("Emergency Contact!",
-                          style: TextStyle(fontSize: 24, color: Colors.white)),
+        child: SingleChildScrollView(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(_profilePicUrl ??
+                  "https://www.transparenttextures.com/patterns/debut-light.png"),
+              radius: 70,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              widget._user["firstName"] + " " + widget._user["lastName"],
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            Text(widget._user["username"]),
+            const SizedBox(height: 40),
+            _alreadyEmergencyContact
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 15),
+                    child: Card(
+                      color: Colors.green,
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Text("Emergency Contact!",
+                            style:
+                                TextStyle(fontSize: 24, color: Colors.white)),
+                      ),
                     ),
+                  )
+                : ElevatedButton(
+                    onPressed: () async {
+                      await (isRequestSent());
+                      if (_requestAlreadySent) {
+                        return showRequestAlreadySentDialog();
+                      }
+                      await sendRequest();
+                    },
+                    child: const Text("Send Request"),
                   ),
-                )
-              : ElevatedButton(
-                  onPressed: () async {
-                    await (isRequestSent());
-                    if (_requestAlreadySent) {
-                      return showRequestAlreadySentDialog();
-                    }
-                    await sendRequest();
-                  },
-                  child: const Text("Send Request"),
-                ),
-          const SizedBox(height: 8),
-          if (!_alreadyEmergencyContact)
-            ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
-        ]),
+            const SizedBox(height: 8),
+            if (!_alreadyEmergencyContact)
+              ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
+          ]),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,

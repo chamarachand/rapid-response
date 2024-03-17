@@ -66,6 +66,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
             )
           ],
         ),
+        backgroundColor: const Color(0xFFadd8e6),
       ),
       body: Column(children: [
         Padding(

@@ -16,6 +16,7 @@ class AddUserPage extends StatefulWidget {
 class _AddUserPageState extends State<AddUserPage> {
   dynamic _accessToken;
   dynamic _idToken;
+  String? _profilePicUrl;
   bool _alreadySupervisee = false;
   bool _requestAlreadySent = false;
 
@@ -23,6 +24,25 @@ class _AddUserPageState extends State<AddUserPage> {
     _accessToken = await UserSecureStorage.getAccessToken();
     final idToken = await UserSecureStorage.getIdToken();
     _idToken = JwtDecoder.decode(idToken!);
+  }
+
+  getProfilePicUrl() async {
+    try {
+      var response = await http.get(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/profile-pic/profile-pic-url/${widget._user["_id"]}"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (_accessToken != null) 'x-auth-token': _accessToken,
+          });
+      if (response.statusCode == 200) {
+        setState(() {
+          _profilePicUrl = response.body;
+        });
+      } else if (response.statusCode == 404) {}
+    } catch (error) {
+      print("Error: $error");
+    }
   }
 
   isSupervisee() async {
@@ -128,6 +148,7 @@ class _AddUserPageState extends State<AddUserPage> {
   initializeData() async {
     await recieveAccessToken();
     isSupervisee();
+    getProfilePicUrl();
   }
 
   @override
@@ -148,45 +169,48 @@ class _AddUserPageState extends State<AddUserPage> {
         backgroundColor: const Color(0xFFadd8e6),
       ),
       body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-            radius: 70,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            widget._user["firstName"] + " " + widget._user["lastName"],
-            style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-          ),
-          Text(widget._user["username"]),
-          const SizedBox(height: 40),
-          _alreadySupervisee
-              ? const Padding(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Card(
-                    color: Colors.blue,
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Text("Supervisee!",
-                          style: TextStyle(fontSize: 24, color: Colors.white)),
+        child: SingleChildScrollView(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(_profilePicUrl ??
+                  "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
+              radius: 70,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              widget._user["firstName"] + " " + widget._user["lastName"],
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            ),
+            Text(widget._user["username"]),
+            const SizedBox(height: 40),
+            _alreadySupervisee
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 15),
+                    child: Card(
+                      color: Colors.blue,
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Text("Supervisee!",
+                            style:
+                                TextStyle(fontSize: 24, color: Colors.white)),
+                      ),
                     ),
+                  )
+                : ElevatedButton(
+                    onPressed: () async {
+                      await (isRequestSent());
+                      if (_requestAlreadySent) {
+                        return showRequestAlreadySentDialog();
+                      }
+                      await sendRequest();
+                    },
+                    child: const Text("Send Request"),
                   ),
-                )
-              : ElevatedButton(
-                  onPressed: () async {
-                    await (isRequestSent());
-                    if (_requestAlreadySent) {
-                      return showRequestAlreadySentDialog();
-                    }
-                    await sendRequest();
-                  },
-                  child: const Text("Send Request"),
-                ),
-          const SizedBox(height: 8),
-          if (!_alreadySupervisee)
-            ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
-        ]),
+            const SizedBox(height: 8),
+            if (!_alreadySupervisee)
+              ElevatedButton(onPressed: () {}, child: const Text("Cancel"))
+          ]),
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,

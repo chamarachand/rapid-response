@@ -16,7 +16,7 @@ router.get("/search", authMiddleware, async (req, res) => {
 
     const users = await FirstResponder.find({
       username: { $regex: serachTerm, $options: "i" },
-    });
+    }).select("firstName lastName username profilePic");
 
     if (users.length === 0) return res.status(404).send("No users found");
 

@@ -83,7 +83,9 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
                         Expanded(
                           child: ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: NetworkImage(user["profilePic"]),
+                              backgroundImage: NetworkImage(user[
+                                      "profilePic"] ??
+                                  "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
                               radius: 24,
                             ),
                             title: Text(
