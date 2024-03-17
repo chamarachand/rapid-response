@@ -4,11 +4,11 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 
-router.get("/profilePicUrl", async (req, res) => {
+router.get("/profile-pic-url", async (req, res) => {
   const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad Request");
 
-  const [civilian, firstResponder] = Promise.all([
+  const [civilian, firstResponder] = await Promise.all([
     Civilian.findById(userId).select("profilePic"),
     FirstResponder.findById(userId).select("profilePic"),
   ]);
