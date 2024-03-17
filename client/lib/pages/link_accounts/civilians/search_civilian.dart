@@ -18,11 +18,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
   List _searchResults = [];
 
   void _getAccessToken() async {
-    try {
-      _accessToken = await UserSecureStorage.getAccessToken();
-    } catch (e) {
-      print("Error fetching access token: $e");
-    }
+    _accessToken = await UserSecureStorage.getAccessToken();
   }
 
   void _updateSearchQuery(String newQuery) {
