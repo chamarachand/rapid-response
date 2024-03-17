@@ -73,7 +73,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
           body: jsonEncode({
             "nicNo": _nicnoController.text,
           }));
-      if (response.statusCode == 400) {
+      if (response.statusCode == 404) {
         return true;
       } else if (response.statusCode == 200) {
         showNicAlreadyExistsDialog();
