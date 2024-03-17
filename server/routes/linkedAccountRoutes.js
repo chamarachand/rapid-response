@@ -156,9 +156,11 @@ router.get("/supervisee/:intendedUserId", authMiddleware, async (req, res) => {
 
 // Add the current user as a supervisee of the requested user
 router.patch(
-  "/supervisee-accounts/add/:currentUserId/:requestedUserId",
+  "/supervisee-accounts/add/:requestedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, requestedUserId } = req.params;
+    const currentUserId = req.user.id;
+    const { requestedUserId } = req.params;
 
     try {
       if (!currentUserId || !requestedUserId)
