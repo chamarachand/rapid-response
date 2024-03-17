@@ -14,7 +14,7 @@ router.get("/emergency-contacts", authMiddleware, async (req, res) => {
       .select("emergencyContacts")
       .populate({
         path: "emergencyContacts",
-        select: "firstName lastName phoneNumber email",
+        select: "firstName lastName phoneNumber email profilePic",
       });
 
     if (!emergencyContacts || emergencyContacts.length === 0)
