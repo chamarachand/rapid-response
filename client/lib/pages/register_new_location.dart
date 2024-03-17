@@ -132,8 +132,6 @@ class RegisterNewLocation extends State<RegisterLocation> {
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

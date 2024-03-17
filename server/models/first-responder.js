@@ -58,6 +58,9 @@ firstResponderSchema.methods.generateIdToken = function () {
       nicNo: this.nicNo,
       phnNo: this.phoneNumber,
       email: this.email,
+      type: this.type,
+      workId: this.workId,
+      workAddress: this.workAddress,
     },
     "jwtPrivateKey"
   );

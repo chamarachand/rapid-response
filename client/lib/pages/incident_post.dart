@@ -20,7 +20,6 @@ class Incident_post extends StatelessWidget {
           title: Text("Incident Post"),
         ),
         
-        
         body: Column(
           children: [
           Align(
@@ -40,7 +39,7 @@ class Incident_post extends StatelessWidget {
                )
                
                ),
-          ),
+            ),
           ),
         Expanded(
         child:ListView(
