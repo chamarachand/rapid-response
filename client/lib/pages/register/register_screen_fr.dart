@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
-import 'package:client/pages/register_screen_4.dart';
+import 'register_screen_4.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/custom_widgets/textformfield_decoration_register1.dart';
 
