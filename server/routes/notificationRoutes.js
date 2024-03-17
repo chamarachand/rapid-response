@@ -126,7 +126,7 @@ router.get("/requests", authMiddleware, async (req, res) => {
 });
 
 // Change responded to true in a notification
-router.patch("/responded/:notificationId", async (req, res) => {
+router.patch("/responded/:notificationId", authMiddleware, async (req, res) => {
   const { notificationId } = req.params;
 
   if (!notificationId) return res.status(400).send("Bad Request");

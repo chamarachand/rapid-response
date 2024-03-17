@@ -14,18 +14,16 @@ class EmergencyContactRequets extends StatefulWidget {
 }
 
 class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
+  late String? _accessToken;
   Future<List<dynamic>>? _requests;
 
   Future<List<dynamic>> getRequests() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-    // final decodedAccessToken = JwtDecoder.decode(accessToken!);
-
     final response = await http.get(
         Uri.parse(
             "http://10.0.2.2:3000/api/notification/requests?type=emergency-contact-request"),
         headers: {
           'Content-Type': 'application/json',
-          if (accessToken != null) 'x-auth-token': accessToken
+          if (_accessToken != null) 'x-auth-token': _accessToken!
         });
 
     if (response.statusCode == 200) {
@@ -37,9 +35,18 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
+  void _getAccessToken() async {
+    _accessToken = await UserSecureStorage.getAccessToken();
+  }
+
   updateNotificationStatus(String notificationId) async {
-    final response = await http.patch(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/responded/$notificationId"));
+    final response = await http.patch(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/notification/responded/$notificationId"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (_accessToken != null) 'x-auth-token': _accessToken!
+        });
     if (response.statusCode == 200) {
       return true;
     }
@@ -137,6 +144,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
   void initState() {
     super.initState();
     _requests = getRequests();
+    _getAccessToken();
   }
 
   @override
