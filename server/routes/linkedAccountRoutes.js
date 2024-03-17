@@ -56,9 +56,11 @@ router.get(
 
 // Add the current user as an emergency contact of the requested user
 router.patch(
-  "/emergency-contacts/add/:currentUserId/:requestedUserId",
+  "/emergency-contacts/add/:requestedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, requestedUserId } = req.params;
+    const currentUserId = req.user.id;
+    const { requestedUserId } = req.params;
 
     try {
       if (!currentUserId || !requestedUserId)
