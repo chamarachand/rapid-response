@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
-import 'login_screen.dart';
+import 'package:client/pages/login_screen.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/pages/utils/user_type.dart';
 import 'package:client/custom_widgets/textformfield_decoration_authinfo.dart';

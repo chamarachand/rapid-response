@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'add_event.dart';
-import 'register_screen_1.dart';
+import 'package:client/pages/register/register_screen_1.dart';
 import 'package:client/pages/incidentPost/incidentPostPage.dart';
 
 class WelcomePage extends StatelessWidget {
