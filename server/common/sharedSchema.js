@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   password: { type: String, minlength: 8, maxlength: 255, required: true },
+  profilePic: { type: String, maxlength: 1024 },
   fcmToken: { type: String, maxlength: 255, default: null },
   notifications: {
     type: [
@@ -72,6 +73,7 @@ const userValidationSchema = Joi.object({
 const loginValidationSchema = Joi.object({
   username: Joi.string().min(4).max(16).required(),
   password: Joi.string().min(8).max(255).required(),
+  profilePic: Joi.string().max(1024).allow(""),
 });
 
 module.exports = { userSchema, userValidationSchema, loginValidationSchema };
