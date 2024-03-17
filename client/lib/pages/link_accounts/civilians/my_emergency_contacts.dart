@@ -82,9 +82,8 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
                       children: [
                         Expanded(
                           child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "https://i.scdn.co/image/ab676161000051747d5aa798103bfb8562427274"),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(user["profilePic"]),
                               radius: 24,
                             ),
                             title: Text(

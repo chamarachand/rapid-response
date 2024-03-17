@@ -29,7 +29,8 @@ class _AddUserPageState extends State<AddUserPage> {
   getProfilePicUrl() async {
     try {
       var response = await http.get(
-          Uri.parse("http://10.0.2.2:3000/api/profile-pic/profile-pic-url"),
+          Uri.parse(
+              "http://10.0.2.2:3000/api/profile-pic/profile-pic-url/${widget._user["_id"]}"),
           headers: {
             'Content-Type': 'application/json',
             if (_accessToken != null) 'x-auth-token': _accessToken,
