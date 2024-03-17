@@ -73,8 +73,8 @@ router.get(
 );
 
 // Get pending add as requests for a user
-router.get("/requests/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/requests", authMiddleware, async (req, res) => {
+  const userId = req.params.id;
   const { type } = req.query;
 
   if (!userId || !type) return res.status(400).send("Bad request");

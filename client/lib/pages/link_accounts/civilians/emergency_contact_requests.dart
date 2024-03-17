@@ -18,10 +18,15 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
 
   Future<List<dynamic>> getRequests() async {
     final accessToken = await UserSecureStorage.getAccessToken();
-    final decodedAccessToken = JwtDecoder.decode(accessToken!);
+    // final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
-    final response = await http.get(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/requests/${decodedAccessToken["id"]}?type=emergency-contact-request"));
+    final response = await http.get(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/notification/requests?type=emergency-contact-request"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (accessToken != null) 'x-auth-token': accessToken
+        });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
