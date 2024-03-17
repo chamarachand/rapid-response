@@ -8,6 +8,7 @@ import 'package:client/pages/login_screen.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/pages/utils/user_type.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
+import 'package:client/pages/utils/validate_password.dart';
 import 'package:client/custom_widgets/textformfield_decoration_authinfo.dart';
 
 class RegisterPage4 extends StatefulWidget {
@@ -23,38 +24,6 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
   final bool isCivilian = UserType.getUserType() == UserTypes.civilian;
-
-  validatePassword(String value) {
-    RegExp regex =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-
-    if (!regex.hasMatch(value)) {
-      if (value.length < 8) {
-        return "Password must be at least 8 characters";
-      }
-
-      if (value.length > 255) {
-        return "Password too long";
-      }
-
-      if (!value.contains(RegExp(r'[A-Z]'))) {
-        return "Password should have atleast 1 uppercase letter";
-      }
-
-      if (!value.contains(RegExp(r'[a-z]'))) {
-        return "Password should have atleast 1 lowercase letter";
-      }
-
-      if (!value.contains(RegExp(r'[0-9]'))) {
-        return "Password should have atleast 1 digit";
-      }
-
-      if (!value.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
-        return "Password should have atleast 1 special character";
-      }
-    }
-    return null;
-  }
 
   userExists(String username) async {
     try {
