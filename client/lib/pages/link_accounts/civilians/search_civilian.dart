@@ -64,7 +64,15 @@ class _UserSearchPageState extends State<UserSearchPage> {
             onChanged: _updateSearchQuery,
           ),
         ),
-        Expanded(child: UserList(_searchResults))
+        _searchQuery == ""
+            ? const Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Search Users by their Username"),
+                    ]),
+              )
+            : Expanded(child: UserList(_searchResults))
       ]),
     );
   }

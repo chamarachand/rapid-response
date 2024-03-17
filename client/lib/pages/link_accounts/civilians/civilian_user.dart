@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/storage/user_secure_storage.dart';
+import 'package:client/pages/utils/alert_dialogs.dart';
 
 class AddUserPage extends StatefulWidget {
   final dynamic _user;
@@ -19,7 +20,6 @@ class _AddUserPageState extends State<AddUserPage> {
 
   recieveAccessToken() async {
     final accessToken = await UserSecureStorage.getAccessToken();
-
     _accessToken = JwtDecoder.decode(accessToken!);
   }
 
@@ -47,6 +47,33 @@ class _AddUserPageState extends State<AddUserPage> {
         _requestAlreadySent = true;
       } else if (response.statusCode == 404) {
         _requestAlreadySent = false;
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
+
+  sendRequest() async {
+    try {
+      var response = await http.post(
+          Uri.parse("http://10.0.2.2:3000/api/notification/send"),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "from": _accessToken["id"],
+            "to": widget._user["_id"],
+            "type": "emergency-contact-request",
+            "title": "Add Emergency Contact Request",
+            "body":
+                "${_accessToken["firstName"]} sent add as emergency contact request",
+          }));
+      if (response.statusCode == 200) {
+        print("Notification send successfully");
+        showNotificationSuccessDialog(
+            widget._user["firstName"], widget._user["lastName"]);
+      } else if (response.statusCode == 202) {
+        print("Notification saved successfully. But no FCM token found");
+        showNotificationSuccessDialog(
+            widget._user["firstName"], widget._user["lastName"]);
       } else {
         print(response.statusCode);
       }
@@ -56,55 +83,27 @@ class _AddUserPageState extends State<AddUserPage> {
   }
 
   void showRequestAlreadySentDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Request Already Sent!",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "A request has already been sent to this user, is currently pending",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.warning,
-                color: Colors.orange,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"))
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+        context,
+        "Request Already Sent",
+        "A request has already been sent to this user, is currently pending",
+        const Icon(
+          Icons.warning_rounded,
+          color: Colors.orange,
+          size: 40,
+        ));
   }
 
   showNotificationSuccessDialog(String firstName, String lastName) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Request Sent Successfully!",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: Text(
-                "Emergency contact request has been sent to $firstName $lastName",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.check,
-                color: Colors.green,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"))
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+        context,
+        "Request Sent Successfully",
+        "Emergency contact request has been sent to $firstName $lastName",
+        const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+          size: 40,
+        ));
   }
 
   @override
@@ -168,29 +167,7 @@ class _AddUserPageState extends State<AddUserPage> {
                     if (_requestAlreadySent) {
                       return showRequestAlreadySentDialog();
                     }
-                    try {
-                      var response = await http.post(
-                          Uri.parse(
-                              "http://10.0.2.2:3000/api/notification/send"),
-                          headers: {'Content-Type': 'application/json'},
-                          body: jsonEncode({
-                            "from": _accessToken["id"],
-                            "to": widget._user["_id"],
-                            "type": "emergency-contact-request",
-                            "title": "Add Emergency Contact Request",
-                            "body":
-                                "${_accessToken["firstName"]} sent add as emergency contact request",
-                          }));
-                      if (response.statusCode == 200) {
-                        print("Notification send successfully");
-                        showNotificationSuccessDialog(widget._user["firstName"],
-                            widget._user["lastName"]);
-                      } else {
-                        print(response.statusCode);
-                      }
-                    } catch (error) {
-                      print("Error: $error");
-                    }
+                    await sendRequest();
                   },
                   child: const Text("Send Request"),
                 ),

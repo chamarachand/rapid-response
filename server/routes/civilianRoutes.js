@@ -63,7 +63,7 @@ router.post("/", async (req, res) => {
 
     user = new Civilian({ ...req.body, password: hashPassword });
     await user.save();
-    sendRegisterConfirmationMail(user.firstName, user.email);
+    // sendRegisterConfirmationMail(user.firstName, user.email);
     res.status(201).send("Civilian user registered successfully!"); // we can send  the user as well
   } catch (error) {
     console.log(error);
