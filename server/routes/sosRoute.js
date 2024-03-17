@@ -5,7 +5,8 @@ const sosReportSchema = new mongoose.Schema({
   image: { type: String },
   voice: { type: String },
   emergencyType: { type: String, required: true },
-  location: { type: Object, required: true }, // Assuming location is a GeoJSON object
+  location: { type: Object, required: true },
+  date: {type: String, required: true}, // Assuming location is a GeoJSON object
 });
 
 const SOSReport = mongoose.model("SOSReport", sosReportSchema);
@@ -15,7 +16,7 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   console.log("Reached");
-  const { id, image, voice, emergencyType, location } = req.body;
+  const { id, image, voice, emergencyType, location, date } = req.body;
 
   try {
     const newSOSReport = new SOSReport({
@@ -24,6 +25,7 @@ router.post("/", async (req, res) => {
       voice,
       emergencyType,
       location,
+      date
     });
 
     await newSOSReport.save();

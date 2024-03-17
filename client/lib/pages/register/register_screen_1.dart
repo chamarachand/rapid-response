@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:client/pages/register_screen_2.dart';
+import 'register_screen_2.dart';
 import 'package:client/pages/utils/user_type.dart';
 
 class UserTypeSelection extends StatefulWidget {

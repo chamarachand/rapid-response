@@ -12,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -331,12 +332,16 @@ class emergency extends State<SOSpage> {
     String? voice = voiceURL; // Adjust if needed
     String? emergencyType = sosType;
     Position? location = currentPosition;
+    DateTime now = DateTime.now();
+
+    String currentDate = DateFormat('yyyy-MM-dd').format(now);
 
     print("id: $id");
     print("image = $image");
     print("voice = $voice");
     print("sosType = $emergencyType");
     print("Position = $location");
+    print("Date = $currentDate");
 
     Map<String, dynamic> dataToSend = {
       'id': id,
@@ -347,7 +352,8 @@ class emergency extends State<SOSpage> {
         // Assuming GeoJSON format
         'type': 'Point',
         'coordinates': [location.longitude, location.latitude],
-      }
+      },
+      'date': currentDate
     };
 
     String backendUrl = 'http://10.0.2.2:3000/api/sos-report';
