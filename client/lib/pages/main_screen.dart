@@ -270,6 +270,7 @@ class MainMenuScreen extends State<MainMenu> {
               ),
               label: 'History',
             ),
+            
           ]),
     );
   }
