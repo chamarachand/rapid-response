@@ -1,3 +1,4 @@
+import 'package:client/pages/incidentPost/incidentPostPage.dart';
 import 'package:client/pages/profile_screen.dart';
 import 'package:client/pages/registered_locations.dart';
 import 'package:flutter/material.dart';
@@ -266,11 +267,14 @@ class MainMenuScreen extends State<MainMenu> {
                 icon: const Icon(Icons.history),
                 onPressed: () {
                   _onItemTapped(2);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const IncidentPostPage())));
                 },
               ),
               label: 'History',
             ),
-            
           ]),
     );
   }
