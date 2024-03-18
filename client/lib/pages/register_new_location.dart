@@ -132,6 +132,172 @@ class RegisterNewLocation extends State<RegisterLocation> {
     });
   }
 
+  Widget buildRegisterNewLocationInput(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const Text(
+          'Location Tag',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          child: TextField(
+            decoration:
+                InputDecoration(labelText: 'Enter Name Tag For Location'),
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          'Address',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Text(newAddress ??
+            address), // Display the new address if set, otherwise use the existing address
+        const SizedBox(height: 20),
+        const Text(
+          'Location',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                _requestLocationPermission();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                )),
+              child: const Text('Current Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  showLocationInputs = true;
+                });
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 36, vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                )),
+              child: const Text('Set Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        if (!showLocationInputs)
+          const SizedBox(height: 206),
+        if (showLocationInputs)
+          Column(
+            children: [
+              SizedBox(
+                child: TextField(
+                  controller: latitudeController,
+                  decoration: const InputDecoration(labelText: 'Latitude'),
+                ),
+              ),
+              const SizedBox(height: 10),
+              SizedBox(
+                child: TextField(
+                  controller: longitudeController,
+                  decoration: const InputDecoration(labelText: 'Longitude'),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        showLocationInputs = false;
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 71, 62, 133),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      )),
+                    child: const Text('Back',style: TextStyle(fontWeight: FontWeight.bold),),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      double? lat =
+                          double.tryParse(latitudeController.text);
+                      double? long =
+                          double.tryParse(longitudeController.text);
+                      if (lat == null ||
+                          long == null ||
+                          lat < -90 ||
+                          lat > 90 ||
+                          long < -180 ||
+                          long > 180) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Invalid Input'),
+                              content: const Text(
+                                  'Please enter valid latitude (-90 to 90) and longitude (-180 to 180) values.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        _setLocation(lat, long);
+                        setState(() {
+                          showLocationInputs = false;
+                        });
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 71, 62, 133),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 34, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      )),
+                    child: const Text('Set',style: TextStyle(fontWeight: FontWeight.bold),),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            // Handle confirm
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 32, vertical: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            )),
+          child: const Text('Confirm',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -148,124 +314,11 @@ class RegisterNewLocation extends State<RegisterLocation> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Location Tag',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const TextField(
-              decoration:
-                  InputDecoration(labelText: 'Enter Name Tag For Location'),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Address',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Text(newAddress ??
-                address), // Display the new address if set, otherwise use the existing address
-            const SizedBox(height: 20),
-            const Text(
-              'Location',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    _requestLocationPermission();
-                  },
-                  child: const Text('Current Location'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      showLocationInputs = true;
-                    });
-                  },
-                  child: const Text('Set Location'),
-                ),
-              ],
-            ),
-            const Spacer(),
-            if (showLocationInputs)
-              Column(
-                children: [
-                  TextField(
-                    controller: latitudeController,
-                    decoration: const InputDecoration(labelText: 'Latitude'),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: longitudeController,
-                    decoration: const InputDecoration(labelText: 'Longitude'),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            showLocationInputs = false;
-                          });
-                        },
-                        child: const Text('Back'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          double? lat =
-                              double.tryParse(latitudeController.text);
-                          double? long =
-                              double.tryParse(longitudeController.text);
-                          if (lat == null ||
-                              long == null ||
-                              lat < -90 ||
-                              lat > 90 ||
-                              long < -180 ||
-                              long > 180) {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Invalid Input'),
-                                  content: const Text(
-                                      'Please enter valid latitude (-90 to 90) and longitude (-180 to 180) values.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('OK'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
-                            _setLocation(lat, long);
-                            setState(() {
-                              showLocationInputs = false;
-                            });
-                          }
-                        },
-                        child: const Text('Set'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Handle confirm
-              },
-              child: const Text('Confirm'),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height-200,
+            child: buildRegisterNewLocationInput(),
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
