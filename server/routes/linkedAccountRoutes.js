@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 
 // Get the list of emergency contacts of a particular civilian
-router.get("/emergency-contacts/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/emergency-contacts", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad request");
 
   try {
@@ -13,7 +14,7 @@ router.get("/emergency-contacts/:userId", async (req, res) => {
       .select("emergencyContacts")
       .populate({
         path: "emergencyContacts",
-        select: "firstName lastName phoneNumber email",
+        select: "firstName lastName phoneNumber email profilePic",
       });
 
     if (!emergencyContacts || emergencyContacts.length === 0)
@@ -28,9 +29,11 @@ router.get("/emergency-contacts/:userId", async (req, res) => {
 
 // Check if the inteded user is already an emergency contact
 router.get(
-  "/emergency-contacts/:currentUserId/:intendedUserId",
+  "/emergency-contacts/:intendedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, intendedUserId } = req.params;
+    const currentUserId = req.user.id;
+    const { intendedUserId } = req.params;
 
     if (!currentUserId || !intendedUserId)
       return res.status(400).send("Missing parameter/s");
@@ -53,9 +56,11 @@ router.get(
 
 // Add the current user as an emergency contact of the requested user
 router.patch(
-  "/emergency-contacts/add/:currentUserId/:requestedUserId",
+  "/emergency-contacts/add/:requestedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, requestedUserId } = req.params;
+    const currentUserId = req.user.id;
+    const { requestedUserId } = req.params;
 
     try {
       if (!currentUserId || !requestedUserId)
@@ -83,8 +88,8 @@ router.patch(
 // First Responders
 
 // Get the list of supervisors of a particular first responder
-router.get("/supervisors/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/supervisors", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad request");
 
   try {
@@ -92,7 +97,7 @@ router.get("/supervisors/:userId", async (req, res) => {
       .select("supervisorAccounts")
       .populate({
         path: "supervisorAccounts",
-        select: "firstName lastName phoneNumber email",
+        select: "firstName lastName phoneNumber email profilePic",
       });
 
     if (!supervisorAccounts || supervisorAccounts.length === 0)
@@ -106,8 +111,8 @@ router.get("/supervisors/:userId", async (req, res) => {
 });
 
 // Get the list of supervisees of a particular first responder
-router.get("/supervisees/:userId", async (req, res) => {
-  const { userId } = req.params;
+router.get("/supervisees", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
   if (!userId) return res.status(400).send("Bad request");
 
   try {
@@ -115,7 +120,7 @@ router.get("/supervisees/:userId", async (req, res) => {
       .select("superviseeAccounts")
       .populate({
         path: "superviseeAccounts",
-        select: "firstName lastName phoneNumber email",
+        select: "firstName lastName phoneNumber email profilePic",
       });
 
     if (!superviseeAccounts || superviseeAccounts.length === 0)
@@ -129,8 +134,9 @@ router.get("/supervisees/:userId", async (req, res) => {
 });
 
 // Check if the inteded user is already a supervisee
-router.get("/supervisee/:currentUserId/:intendedUserId", async (req, res) => {
-  const { currentUserId, intendedUserId } = req.params;
+router.get("/supervisee/:intendedUserId", authMiddleware, async (req, res) => {
+  const currentUserId = req.user.id;
+  const { intendedUserId } = req.params;
 
   if (!currentUserId || !intendedUserId)
     return res.status(400).send("Bad Request");
@@ -150,9 +156,11 @@ router.get("/supervisee/:currentUserId/:intendedUserId", async (req, res) => {
 
 // Add the current user as a supervisee of the requested user
 router.patch(
-  "/supervisee-accounts/add/:currentUserId/:requestedUserId",
+  "/supervisee-accounts/add/:requestedUserId",
+  authMiddleware,
   async (req, res) => {
-    const { currentUserId, requestedUserId } = req.params;
+    const currentUserId = req.user.id;
+    const { requestedUserId } = req.params;
 
     try {
       if (!currentUserId || !requestedUserId)

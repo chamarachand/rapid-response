@@ -2,20 +2,27 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const { FirstResponder, validate } = require("../models/first-responder");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Get
 router.get("/", (req, res) => {
   res.send("This is first responder api");
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search", authMiddleware, async (req, res) => {
   try {
-    const serachTerm = req.query.username;
-    if (serachTerm === "") return res.send([]);
+    const searchTerm = req.query.username;
+    if (searchTerm === "") return res.send([]);
+
+    const currentUserId = req.user.id;
+    if (!currentUserId) return res.status(400).send("Bad request");
 
     const users = await FirstResponder.find({
-      username: { $regex: serachTerm, $options: "i" },
-    });
+      $and: [
+        { _id: { $ne: currentUserId } }, // Exclude current user
+        { username: { $regex: searchTerm, $options: "i" } },
+      ],
+    }).select("firstName lastName username profilePic");
 
     if (users.length === 0) return res.status(404).send("No users found");
 
@@ -41,6 +48,7 @@ router.post("/", async (req, res) => {
 
     user = new FirstResponder({ ...req.body, password: hashPassword });
     await user.save();
+    sendRegisterConfirmationMail(user.firstName, user.email);
     res.status(201).send("First responder user registered successfully!"); // we can send  the user as well
   } catch (error) {
     console.log(error);

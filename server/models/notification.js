@@ -42,10 +42,11 @@ function validate(notification) {
   const schema = Joi.object({
     from: Joi.objectId(),
     to: Joi.objectId().required(),
+    type: Joi.string().min(3).max(64),
     title: Joi.string().required(),
     body: Joi.string().required(),
   });
-  return schema.validate();
+  return schema.validate(notification);
 }
 
 module.exports = { Notification, validate };

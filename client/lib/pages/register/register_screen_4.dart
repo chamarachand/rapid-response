@@ -4,9 +4,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:client/providers/registration_provider.dart';
-import 'login_screen.dart';
+import 'package:client/pages/login_screen.dart';
 import 'package:client/custom_widgets/label_text_register.dart';
 import 'package:client/pages/utils/user_type.dart';
+import 'package:client/pages/utils/alert_dialogs.dart';
+import 'package:client/pages/utils/validate_password.dart';
 import 'package:client/custom_widgets/textformfield_decoration_authinfo.dart';
 
 class RegisterPage4 extends StatefulWidget {
@@ -22,38 +24,6 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
   final bool isCivilian = UserType.getUserType() == UserTypes.civilian;
-
-  validatePassword(String value) {
-    RegExp regex =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
-
-    if (!regex.hasMatch(value)) {
-      if (value.length < 8) {
-        return "Password must be at least 8 characters";
-      }
-
-      if (value.length > 255) {
-        return "Password too long";
-      }
-
-      if (!value.contains(RegExp(r'[A-Z]'))) {
-        return "Password should have atleast 1 uppercase letter";
-      }
-
-      if (!value.contains(RegExp(r'[a-z]'))) {
-        return "Password should have atleast 1 lowercase letter";
-      }
-
-      if (!value.contains(RegExp(r'[0-9]'))) {
-        return "Password should have atleast 1 digit";
-      }
-
-      if (!value.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
-        return "Password should have atleast 1 special character";
-      }
-    }
-    return null;
-  }
 
   userExists(String username) async {
     try {
@@ -85,7 +55,6 @@ class _RegisterScreen4State extends State<RegisterPage4> {
           body: jsonEncode(
               isCivilian ? provider.civilian : provider.firstResponder));
       if (response.statusCode == 201) {
-        //change this not to depend on the status code
         showSuccessAlertDialog();
       } else {
         showFailAlertDialog();
@@ -96,117 +65,49 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   }
 
   void showSuccessAlertDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Registration Successful!",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "You have been registered succesfully! Please continue with login.",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => const LoginPage())));
-                    },
-                    child: const Text("OK")),
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+      context,
+      "Registration Successful!",
+      "You have been registered succesfully! Please continue with login",
+      const Icon(
+        Icons.check_circle,
+        color: Colors.green,
+        size: 40,
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: ((context) => const LoginPage())));
+            },
+            child: const Text("OK")),
+      ],
+    );
   }
 
   void showUserExistsAlertDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Username Exists!",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "A user with the given username already exists. Please try another username",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.warning,
-                color: Colors.yellow,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("OK")),
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+        context,
+        "Username Exists",
+        "A user with the given username already exists. Please try another username",
+        const Icon(
+          Icons.warning_rounded,
+          color: Colors.orange,
+          size: 40,
+        ));
   }
 
   void showFailAlertDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Registration Failed!",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "Registration unsuccessful! Please try again",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.close_rounded,
-                color: Colors.red,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"))
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
-  }
-
-  void showPasswordPolicyDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Password Policy",
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-              content: const Text(
-                "To ensure the security of your account, please adhere to the following password conditions:\n\n"
-                "\u2022 Password must be at least 8 characters long.\n"
-                "\u2022 Password must contain characters from at least three of the following four categories:\n"
-                "   - Uppercase letters (A-Z)\n"
-                "   - Lowercase letters (a-z)\n"
-                "   - Digits (0-9)\n"
-                "   - Special characters (! @ # \$ % ^ & * ( ) , . ? \" : { } | < >)",
-                // textAlign: TextAlign.center,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("OK"))
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+        context,
+        "Registration Failed",
+        "Registration unsuccessful! Please try again",
+        const Icon(
+          Icons.warning_rounded,
+          color: Colors.orange,
+          size: 40,
+        ));
   }
 
   @override
@@ -264,7 +165,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
                   obscureText: true, //hide text
                   decoration: customInputDecorationAuth(
                       suffixIcon: GestureDetector(
-                          onTap: () => showPasswordPolicyDialog(),
+                          onTap: () => showPasswordPolicyDialog(context),
                           child: const Icon(Icons.info_rounded))),
                   validator: (value) => (value!.isEmpty)
                       ? "Please enter a password"

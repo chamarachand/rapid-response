@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:client/pages/google_map.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -124,6 +125,20 @@ class _addEventState extends State<add_event> {
                  );
                 },
                 child: const Text('+ add Image'),
+              ),
+            ),
+            Container(
+              padding: textFieldPadding,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.orange,
+                    fixedSize: const Size(1000, 50)),
+                onPressed: () {
+                /*Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MapScreen()));*/
+                },
+                child: const Text('+ add Location to map'),
               ),
             ),
             Container(

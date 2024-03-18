@@ -110,10 +110,9 @@ class _ReportScreenState extends State<ReportScreen> {
 
   Future<void> _submitIncident() async {
     final downloadUrl = await uploadImageToFirebase();
-
-            if (downloadUrl != null) {
-              print("Incident Report Photo sent with image: $downloadUrl");
-            }
+    if (downloadUrl != null) {
+        print("Incident Report Photo sent with image: $downloadUrl");
+    }
   }
 
   void _onBottomNavBarItemTapped(int index) {

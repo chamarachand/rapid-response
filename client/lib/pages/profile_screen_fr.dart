@@ -1,24 +1,18 @@
-import 'dart:io';
-
-import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
-import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class ProfileFr extends StatefulWidget {
+  const ProfileFr({super.key});
   @override
-  ProfileScreen createState() => ProfileScreen();
+  ProfileScreenFr createState() => ProfileScreenFr();
 }
 
-class ProfileScreen extends State<Profile> {
+class ProfileScreenFr extends State<ProfileFr> {
   int _selectedIndex = 1;
-  File? image;
-  String profileImg =
+
+  final profileImg =
       "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
   var _username = "";
@@ -27,6 +21,9 @@ class ProfileScreen extends State<Profile> {
   var _nicNo = "";
   var _phnNo = "";
   var _email = "";
+  var _type = "";
+  var _workId = "";
+  var _workAddress = "";
 
   void _loadToken() async {
     final idToken = await UserSecureStorage.getIdToken();
@@ -41,6 +38,9 @@ class ProfileScreen extends State<Profile> {
         _nicNo = decodedToken["nicNo"];
         _phnNo = decodedToken["phnNo"];
         _email = decodedToken["email"];
+        _type = decodedToken["type"];
+        _workId = decodedToken["workId"];
+        _workAddress = decodedToken["workAddress"];
       });
     }
   }
@@ -129,14 +129,7 @@ class ProfileScreen extends State<Profile> {
                   width: 200,
                   height: 200,
                   child: ClipOval(
-                    child:image != null
-                      ? Image.file(
-                          image!,
-                          width: 130,
-                          height: 130,
-                          fit: BoxFit.cover,
-                        ) :
-                    Image.network(
+                    child: Image.network(
                       profileImg,
                       fit: BoxFit.cover,
                     ),
@@ -147,12 +140,7 @@ class ProfileScreen extends State<Profile> {
                 bottom: 5,
                 right: 100,
                 child: ElevatedButton(
-                  onPressed: () {
-                   showDialog(
-                    context: context,
-                    builder: (BuildContext context) => popup(),
-                  );
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     backgroundColor: Colors.black,
@@ -168,6 +156,9 @@ class ProfileScreen extends State<Profile> {
           buildUserInfoDisplay(Icons.credit_card, "NIC Number", _nicNo),
           buildUserInfoDisplay(Icons.phone, "Contact Number", _phnNo),
           buildUserInfoDisplay(Icons.email, "Email Address", _email),
+          buildUserInfoDisplay(Icons.emergency, "First Responder Type", _type),
+          buildUserInfoDisplay(Icons.perm_identity_sharp, "Work ID", _workId),
+          buildUserInfoDisplay(Icons.location_city, "Work Address", _workAddress),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -215,63 +206,4 @@ class ProfileScreen extends State<Profile> {
       _selectedIndex = index;
     });
   }
-
-  Widget popup() => AlertDialog(
-        title: const Text('Camera Options'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera),
-              title: const Text('Take Photo'),
-              onTap: () {
-                // Code to handle taking a photo
-                pickImage1(ImageSource.camera);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.image_search_outlined),
-              title: const Text('Choose from Gallery'),
-              onTap: () {
-                // Code to choose from gallery
-                pickImage1(ImageSource.gallery);
-              },
-            ),
-          ],
-        ),
-      );
-
-  Future pickImage1(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
-
-      final imageTemporary = File(image.path);
-      setState(() => this.image = imageTemporary);
-      final downloadUrl = await uploadImageToFirebase();
-      if (downloadUrl != null) {
-        print("Profile Picture Send to the fire base storage and downlode link: $downloadUrl");
-      }
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
-
-Future<String?> uploadImageToFirebase() async {
-    if (image == null) return null; // Early exit if no image
-
-    final storageRef = FirebaseStorage.instance.ref();
-    final imagesRef = storageRef.child("Profile_Pic/${DateTime.now()}.jpg");
-
-    try {
-      await imagesRef.putFile(image!); // Upload!
-      final downloadURL = await imagesRef.getDownloadURL();
-      return downloadURL;
-    } on FirebaseException catch (e) {
-      // Handle errors (consider showing a dialog or a snackbar)
-      print("Upload failed: $e");
-      return null;
-    }
-  }
-
 }

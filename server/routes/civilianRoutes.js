@@ -3,24 +3,31 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const { sendRegisterConfirmationMail } = require("../services/emailService");
 const { Civilian, validate } = require("../models/civilian");
+const authMiddleware = require("../middleware/authMiddleware");
 
 // Get
 router.get("/", (req, res) => {
   res.send("This is civilian api");
 });
 
-router.get("/search", async (req, res) => {
+router.get("/search", authMiddleware, async (req, res) => {
   try {
-    const serachTerm = req.query.username;
-    if (serachTerm === "") return res.send([]);
+    const searchTerm = req.query.username;
+    if (searchTerm === "") return res.send([]);
+
+    const currentUserId = req.user.id;
+    if (!currentUserId) return res.status(400).send("Bad request");
 
     const users = await Civilian.find({
-      username: { $regex: serachTerm, $options: "i" },
-    });
+      $and: [
+        { _id: { $ne: currentUserId } }, // Exclude current user
+        { username: { $regex: searchTerm, $options: "i" } },
+      ],
+    }).select("firstName lastName username profilePic");
 
     if (users.length === 0) return res.status(404).send("No users found");
 
-    res.send(users); // Change this to send only necessary details
+    res.send(users);
   } catch (error) {
     res.status(500).send("Internal server error");
   }

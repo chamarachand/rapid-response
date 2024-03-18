@@ -1,8 +1,5 @@
-import 'package:client/pages/profile_screen.dart';
-import 'package:client/pages/registered_locations.dart';
+import 'package:client/pages/profile_screen_fr.dart';
 import 'package:flutter/material.dart';
-import 'SOS_page.dart';
-import 'report_incident_screen.dart';
 import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -15,6 +12,7 @@ class MainMenuFR extends StatefulWidget {
 }
 
 class MainMenuScreenFR extends State<MainMenuFR> {
+  bool _availability = false;
   int _selectedIndex = 1;
 
   var _firstName = "";
@@ -98,7 +96,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                             onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const Profile())),
+                                    builder: (context) => const ProfileFr())),
                           ),
                           ListTile(
                             title: const Center(child: Text('Logout')),
@@ -128,64 +126,40 @@ class MainMenuScreenFR extends State<MainMenuFR> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(height: 25),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const SOSpage())),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 30),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    )),
-                child: const Text(
-                  'SOS',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                  ),
-                ),
+          const SizedBox(height: 10),
+          SwitchListTile(
+            title: const Text(
+              'Availability',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.black,
               ),
-              ElevatedButton(
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ReportScreen())),
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 33, vertical: 30),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    )),
-                child: const Text(
-                  'Report',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
+            ),
+            value: _availability,
+            onChanged: (value) {
+              setState(() {
+                _availability = value; // Toggle the _availability boolean value
+                // Implement Availability functionality here
+              });
+            },
+            activeColor: Colors.green, 
+            inactiveTrackColor: Colors.red, 
+            subtitle: _availability ? const Text('Available') : const Text('Unavailable'),
           ),
-          const SizedBox(height: 25),
+          const SizedBox(height: 10),
           ElevatedButton(
             onPressed: () {
-              // Implement Map functionality
+              // Implement Add event functionality
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 138, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 119, vertical: 20),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 )),
             child: const Text(
-              'MAP',
+              'Add Event',
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,
@@ -194,19 +168,18 @@ class MainMenuScreenFR extends State<MainMenuFR> {
           ),
           const SizedBox(height: 25),
           ElevatedButton(
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RegisteredLocation())),
+            onPressed: () {
+              // Implement incident posts functionality
+            },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 29, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 90, vertical: 20),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 )),
             child: const Text(
-              'Registered Locations',
+              'Incident Posts',
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,

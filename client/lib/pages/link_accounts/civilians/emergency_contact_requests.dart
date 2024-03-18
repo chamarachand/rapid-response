@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:client/storage/user_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/storage/user_secure_storage.dart';
+import 'package:client/pages/utils/alert_dialogs.dart';
 
 class EmergencyContactRequets extends StatefulWidget {
   const EmergencyContactRequets({super.key});
@@ -13,14 +14,19 @@ class EmergencyContactRequets extends StatefulWidget {
 }
 
 class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
+  late String? _accessToken;
   Future<List<dynamic>>? _requests;
 
   Future<List<dynamic>> getRequests() async {
     final accessToken = await UserSecureStorage.getAccessToken();
-    final decodedAccessToken = JwtDecoder.decode(accessToken!);
 
-    final response = await http.get(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/requests/${decodedAccessToken["id"]}?type=emergency-contact-request"));
+    final response = await http.get(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/notification/requests?type=emergency-contact-request"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (accessToken != null) 'x-auth-token': accessToken
+        });
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -31,20 +37,31 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
+  void _getAccessToken() async {
+    _accessToken = await UserSecureStorage.getAccessToken();
+  }
+
   updateNotificationStatus(String notificationId) async {
-    final response = await http.patch(Uri.parse(
-        "http://10.0.2.2:3000/api/notification/responded/$notificationId"));
+    final response = await http.patch(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/notification/responded/$notificationId"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (_accessToken != null) 'x-auth-token': _accessToken!
+        });
     if (response.statusCode == 200) {
       return true;
     }
   }
 
   addAsEmergencyContact(String requestedUserId) async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-    final decodedAccessToken = JwtDecoder.decode(accessToken!);
-
-    final response = await http.patch(Uri.parse(
-        "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/add/${decodedAccessToken["id"]}/$requestedUserId"));
+    final response = await http.patch(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/linked-accounts/emergency-contacts/add/$requestedUserId"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (_accessToken != null) 'x-auth-token': _accessToken!
+        });
 
     if (response.statusCode == 200) {
       return true;
@@ -57,6 +74,10 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
 
     final response =
         await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
+            headers: {
+              'Content-Type': 'application/json',
+              if (_accessToken != null) 'x-auth-token': _accessToken!
+            },
             body: jsonEncode({
               "from": decodedIdToken["id"],
               "to": to,
@@ -71,89 +92,66 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
     }
   }
 
-  void showSampleDialog(String notificationId, String requestedUserId) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Accept Request!",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "You want accept request?",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.warning,
-                color: Colors.orange,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () async {
-                      await updateNotificationStatus(notificationId);
-                      await addAsEmergencyContact(requestedUserId);
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
-                      showRequestAcceptedDialog();
-                      setState(() {
-                        _requests = getRequests();
-                      });
-                      sendRequestConfirmNotification(requestedUserId);
-                    },
-                    child: const Text("Yes")),
-                TextButton(
-                    onPressed: () async {
-                      await updateNotificationStatus(notificationId);
-                      if (mounted) {
-                        Navigator.pop(context);
-                      }
-                      setState(() {
-                        _requests = getRequests();
-                      });
-                    },
-                    child: const Text("No")),
-                TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel"))
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+  void showDecisionDialog(String notificationId, String requestedUserId) {
+    showAlertDialog(
+      context,
+      "Accept Request?",
+      "You want accept request?",
+      const Icon(
+        Icons.warning,
+        color: Colors.orange,
+        size: 40,
+      ),
+      actions: [
+        TextButton(
+            onPressed: () async {
+              await updateNotificationStatus(notificationId);
+              await addAsEmergencyContact(requestedUserId);
+              if (mounted) {
+                Navigator.pop(context);
+              }
+              showRequestAcceptedDialog();
+              setState(() {
+                _requests = getRequests();
+              });
+              sendRequestConfirmNotification(requestedUserId);
+            },
+            child: const Text("Yes")),
+        TextButton(
+            onPressed: () async {
+              await updateNotificationStatus(notificationId);
+              if (mounted) {
+                Navigator.pop(context);
+              }
+              setState(() {
+                _requests = getRequests();
+              });
+            },
+            child: const Text("No")),
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"))
+      ],
+    );
   }
 
   void showRequestAcceptedDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-              title: const Text(
-                "Request Accepted",
-                style: TextStyle(fontSize: 20),
-              ),
-              content: const Text(
-                "You have been added as an emergency contact for the user",
-                textAlign: TextAlign.center,
-              ),
-              icon: const Icon(
-                Icons.warning,
-                color: Colors.orange,
-                size: 40,
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Ok")),
-              ],
-              actionsAlignment: MainAxisAlignment.center,
-            ));
+    showAlertDialog(
+        context,
+        "Request Accepted",
+        "You have been added as an emergency contact for the requested user",
+        const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+          size: 40,
+        ));
   }
 
   @override
   void initState() {
     super.initState();
     _requests = getRequests();
+    _getAccessToken();
   }
 
   @override
@@ -199,9 +197,10 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                       children: [
                         Expanded(
                           child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "https://i.scdn.co/image/ab676161000051747d5aa798103bfb8562427274"),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(request["from"]
+                                      ["profilePic"] ??
+                                  "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
                               radius: 24,
                             ),
                             title: Text(request["from"]["firstName"] +
@@ -209,7 +208,7 @@ class _EmergencyContactRequetsState extends State<EmergencyContactRequets> {
                                 request["from"]["lastName"]),
                             subtitle: const Text("Emergency contact request"),
                             onTap: () => {
-                              showSampleDialog(
+                              showDecisionDialog(
                                   request["_id"], request["from"]["_id"])
                             },
                           ),
