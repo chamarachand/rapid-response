@@ -66,6 +66,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
             )
           ],
         ),
+        backgroundColor: const Color(0xFFadd8e6),
       ),
       body: Column(children: [
         Padding(
@@ -114,10 +115,9 @@ class _UserListState extends State<UserList> {
             child: Row(children: [
               Expanded(
                   child: ListTile(
-                leading: const CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
-                ),
+                leading: CircleAvatar(
+                    backgroundImage: NetworkImage(user["profilePic"] ??
+                        "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png")),
                 title: Text(user["username"]),
                 subtitle: Text(user["firstName"] + " " + user["lastName"]),
                 // trailing: const Icon(Icons.open_in_new, size: 22),

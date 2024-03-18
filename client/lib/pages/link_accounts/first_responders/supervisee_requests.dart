@@ -196,9 +196,10 @@ class SuperviseeRequestsState extends State<SuperviseeRequests> {
                       children: [
                         Expanded(
                           child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(request["from"]
+                                      ["profilePic"] ??
+                                  "https://i.scdn.co/image/ab676161000051747d5aa798103bfb8562427274"),
                               radius: 24,
                             ),
                             title: Text(request["from"]["firstName"] +

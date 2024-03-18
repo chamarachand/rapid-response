@@ -99,13 +99,13 @@ router.get("/requests", authMiddleware, async (req, res) => {
     const formattedNotifications = [];
     for (const notification of notifications) {
       const civilian = await Civilian.findById(notification.from).select(
-        "_id firstName lastName"
+        "_id firstName lastName profilePic"
       );
 
-      const fr = await FirstResponder.findById(notification.from).select(
-        "_id firstName lastName"
-      );
-      const user = civilian || fr;
+      const firstResponder = await FirstResponder.findById(
+        notification.from
+      ).select("_id firstName lastName profilePic");
+      const user = civilian || firstResponder;
 
       const formattedNotification = {
         _id: notification._id,
