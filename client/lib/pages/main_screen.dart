@@ -7,7 +7,7 @@ import 'report_incident_screen.dart';
 import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; //change this
+import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; 
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -21,10 +21,10 @@ class MainMenuScreen extends State<MainMenu> {
   var _firstName = "";
 
   void _loadToken() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
 
-    if (accessToken != null) {
-      var decodedToken = JwtDecoder.decode(accessToken);
+    if (idToken != null) {
+      var decodedToken = JwtDecoder.decode(idToken);
       // Access token claims
       setState(() {
         _firstName = decodedToken["firstName"];

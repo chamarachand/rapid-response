@@ -15,6 +15,16 @@ const firstResponderSchema = new mongoose.Schema({
     maxlength: 255,
     required: true,
   },
+  availability: {
+    type: Boolean,
+    default: false,
+  },
+  latitude: {
+    type: Number,
+  },
+  longitude: {
+    type: Number,
+  },
   supervisorAccounts: {
     type: [
       {
