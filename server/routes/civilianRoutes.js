@@ -78,4 +78,34 @@ router.post("/", async (req, res) => {
   }
 });
 
+//Delete
+router.delete(
+  "/remove/emergency-contact/:emergencyContactId",
+  authMiddleware,
+  async (req, res) => {
+    const userId = req.user.id;
+    const { emergencyContactId } = req.params;
+
+    if (!userId || !emergencyContactId)
+      return res.status(400).send("Bad Request");
+
+    try {
+      const result = await Civilian.updateOne(
+        { _id: userId },
+        { $pull: { emergencyContacts: emergencyContactId } }
+      );
+
+      if (result.modifiedCount === 0)
+        return res
+          .status(404)
+          .send("Emergency contact with the given id not found for the user");
+
+      return res.status(200).send("Emergency contact removed successfully");
+    } catch (error) {
+      console.log("Error: " + error);
+      return res.status(500).send("Internal Server Error");
+    }
+  }
+);
+
 module.exports = router;

@@ -70,14 +70,15 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
   removeFromEmergencyContacts(String emergencyContactId) async {
     final accessToken = await UserSecureStorage.getAccessToken();
 
-    final response = await http.get(
+    final response = await http.delete(
         Uri.parse(
-            "http://10.0.2.2:3000/api/notification/requests?type=emergency-contact-request"),
+            "http://10.0.2.2:3000/api/civilian/remove/emergency-contact/${emergencyContactId}"),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken
         });
-    // api call to remove
+
+    return response.statusCode == 200;
   }
 
   void showEmergencyContactRemovedDialog() {
