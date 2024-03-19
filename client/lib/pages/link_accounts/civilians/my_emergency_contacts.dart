@@ -83,8 +83,8 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
   void showEmergencyContactRemovedDialog() {
     showAlertDialog(
         context,
-        "Request Accepted",
-        "You have been added as an emergency contact for the requested user",
+        "Removed from Emergency Contacts",
+        "The user has been successfully removed from your emergency contacts",
         const Icon(
           Icons.check_circle,
           color: Colors.green,
