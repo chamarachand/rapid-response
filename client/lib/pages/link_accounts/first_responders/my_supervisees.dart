@@ -34,12 +34,12 @@ class _MySuperviseesState extends State<MySupervisees> {
     }
   }
 
-  removeFromEmergencyContacts(String emergencyContactId) async {
+  removeFromSupervisees(String superviseeId) async {
     final accessToken = await UserSecureStorage.getAccessToken();
 
     final response = await http.delete(
         Uri.parse(
-            "http://10.0.2.2:3000/api/civilian/remove/emergency-contact/${emergencyContactId}"),
+            "http://10.0.2.2:3000/api/first-responder/remove/supervisee/${superviseeId}"),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken
@@ -48,7 +48,7 @@ class _MySuperviseesState extends State<MySupervisees> {
     return response.statusCode == 200;
   }
 
-  void showDecisionConfirmDialog(String emergencyContactId) {
+  void showDecisionConfirmDialog(String superviseeId) {
     showAlertDialog(
       context,
       "Remove from Supervisee",
@@ -61,15 +61,15 @@ class _MySuperviseesState extends State<MySupervisees> {
       actions: [
         TextButton(
             onPressed: () async {
-              await removeFromEmergencyContacts(emergencyContactId);
+              await removeFromSupervisees(superviseeId);
               if (mounted) {
                 Navigator.pop(context);
               }
-              showEmergencyContactRemovedDialog();
+              showSuperviseeRemovedDialog();
               setState(() {
                 _futureSupervisees = getSupervisees();
               });
-              sendRemoveEmergencyContactNotification(emergencyContactId);
+              sendRemoveSuperviseeNotification(superviseeId);
             },
             child: const Text("Yes")),
         TextButton(
@@ -81,7 +81,7 @@ class _MySuperviseesState extends State<MySupervisees> {
     );
   }
 
-  sendRemoveEmergencyContactNotification(String to) async {
+  sendRemoveSuperviseeNotification(String to) async {
     final accessToken = await UserSecureStorage.getAccessToken();
     final idToken = await UserSecureStorage.getIdToken();
     final decodedIdToken = JwtDecoder.decode(idToken!);
@@ -106,7 +106,7 @@ class _MySuperviseesState extends State<MySupervisees> {
     }
   }
 
-  void showEmergencyContactRemovedDialog() {
+  void showSuperviseeRemovedDialog() {
     showAlertDialog(
         context,
         "Removed from Supervisee",
