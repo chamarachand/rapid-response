@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:client/storage/user_secure_storage.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/storage/user_secure_storage.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 
 class MyEmergencyContacts extends StatefulWidget {
@@ -55,7 +56,7 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
               setState(() {
                 _futureEmergencyContacts = getEmergencyContacts();
               });
-              // sendRequestConfirmNotification(requestedUserId);
+              sendRemoveEmergencyContactNotification(emergencyContactId);
             },
             child: const Text("Yes")),
         TextButton(
@@ -79,6 +80,31 @@ class _MyEmergencyContactsState extends State<MyEmergencyContacts> {
         });
 
     return response.statusCode == 200;
+  }
+
+  sendRemoveEmergencyContactNotification(String to) async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    final response =
+        await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
+            headers: {
+              'Content-Type': 'application/json',
+              if (accessToken != null) 'x-auth-token': accessToken
+            },
+            body: jsonEncode({
+              "from": decodedIdToken["id"],
+              "to": to,
+              "type": "emergency-contact-remove",
+              "title": "Removed from Emergency Contacts",
+              "body":
+                  "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} removed you from their emergency contacts"
+            }));
+
+    if (response.statusCode == 200) {
+      print("Notification send successfully!");
+    }
   }
 
   void showEmergencyContactRemovedDialog() {
