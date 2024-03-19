@@ -73,14 +73,12 @@ router.delete(
     try {
       const removeSupervisee = await FirstResponder.updateOne(
         { _id: userId },
-        { $pull: { superviseeAccounts: superviseeId } },
-        { session }
+        { $pull: { superviseeAccounts: superviseeId } }
       );
 
       const removeSupervisor = await FirstResponder.updateOne(
         { _id: superviseeId },
-        { $pull: { supervisorAccounts: userId } },
-        { session }
+        { $pull: { supervisorAccounts: userId } }
       );
 
       if (

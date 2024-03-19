@@ -193,7 +193,16 @@ router.post("/send", authMiddleware, async (req, res) => {
     return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
-  const { fcmToken } = await Civilian.findById(to).select("fcmToken"); // Add if not token logic
+
+  // const { fcmToken } = await Civilian.findById(to).select("fcmToken");
+  // if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
+
+  const [fcmTokenCivilian, fcmTokenFirstResponder] = await Promise.all([
+    Civilian.findById(to).select("fcmToken"),
+    FirstResponder.findById(to).select("fcmToken"),
+  ]);
+  const fcmToken =
+    fcmTokenCivilian?.fcmToken || fcmTokenFirstResponder?.fcmToken;
   if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
 
   try {

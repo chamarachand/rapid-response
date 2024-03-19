@@ -45,6 +45,7 @@ class _MySuperviseesState extends State<MySupervisees> {
           if (accessToken != null) 'x-auth-token': accessToken
         });
 
+    print(response.body);
     return response.statusCode == 200;
   }
 
@@ -61,7 +62,8 @@ class _MySuperviseesState extends State<MySupervisees> {
       actions: [
         TextButton(
             onPressed: () async {
-              await removeFromSupervisees(superviseeId);
+              bool result = await removeFromSupervisees(superviseeId);
+              print(result);
               if (mounted) {
                 Navigator.pop(context);
               }
