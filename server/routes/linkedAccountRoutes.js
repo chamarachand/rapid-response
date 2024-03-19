@@ -14,7 +14,7 @@ router.get("/emergency-contacts", authMiddleware, async (req, res) => {
       .select("emergencyContacts")
       .populate({
         path: "emergencyContacts",
-        select: "firstName lastName phoneNumber email",
+        select: "firstName lastName phoneNumber email profilePic",
       });
 
     if (!emergencyContacts || emergencyContacts.length === 0)
@@ -97,7 +97,7 @@ router.get("/supervisors", authMiddleware, async (req, res) => {
       .select("supervisorAccounts")
       .populate({
         path: "supervisorAccounts",
-        select: "firstName lastName phoneNumber email",
+        select: "firstName lastName phoneNumber email profilePic",
       });
 
     if (!supervisorAccounts || supervisorAccounts.length === 0)
@@ -120,7 +120,7 @@ router.get("/supervisees", authMiddleware, async (req, res) => {
       .select("superviseeAccounts")
       .populate({
         path: "superviseeAccounts",
-        select: "firstName lastName phoneNumber email",
+        select: "firstName lastName phoneNumber email profilePic",
       });
 
     if (!superviseeAccounts || superviseeAccounts.length === 0)

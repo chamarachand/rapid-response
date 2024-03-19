@@ -27,7 +27,7 @@ civilianSchema.methods.generateAuthToken = function () {
   );
 };
 
-//-Sahan-created Id token 
+//-Sahan-created Id token
 civilianSchema.methods.generateIdToken = function () {
   return jwt.sign(
     {
@@ -39,6 +39,7 @@ civilianSchema.methods.generateIdToken = function () {
       nicNo: this.nicNo,
       phnNo: this.phoneNumber,
       email: this.email,
+      profilePic: this.profilePic,
     },
     "jwtPrivateKey"
   );
