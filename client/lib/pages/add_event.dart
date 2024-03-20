@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:client/pages/google_map.dart';
+import 'package:client/pages/main_screen_fr.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+
 
 class add_event extends StatefulWidget {
   const add_event({super.key});
@@ -202,21 +205,65 @@ class _addEventState extends State<add_event> {
     );
   }
 
-  Future<void> _submitIncident() async {
-    final downloadUrl = await uploadImageToFirebase();
+ Future<void> _submitIncident() async {
+  final downloadUrl = await uploadImageToFirebase();
 
-            if (downloadUrl != null) {
-              // Do something with the downloadUrl, such as:
-              //   - Send in the SOS message
-              //   - Display success to the user
-              print("Add Event Photo sent with image: $downloadUrl");
-            }
-  }
+  if (downloadUrl != null) {
+    // Prepare form data
+    final Map<String, dynamic> eventData = {
+      'eventType': _EventTypeController.text,
+      'eventDate': _EventDateController.text,
+      'eventTime': _EventTimeController.text,
+      'description': _DescriptionController.text,
+      'imageUrl': downloadUrl, // Assuming Firebase returns the URL
+    };
 
-  void _onBottomNavBarItemTapped(int index) {
-    // Implement navigation logic based on the selected bottom navigation bar item
-    // You can use Navigator to push or pop screens based on the selected index
+    // Send POST request using http package
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:3000/api/area-event/create-area-event'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(eventData),
+    );
+
+    if (response.statusCode == 201) {
+      // Handle successful event creation (show a success message, navigate, etc.)
+      print('Event created successfully!');
+    } else {
+      // Handle error (show an error message)
+      print('Error creating event: ${response.statusCode}');
+    }
   }
+}
+
+
+void _onBottomNavBarItemTapped(int index) {
+  switch (index) {
+    case 0:
+      // Navigate to the Home screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MainMenuFR()), // Replace with your Home screen widget
+      );
+      break;
+   /* case 1:
+      // Navigate to the Link screen (replace with your desired screen)
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LinkScreen()), // Replace with your Link screen widget (optional)
+      );
+      break;
+    case 2:
+      // Navigate to the History screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HistoryScreen()), // Replace with your History screen widget
+      );
+      break;  */
+  }
+}
+
 
   Widget popup() => AlertDialog(
         title: const Text('Camera Options'),
