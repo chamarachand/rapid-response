@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_app_check/firebase_app_check.dart';
+
 
 
 class add_event extends StatefulWidget {
@@ -221,7 +223,7 @@ class _addEventState extends State<add_event> {
     // Send POST request using http package
     final response = await http.post(
       Uri.parse('http://10.0.2.2:3000/api/area-event/create-area-event'),
-      headers: <String, String>{
+      headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(eventData),
