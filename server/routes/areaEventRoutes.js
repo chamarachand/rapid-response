@@ -6,7 +6,6 @@ const { AreaEvent, validate } = require("../models/areaEvent"); // Assuming your
 router.post("/create-area-event", async (req, res) => {
   try {
     const { error } = validate(req.body);
-    console.log(error.details[0].message);
     if (error) return res.status(400).send(error.details[0].message);
 
     const areaEvent = new AreaEvent({ ...req.body });
