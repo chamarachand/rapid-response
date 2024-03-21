@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:client/pages/google_map.dart';
 import 'package:client/pages/main_screen_fr.dart';
+import 'package:client/storage/user_secure_storage.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_app_check/firebase_app_check.dart';
-
-
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class add_event extends StatefulWidget {
   const add_event({super.key});
@@ -125,9 +125,9 @@ class _addEventState extends State<add_event> {
                     fixedSize: const Size(1000, 50)),
                 onPressed: () {
                   showDialog(
-                   context: context,
-                  builder: (BuildContext context) => popup(),
-                 );
+                    context: context,
+                    builder: (BuildContext context) => popup(),
+                  );
                 },
                 child: const Text('+ add Image'),
               ),
@@ -140,7 +140,7 @@ class _addEventState extends State<add_event> {
                     backgroundColor: Colors.orange,
                     fixedSize: const Size(1000, 50)),
                 onPressed: () {
-                /*Navigator.push(
+                  /*Navigator.push(
                 context, MaterialPageRoute(builder: (context) => MapScreen()));*/
                 },
                 child: const Text('+ add Location to map'),
@@ -207,49 +207,56 @@ class _addEventState extends State<add_event> {
     );
   }
 
- Future<void> _submitIncident() async {
-  final downloadUrl = await uploadImageToFirebase();
+  Future<void> _submitIncident() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final decodedAccessToken = JwtDecoder.decode(accessToken!);
+    final downloadUrl = await uploadImageToFirebase();
 
-  if (downloadUrl != null) {
-    // Prepare form data
-    final Map<String, dynamic> eventData = {
-      'eventType': _EventTypeController.text,
-      'eventDate': _EventDateController.text,
-      'eventTime': _EventTimeController.text,
-      'description': _DescriptionController.text,
-      'imageUrl': downloadUrl, // Assuming Firebase returns the URL
-    };
+    if (downloadUrl != null) {
+      // Prepare form data
+      final Map<String, dynamic> eventData = {
+        'addedBy': decodedAccessToken["id"],
+        'eventType': _EventTypeController.text,
+        'date': _EventDateController.text,
+        'time': _EventTimeController.text,
+        'description': _DescriptionController.text,
+        'image': downloadUrl, // Assuming Firebase returns the URL
+      };
 
-    // Send POST request using http package
-    final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/api/area-event/create-area-event'),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(eventData),
-    );
+      print(eventData);
+      print(eventData["time"].runtimeType);
 
-    if (response.statusCode == 201) {
-      // Handle successful event creation (show a success message, navigate, etc.)
-      print('Event created successfully!');
-    } else {
-      // Handle error (show an error message)
-      print('Error creating event: ${response.statusCode}');
+      // Send POST request using http package
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/area-event/create-area-event'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(eventData),
+      );
+
+      if (response.statusCode == 201) {
+        // Handle successful event creation (show a success message, navigate, etc.)
+        print('Event created successfully!');
+      } else {
+        // Handle error (show an error message)
+        print('Error creating event: ${response.statusCode}');
+      }
     }
   }
-}
 
-
-void _onBottomNavBarItemTapped(int index) {
-  switch (index) {
-    case 0:
-      // Navigate to the Home screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MainMenuFR()), // Replace with your Home screen widget
-      );
-      break;
-   /* case 1:
+  void _onBottomNavBarItemTapped(int index) {
+    switch (index) {
+      case 0:
+        // Navigate to the Home screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  MainMenuFR()), // Replace with your Home screen widget
+        );
+        break;
+      /* case 1:
       // Navigate to the Link screen (replace with your desired screen)
       Navigator.push(
         context,
@@ -263,9 +270,8 @@ void _onBottomNavBarItemTapped(int index) {
         MaterialPageRoute(builder: (context) => HistoryScreen()), // Replace with your History screen widget
       );
       break;  */
+    }
   }
-}
-
 
   Widget popup() => AlertDialog(
         title: const Text('Camera Options'),
@@ -304,7 +310,7 @@ void _onBottomNavBarItemTapped(int index) {
     }
   }
 
-Future<String?> uploadImageToFirebase() async {
+  Future<String?> uploadImageToFirebase() async {
     if (image == null) return null; // Early exit if no image
 
     final storageRef = FirebaseStorage.instance.ref();
