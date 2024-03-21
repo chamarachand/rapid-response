@@ -23,41 +23,46 @@ class add_event extends StatefulWidget {
 class _addEventState extends State<add_event> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _EventTypeController = TextEditingController();
-  final TextEditingController _EventDateController = TextEditingController();
-  final TextEditingController _EventTimeController = TextEditingController();
+  final TextEditingController _dateTimeController = TextEditingController();
   final TextEditingController _DescriptionController = TextEditingController();
 
   String imageUrl = '';
   File? image;
 
-  Future<void> _datePicker(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(
-          DateTime.now().year, 1, 1), // Set initial date to current year
-      firstDate: DateTime(2024, 1, 1), // Set first date to 2024
-      lastDate: DateTime(2036, 12, 31), // Set last date to 2030
-    );
+  Future<void> _selectDateTime(BuildContext context) async {
+  // Combine date picker and time picker interactions
+  final DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(), // Set initial date to current date
+    firstDate: DateTime(2024, 1, 1),
+    lastDate: DateTime(2036, 12, 31),
+  );
 
-    if (picked != null) {
-      setState(() {
-        _EventDateController.text = DateFormat('yyyy-MM-dd').format(picked!.toLocal()); // Adjust format as needed
-      });
-    }
-  }
-
-  Future<void> _showTimePicker(BuildContext context) async {
+  if (pickedDate != null) {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
 
     if (pickedTime != null) {
+      // Combine date and time into a single DateTime variable
+      final selectedDateTime = DateTime(
+        pickedDate!.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime!.hour,
+        pickedTime.minute,
+      );
+
+      // Update your UI or store the selectedDateTime variable
       setState(() {
-        _EventTimeController.text = pickedTime.format(context);
+        // You can adjust the format as needed (e.g., 'yyyy-MM-dd HH:mm')
+        _dateTimeController.text = selectedDateTime.toString();
       });
     }
   }
+}
+
 
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
   DateTime selectedDate = DateTime.now();
@@ -92,28 +97,28 @@ class _addEventState extends State<add_event> {
             Container(
               padding: textFieldPadding,
               child: TextFormField(
-                  controller: _EventDateController,
+                  controller: _dateTimeController,
                   decoration: const InputDecoration(
                       labelText: "Select Date",
                       border: OutlineInputBorder(),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       suffixIcon: Icon(Icons.calendar_month)),
                   readOnly: true,
-                  onTap: () => _datePicker(context),
+                  onTap: () => _selectDateTime(context),
                   validator: (value) =>
                       (value == "") ? "This field is required" : null),
             ),
             Container(
               padding: textFieldPadding,
               child: TextFormField(
-                  controller: _EventTimeController,
+                  controller: _dateTimeController,
                   decoration: const InputDecoration(
                       labelText: "Select Time",
                       border: OutlineInputBorder(),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       suffixIcon: Icon(Icons.access_time_rounded)),
                   readOnly: true,
-                  onTap: () => _showTimePicker(context),
+                  onTap: () => _selectDateTime(context),
                   validator: (value) =>
                       (value == "") ? "This field is required" : null),
             ),
@@ -218,8 +223,8 @@ class _addEventState extends State<add_event> {
       final Map<String, dynamic> eventData = {
         'addedBy': decodedAccessToken["id"],
         'eventType': _EventTypeController.text,
-        'date': _EventDateController.text,
-        'time': _EventTimeController.text,
+        'date': _dateTimeController.text,
+        'time': _dateTimeController.text,
         'description': _DescriptionController.text,
         'image': downloadUrl, // Assuming Firebase returns the URL
       };
