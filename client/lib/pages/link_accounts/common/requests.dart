@@ -88,7 +88,7 @@ class RequestsState extends State<Requests> {
             body: jsonEncode({
               "from": decodedIdToken["id"],
               "to": to,
-              "type": widget.notificationType,
+              "type": widget.notificationAcceptType,
               "title": "Request Accepted",
               "body":
                   "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your ${widget.displayName.toLowerCase()}"
