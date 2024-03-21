@@ -153,18 +153,18 @@ class _ReportScreenState extends State<ReportScreen> {
 
     if (downloadUrl != null) {
       // Prepare form data
-      final Map<String, dynamic> eventData = {
-        'addedBy': decodedAccessToken["id"],
-        'Event-Type' : _EventTypeController,
+      final Map<String, dynamic> IncidentReport = {
+        'victimId': decodedAccessToken["id"],
+        'EventType' : _EventTypeController.text,
         'location': currentPosition,
         'image': downloadUrl, // Assuming Firebase returns the URL
         'voice': capturedSpeech,
         'description': _DescriptionController.text,
-        'Date': currentDate,
+        'timeStamp': currentDate,
       };
 
-      print(eventData);
-      print(eventData["time"].runtimeType);
+      print(IncidentReport);
+      print(IncidentReport["time"].runtimeType);
 
       // Send POST request using http package
       final response = await http.post(
@@ -172,7 +172,7 @@ class _ReportScreenState extends State<ReportScreen> {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(eventData),
+        body: jsonEncode(IncidentReport),
       );
 
       if (response.statusCode == 201) {

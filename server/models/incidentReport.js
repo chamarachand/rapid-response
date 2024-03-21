@@ -4,6 +4,7 @@ Joi.objectId = require("joi-objectid")(Joi);
 
 const incidentReportSchema = new mongoose.Schema({
   victimId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  EventType: {type:String , maxlength: 500 }, 
   location: { type: String },
   image: { type: String, maxlength: 1024 },
   voice: { type: String },
@@ -25,6 +26,7 @@ const IncidentReport = mongoose.model("IncidentReport", incidentReportSchema);
 function validateIncidentReport(incidentReport) {
   const schema = Joi.object({
     victimId: Joi.objectId().required(),
+    EventType: Joi.string().max(500).allow(""),
     location: Joi.string().allow(""),
     image: Joi.string().max(1024).allow(""),
     voice: Joi.string().allow(""),
