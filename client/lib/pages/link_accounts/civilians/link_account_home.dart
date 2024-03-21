@@ -48,7 +48,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                           context,
                           MaterialPageRoute(
                               builder: ((context) =>
-                                  const EmergencyContactRequets())));
+                                  EmergencyContactRequests())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),

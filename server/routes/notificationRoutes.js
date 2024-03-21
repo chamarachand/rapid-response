@@ -113,6 +113,7 @@ router.get("/requests", authMiddleware, async (req, res) => {
           _id: user._id,
           firstName: user.firstName,
           lastName: user.lastName,
+          profilePic: user.profilePic,
         },
       };
 
