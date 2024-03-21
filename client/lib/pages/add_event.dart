@@ -99,24 +99,10 @@ class _addEventState extends State<add_event> {
               child: TextFormField(
                   controller: _dateTimeController,
                   decoration: const InputDecoration(
-                      labelText: "Select Date",
+                      labelText: "Select Date and Time",
                       border: OutlineInputBorder(),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       suffixIcon: Icon(Icons.calendar_month)),
-                  readOnly: true,
-                  onTap: () => _selectDateTime(context),
-                  validator: (value) =>
-                      (value == "") ? "This field is required" : null),
-            ),
-            Container(
-              padding: textFieldPadding,
-              child: TextFormField(
-                  controller: _dateTimeController,
-                  decoration: const InputDecoration(
-                      labelText: "Select Time",
-                      border: OutlineInputBorder(),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      suffixIcon: Icon(Icons.access_time_rounded)),
                   readOnly: true,
                   onTap: () => _selectDateTime(context),
                   validator: (value) =>

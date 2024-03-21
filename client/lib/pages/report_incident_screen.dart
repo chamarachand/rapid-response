@@ -1,11 +1,18 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:client/pages/SOS_page.dart';
 import 'package:client/pages/SpeechtoText.dart';
+import 'package:client/storage/user_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -17,9 +24,13 @@ class ReportScreen extends StatefulWidget {
 
 class _ReportScreenState extends State<ReportScreen> {
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
+  final TextEditingController _EventTypeController = TextEditingController();
   final TextEditingController _DescriptionController = TextEditingController();
   String imageUrl = '';
   File? image;
+  String? capturedSpeech;
+  late Position currentPosition;
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +43,22 @@ class _ReportScreenState extends State<ReportScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Container(
+              padding: textFieldPadding,
+              child: TextFormField(
+                controller: _EventTypeController,
+                decoration: const InputDecoration(
+                    labelText: "Event Type",
+                    border: OutlineInputBorder(),
+                    floatingLabelBehavior: FloatingLabelBehavior.always),
+                validator: (value) {
+                  value = value!
+                      .trim(); // In a TextFormField f the user doesn't enter anything, the value returned will be an empty string "", not null.
+                  if (value.isEmpty) return "This field is required";
+                  return null;
+                },
+              ),
+            ),
             Container(
               padding: textFieldPadding,
               child: ElevatedButton(
@@ -57,7 +84,14 @@ class _ReportScreenState extends State<ReportScreen> {
                     fixedSize: const Size(1000, 50)),
                 onPressed: () {
                   Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Speech_To_Text_Page()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Speech_To_Text_Page(),
+                    ),
+                  ).then((capturedText) {
+                    // capturedText will contain the speech captured from Speech_To_Text_Page
+                    capturedSpeech = capturedText as String?;
+                  });
                 },
                 child: const Text('+ add Voice'),
               ),
@@ -109,9 +143,45 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Future<void> _submitIncident() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final decodedAccessToken = JwtDecoder.decode(accessToken!);
     final downloadUrl = await uploadImageToFirebase();
+    currentPosition = await getLocation.getCurrentLocation();
+    DateTime now = DateTime.now();
+    String currentDate = DateFormat('yyyy-MM-dd').format(now);
+
+
     if (downloadUrl != null) {
-        print("Incident Report Photo sent with image: $downloadUrl");
+      // Prepare form data
+      final Map<String, dynamic> eventData = {
+        'addedBy': decodedAccessToken["id"],
+        'Event-Type' : _EventTypeController,
+        'location': currentPosition,
+        'image': downloadUrl, // Assuming Firebase returns the URL
+        'voice': capturedSpeech,
+        'description': _DescriptionController.text,
+        'Date': currentDate,
+      };
+
+      print(eventData);
+      print(eventData["time"].runtimeType);
+
+      // Send POST request using http package
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/incident-report/create-incident'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(eventData),
+      );
+
+      if (response.statusCode == 201) {
+        // Handle successful event creation (show a success message, navigate, etc.)
+        print('Event created successfully!');
+      } else {
+        // Handle error (show an error message)
+        print('Error creating event: ${response.statusCode}');
+      }
     }
   }
 
@@ -174,7 +244,6 @@ Future<String?> uploadImageToFirebase() async {
       return null;
     }
   }
-
   
 }
 
