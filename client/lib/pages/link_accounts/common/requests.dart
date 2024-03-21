@@ -5,7 +5,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 
-class Requests extends StatefulWidget {
+abstract class Requests extends StatefulWidget {
   final String displayName;
   final String notificationType;
   final String notificationAcceptType;
@@ -91,7 +91,7 @@ class RequestsState extends State<Requests> {
               "type": widget.notificationType,
               "title": "Request Accepted",
               "body":
-                  _getNotificationBody(decodedIdToken, widget.notificationType)
+                  "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your ${widget.displayName.toLowerCase()}"
             }));
 
     if (response.statusCode == 200) {
@@ -99,22 +99,11 @@ class RequestsState extends State<Requests> {
     }
   }
 
-  _getNotificationBody(decodedIdToken, notificationType) {
-    switch (notificationType) {
-      case 'emergency-contact-request-accept':
-        return "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your emergency contact";
-      case 'supervisee-request-accept':
-        return "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your supervisee";
-      default:
-        return '';
-    }
-  }
-
   void showDecisionDialog(String notificationId, String requestedUserId) {
     showAlertDialog(
       context,
       "Accept Request?",
-      "You want accept request?",
+      "You want to accept the request?",
       const Icon(
         Icons.warning,
         color: Colors.orange,
