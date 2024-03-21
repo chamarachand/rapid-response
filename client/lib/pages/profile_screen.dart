@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -129,17 +129,17 @@ class ProfileScreen extends State<Profile> {
                   width: 200,
                   height: 200,
                   child: ClipOval(
-                    child:image != null
-                      ? Image.file(
-                          image!,
-                          width: 130,
-                          height: 130,
-                          fit: BoxFit.cover,
-                        ) :
-                    Image.network(
-                      profileImg,
-                      fit: BoxFit.cover,
-                    ),
+                    child: image != null
+                        ? Image.file(
+                            image!,
+                            width: 130,
+                            height: 130,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.network(
+                            profileImg,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
               ),
@@ -148,10 +148,10 @@ class ProfileScreen extends State<Profile> {
                 right: 100,
                 child: ElevatedButton(
                   onPressed: () {
-                   showDialog(
-                    context: context,
-                    builder: (BuildContext context) => popup(),
-                  );
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => popup(),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
@@ -183,7 +183,7 @@ class ProfileScreen extends State<Profile> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const UserSearchPage())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',
@@ -250,14 +250,15 @@ class ProfileScreen extends State<Profile> {
       setState(() => this.image = imageTemporary);
       final downloadUrl = await uploadImageToFirebase();
       if (downloadUrl != null) {
-        print("Profile Picture Send to the fire base storage and downlode link: $downloadUrl");
+        print(
+            "Profile Picture Send to the fire base storage and downlode link: $downloadUrl");
       }
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
   }
 
-Future<String?> uploadImageToFirebase() async {
+  Future<String?> uploadImageToFirebase() async {
     if (image == null) return null; // Early exit if no image
 
     final storageRef = FirebaseStorage.instance.ref();
@@ -273,5 +274,4 @@ Future<String?> uploadImageToFirebase() async {
       return null;
     }
   }
-
 }
