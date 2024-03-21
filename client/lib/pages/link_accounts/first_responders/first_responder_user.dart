@@ -173,7 +173,7 @@ class _FirstResponderUserPageState extends State<FirstResponderUserPage> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             CircleAvatar(
               backgroundImage: NetworkImage(_profilePicUrl ??
-                  "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
+                  "https://www.transparenttextures.com/patterns/debut-light.png"),
               radius: 70,
             ),
             const SizedBox(height: 20),
