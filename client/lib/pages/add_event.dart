@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class add_event extends StatefulWidget {
@@ -40,7 +41,7 @@ class _addEventState extends State<add_event> {
 
     if (picked != null) {
       setState(() {
-        _EventDateController.text = picked.toLocal().toString().split(' ')[0];
+        _EventDateController.text = DateFormat('yyyy-MM-dd').format(picked!.toLocal()); // Adjust format as needed
       });
     }
   }
