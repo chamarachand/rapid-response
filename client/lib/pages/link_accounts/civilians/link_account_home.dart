@@ -1,6 +1,5 @@
 import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 import 'package:flutter/material.dart';
-import 'package:client/pages/link_accounts/common/search_users.dart';
 import 'package:client/pages/link_accounts/civilians/my_emergency_contacts.dart';
 import 'package:client/pages/link_accounts/civilians/emergency_contact_requests.dart';
 
