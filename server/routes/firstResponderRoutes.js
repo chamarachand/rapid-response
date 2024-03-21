@@ -56,4 +56,40 @@ router.post("/", async (req, res) => {
   }
 });
 
+//Sahan's code below
+router.get('/:id/availability', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const firstResponder = await FirstResponder.findById(id);
+    if (!firstResponder) return res.status(404).send('FirstResponder not found');
+    res.send({ availability: firstResponder.availability });
+  } catch (error) {
+    console.error('Error getting availability:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.patch('/:id/availability', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { availability } = req.body;
+
+    if (typeof availability !== 'boolean') {
+      return res.status(400).send('Invalid availability value');
+    }
+
+    const firstResponder = await FirstResponder.findByIdAndUpdate(
+      id,
+      { availability },
+      { new: true } 
+    );
+
+    if (!firstResponder) return res.status(404).send('FirstResponder not found');
+    res.send({ availability: firstResponder.availability });
+  } catch (error) {
+    console.error('Error updating availability:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 module.exports = router;

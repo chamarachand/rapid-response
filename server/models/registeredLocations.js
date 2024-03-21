@@ -11,3 +11,16 @@ const registeredLocationsShema = new mongoose.Schema({
 
 const RegisterLocation = mongoose.model("Registered Location", registeredLocationsShema);
 
+function validateRegisteredLocation(RegisterLocation) {
+    const schema = Joi.object({
+        addedBy: Joi.objectId().required(),
+        locationTag: Joi.string().allow(""),
+        address: Joi.string().allow(""),
+        latitude: Joi.Number().allow(""),
+        longitude: Joi.Number().allow(""),
+    });
+  
+    return schema.validate(RegisterLocation);
+  }
+  
+  module.exports = { RegisterLocation, validate:  validateRegisteredLocation};
