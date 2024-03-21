@@ -1,7 +1,7 @@
+import 'package:client/pages/link_accounts/first_responders/link_accounts_home_fr.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 
 class ProfileFr extends StatefulWidget {
   const ProfileFr({super.key});
@@ -158,7 +158,8 @@ class ProfileScreenFr extends State<ProfileFr> {
           buildUserInfoDisplay(Icons.email, "Email Address", _email),
           buildUserInfoDisplay(Icons.emergency, "First Responder Type", _type),
           buildUserInfoDisplay(Icons.perm_identity_sharp, "Work ID", _workId),
-          buildUserInfoDisplay(Icons.location_city, "Work Address", _workAddress),
+          buildUserInfoDisplay(
+              Icons.location_city, "Work Address", _workAddress),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -174,7 +175,7 @@ class ProfileScreenFr extends State<ProfileFr> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const UserSearchPage())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',

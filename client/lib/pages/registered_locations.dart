@@ -1,7 +1,7 @@
+import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 import 'package:client/pages/register_new_location.dart';
 
 class RegisteredLocation extends StatefulWidget {
@@ -138,10 +138,10 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
             right: -15,
             child: ElevatedButton(
               onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const RegisterLocation())));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) => const RegisterLocation())));
               },
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
@@ -168,7 +168,7 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const UserSearchPage())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',
