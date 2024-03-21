@@ -83,8 +83,10 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const UserSearchPage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const FirstResponderSearchPage()));
         },
         backgroundColor: const Color(0xFFF7D8D8),
         tooltip: "Add Emergency Contact",

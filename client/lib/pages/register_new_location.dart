@@ -1,9 +1,9 @@
+import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class RegisterLocation extends StatefulWidget {
@@ -49,11 +49,11 @@ class RegisterNewLocation extends State<RegisterLocation> {
   }
 
   Future<void> _requestLocationPermission() async {
-      var status = await Permission.location.request();
-      if (status.isGranted) {
-        _getCurrentLocation();
-      } else {}
-    }
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      _getCurrentLocation();
+    } else {}
+  }
 
   Future<void> _getCurrentLocation() async {
     try {
@@ -90,7 +90,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
       );
       // Start listening for location updates
       Geolocator.getPositionStream(locationSettings: locationSettings)
-      .listen((Position newPosition) {
+          .listen((Position newPosition) {
         // Calculate distance between new and previous position
         double distanceInMeters = Geolocator.distanceBetween(
           _previousPosition.latitude,
@@ -106,8 +106,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
           });
           _setLocation(newPosition.latitude, newPosition.longitude);
         }
-      }
-      );
+      });
     } catch (e) {}
   }
 
@@ -132,7 +131,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
     });
   }
 
-  Widget buildRegisterNewLocationInput(){
+  Widget buildRegisterNewLocationInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -167,13 +166,16 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 _requestLocationPermission();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 85, 65, 241),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                )),
-              child: const Text('Current Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                  backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  )),
+              child: const Text(
+                'Current Location',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -182,19 +184,21 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 85, 65, 241),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 36, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                )),
-              child: const Text('Set Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                  backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 36, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  )),
+              child: const Text(
+                'Set Location',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
         const SizedBox(height: 10),
-        if (!showLocationInputs)
-          const SizedBox(height: 206),
+        if (!showLocationInputs) const SizedBox(height: 206),
         if (showLocationInputs)
           Column(
             children: [
@@ -222,20 +226,21 @@ class RegisterNewLocation extends State<RegisterLocation> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 71, 62, 133),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      )),
-                    child: const Text('Back',style: TextStyle(fontWeight: FontWeight.bold),),
+                        backgroundColor: const Color.fromARGB(255, 71, 62, 133),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        )),
+                    child: const Text(
+                      'Back',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      double? lat =
-                          double.tryParse(latitudeController.text);
-                      double? long =
-                          double.tryParse(longitudeController.text);
+                      double? lat = double.tryParse(latitudeController.text);
+                      double? long = double.tryParse(longitudeController.text);
                       if (lat == null ||
                           long == null ||
                           lat < -90 ||
@@ -268,13 +273,16 @@ class RegisterNewLocation extends State<RegisterLocation> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 71, 62, 133),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 34, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      )),
-                    child: const Text('Set',style: TextStyle(fontWeight: FontWeight.bold),),
+                        backgroundColor: const Color.fromARGB(255, 71, 62, 133),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 34, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        )),
+                    child: const Text(
+                      'Set',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
@@ -286,13 +294,15 @@ class RegisterNewLocation extends State<RegisterLocation> {
             // Handle confirm
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 85, 65, 241),
-            padding: const EdgeInsets.symmetric(
-                horizontal: 32, vertical: 15),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
-            )),
-          child: const Text('Confirm',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+              backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              )),
+          child: const Text(
+            'Confirm',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );
@@ -316,7 +326,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height-200,
+            height: MediaQuery.of(context).size.height - 200,
             child: buildRegisterNewLocationInput(),
           ),
         ),
@@ -334,7 +344,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const UserSearchPage())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',

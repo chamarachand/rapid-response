@@ -6,9 +6,9 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 
 abstract class MyAccounts extends StatefulWidget {
-  final String displayName; // Supervisee
-  final String notificationType; //supervisee-remove
-  final String endpoint; // supervisee
+  final String displayName;
+  final String notificationType;
+  final String endpoint;
 
   const MyAccounts(this.displayName, this.notificationType, this.endpoint,
       {super.key});
@@ -184,7 +184,7 @@ class MyAccountsState extends State<MyAccounts> {
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_rounded,
                                   color: Color.fromARGB(255, 179, 39, 29),
-                                  size: 30),
+                                  size: 25),
                               onPressed: () {
                                 showDecisionConfirmDialog(user["_id"]);
                               },
