@@ -7,10 +7,12 @@ import 'package:client/pages/utils/alert_dialogs.dart';
 
 abstract class MyAccounts extends StatefulWidget {
   final String displayName;
+  final String userType;
   final String notificationType;
   final String endpoint;
 
-  const MyAccounts(this.displayName, this.notificationType, this.endpoint,
+  const MyAccounts(
+      this.displayName, this.userType, this.notificationType, this.endpoint,
       {super.key});
 
   @override
@@ -45,7 +47,7 @@ class MyAccountsState extends State<MyAccounts> {
 
     final response = await http.delete(
         Uri.parse(
-            "http://10.0.2.2:3000/api/first-responder/remove/${widget.endpoint}/${accountId}"),
+            "http://10.0.2.2:3000/api/${widget.userType}/remove/${widget.endpoint}/${accountId}"),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken

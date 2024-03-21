@@ -211,6 +211,7 @@ class MySupervisees extends MyAccounts {
   const MySupervisees({super.key})
       : super(
           "Supervisee", // displayName
+          "first-responder", // userType
           "supervisee-remove", //notificationType
           "supervisee", // endpoint
         );
