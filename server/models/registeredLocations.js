@@ -24,3 +24,4 @@ function validateRegisteredLocation(RegisterLocation) {
   }
   
   module.exports = { RegisterLocation, validate:  validateRegisteredLocation};
+

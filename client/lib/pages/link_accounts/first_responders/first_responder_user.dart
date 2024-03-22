@@ -5,15 +5,15 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 
-class AddUserPage extends StatefulWidget {
+class FirstResponderUserPage extends StatefulWidget {
   final dynamic _user;
-  const AddUserPage(this._user, {super.key});
+  const FirstResponderUserPage(this._user, {super.key});
 
   @override
-  State<AddUserPage> createState() => _AddUserPageState();
+  State<FirstResponderUserPage> createState() => _FirstResponderUserPageState();
 }
 
-class _AddUserPageState extends State<AddUserPage> {
+class _FirstResponderUserPageState extends State<FirstResponderUserPage> {
   dynamic _accessToken;
   dynamic _idToken;
   String? _profilePicUrl;
@@ -173,7 +173,7 @@ class _AddUserPageState extends State<AddUserPage> {
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             CircleAvatar(
               backgroundImage: NetworkImage(_profilePicUrl ??
-                  "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
+                  "https://www.transparenttextures.com/patterns/debut-light.png"),
               radius: 70,
             ),
             const SizedBox(height: 20),

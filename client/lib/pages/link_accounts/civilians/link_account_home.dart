@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
+import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/civilians/my_emergency_contacts.dart';
 import 'package:client/pages/link_accounts/civilians/emergency_contact_requests.dart';
 
@@ -48,7 +48,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                           context,
                           MaterialPageRoute(
                               builder: ((context) =>
-                                  const EmergencyContactRequets())));
+                                  EmergencyContactRequests())));
                     },
                     tileColor: const Color(0xFFF7D8D8),
                     trailing: const Icon(Icons.keyboard_arrow_right),
@@ -70,8 +70,10 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const UserSearchPage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const CivilianSearchPage()));
         },
         backgroundColor: const Color(0xFFF7D8D8),
         tooltip: "Add Emergency Contact",

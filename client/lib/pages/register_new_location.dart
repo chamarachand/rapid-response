@@ -1,9 +1,9 @@
+import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class RegisterLocation extends StatefulWidget {
@@ -49,11 +49,11 @@ class RegisterNewLocation extends State<RegisterLocation> {
   }
 
   Future<void> _requestLocationPermission() async {
-      var status = await Permission.location.request();
-      if (status.isGranted) {
-        _getCurrentLocation();
-      } else {}
-    }
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      _getCurrentLocation();
+    } else {}
+  }
 
   Future<void> _getCurrentLocation() async {
     try {
@@ -90,7 +90,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
       );
       // Start listening for location updates
       Geolocator.getPositionStream(locationSettings: locationSettings)
-      .listen((Position newPosition) {
+          .listen((Position newPosition) {
         // Calculate distance between new and previous position
         double distanceInMeters = Geolocator.distanceBetween(
           _previousPosition.latitude,
@@ -106,8 +106,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
           });
           _setLocation(newPosition.latitude, newPosition.longitude);
         }
-      }
-      );
+      });
     } catch (e) {}
   }
 
@@ -334,7 +333,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const UserSearchPage())));
+                          builder: ((context) => const LinkAccountHome())));
                 },
               ),
               label: 'Link',

@@ -37,16 +37,17 @@ class _Speech_To_Text_PageState extends State<Speech_To_Text_Page> {
   }
 
   void _onSpeechResult(result) {
-    setState(() {
-      _wordsSpoken = "${result.recognizedWords}";
-    });
-  }
-
+  setState(() {
+    _wordsSpoken = "${result.recognizedWords}";
+  });
+  Navigator.pop(_wordsSpoken as BuildContext); // Pop the screen and return the captured speech
+ }
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.grey,
         title: Text(
           'Speech To Text ',
           style: TextStyle(

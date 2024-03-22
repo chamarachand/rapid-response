@@ -1,3 +1,4 @@
+import 'package:client/pages/add_event.dart';
 import 'package:client/pages/profile_screen_fr.dart';
 import 'package:flutter/material.dart';
 import 'package:client/pages/welcome_screen.dart';
@@ -282,6 +283,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
           ElevatedButton(
             onPressed: () {
               // Implement Add event functionality
+              Navigator.push(context,
+                  MaterialPageRoute(builder: ((context) => const add_event())));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),

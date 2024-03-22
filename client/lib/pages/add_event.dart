@@ -1,11 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
-
 import 'package:client/pages/google_map.dart';
+import 'package:client/pages/main_screen_fr.dart';
+import 'package:client/storage/user_secure_storage.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class add_event extends StatefulWidget {
   const add_event({super.key});
@@ -17,41 +23,46 @@ class add_event extends StatefulWidget {
 class _addEventState extends State<add_event> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _EventTypeController = TextEditingController();
-  final TextEditingController _EventDateController = TextEditingController();
-  final TextEditingController _EventTimeController = TextEditingController();
+  final TextEditingController _dateTimeController = TextEditingController();
   final TextEditingController _DescriptionController = TextEditingController();
 
   String imageUrl = '';
   File? image;
 
-  Future<void> _datePicker(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime(
-          DateTime.now().year, 1, 1), // Set initial date to current year
-      firstDate: DateTime(2024, 1, 1), // Set first date to 2024
-      lastDate: DateTime(2036, 12, 31), // Set last date to 2030
-    );
+  Future<void> _selectDateTime(BuildContext context) async {
+  // Combine date picker and time picker interactions
+  final DateTime? pickedDate = await showDatePicker(
+    context: context,
+    initialDate: DateTime.now(), // Set initial date to current date
+    firstDate: DateTime(2024, 1, 1),
+    lastDate: DateTime(2036, 12, 31),
+  );
 
-    if (picked != null) {
-      setState(() {
-        _EventDateController.text = picked.toLocal().toString().split(' ')[0];
-      });
-    }
-  }
-
-  Future<void> _showTimePicker(BuildContext context) async {
+  if (pickedDate != null) {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
 
     if (pickedTime != null) {
+      // Combine date and time into a single DateTime variable
+      final selectedDateTime = DateTime(
+        pickedDate!.year,
+        pickedDate.month,
+        pickedDate.day,
+        pickedTime!.hour,
+        pickedTime.minute,
+      );
+
+      // Update your UI or store the selectedDateTime variable
       setState(() {
-        _EventTimeController.text = pickedTime.format(context);
+        // You can adjust the format as needed (e.g., 'yyyy-MM-dd HH:mm')
+        _dateTimeController.text = selectedDateTime.toString();
       });
     }
   }
+}
+
 
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
   DateTime selectedDate = DateTime.now();
@@ -86,28 +97,14 @@ class _addEventState extends State<add_event> {
             Container(
               padding: textFieldPadding,
               child: TextFormField(
-                  controller: _EventDateController,
+                  controller: _dateTimeController,
                   decoration: const InputDecoration(
-                      labelText: "Select Date",
+                      labelText: "Select Date and Time",
                       border: OutlineInputBorder(),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       suffixIcon: Icon(Icons.calendar_month)),
                   readOnly: true,
-                  onTap: () => _datePicker(context),
-                  validator: (value) =>
-                      (value == "") ? "This field is required" : null),
-            ),
-            Container(
-              padding: textFieldPadding,
-              child: TextFormField(
-                  controller: _EventTimeController,
-                  decoration: const InputDecoration(
-                      labelText: "Select Time",
-                      border: OutlineInputBorder(),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      suffixIcon: Icon(Icons.access_time_rounded)),
-                  readOnly: true,
-                  onTap: () => _showTimePicker(context),
+                  onTap: () => _selectDateTime(context),
                   validator: (value) =>
                       (value == "") ? "This field is required" : null),
             ),
@@ -120,9 +117,9 @@ class _addEventState extends State<add_event> {
                     fixedSize: const Size(1000, 50)),
                 onPressed: () {
                   showDialog(
-                   context: context,
-                  builder: (BuildContext context) => popup(),
-                 );
+                    context: context,
+                    builder: (BuildContext context) => popup(),
+                  );
                 },
                 child: const Text('+ add Image'),
               ),
@@ -135,7 +132,7 @@ class _addEventState extends State<add_event> {
                     backgroundColor: Colors.orange,
                     fixedSize: const Size(1000, 50)),
                 onPressed: () {
-                /*Navigator.push(
+                  /*Navigator.push(
                 context, MaterialPageRoute(builder: (context) => MapScreen()));*/
                 },
                 child: const Text('+ add Location to map'),
@@ -203,19 +200,69 @@ class _addEventState extends State<add_event> {
   }
 
   Future<void> _submitIncident() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final decodedAccessToken = JwtDecoder.decode(accessToken!);
     final downloadUrl = await uploadImageToFirebase();
 
-            if (downloadUrl != null) {
-              // Do something with the downloadUrl, such as:
-              //   - Send in the SOS message
-              //   - Display success to the user
-              print("Add Event Photo sent with image: $downloadUrl");
-            }
+    if (downloadUrl != null) {
+      // Prepare form data
+      final Map<String, dynamic> eventData = {
+        'addedBy': decodedAccessToken["id"],
+        'eventType': _EventTypeController.text,
+        'date': _dateTimeController.text,
+        'time': _dateTimeController.text,
+        'description': _DescriptionController.text,
+        'image': downloadUrl, // Assuming Firebase returns the URL
+      };
+
+      print(eventData);
+      print(eventData["time"].runtimeType);
+
+      // Send POST request using http package
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/area-event/create-area-event'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(eventData),
+      );
+
+      if (response.statusCode == 201) {
+        // Handle successful event creation (show a success message, navigate, etc.)
+        print('Event created successfully!');
+      } else {
+        // Handle error (show an error message)
+        print('Error creating event: ${response.statusCode}');
+      }
+    }
   }
 
   void _onBottomNavBarItemTapped(int index) {
-    // Implement navigation logic based on the selected bottom navigation bar item
-    // You can use Navigator to push or pop screens based on the selected index
+    switch (index) {
+      case 0:
+        // Navigate to the Home screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  MainMenuFR()), // Replace with your Home screen widget
+        );
+        break;
+      /* case 1:
+      // Navigate to the Link screen (replace with your desired screen)
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LinkScreen()), // Replace with your Link screen widget (optional)
+      );
+      break;
+    case 2:
+      // Navigate to the History screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HistoryScreen()), // Replace with your History screen widget
+      );
+      break;  */
+    }
   }
 
   Widget popup() => AlertDialog(
@@ -255,7 +302,7 @@ class _addEventState extends State<add_event> {
     }
   }
 
-Future<String?> uploadImageToFirebase() async {
+  Future<String?> uploadImageToFirebase() async {
     if (image == null) return null; // Early exit if no image
 
     final storageRef = FirebaseStorage.instance.ref();

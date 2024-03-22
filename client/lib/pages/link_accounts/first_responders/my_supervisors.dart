@@ -84,7 +84,7 @@ class _MySupervisorsState extends State<MySupervisors> {
                             leading: CircleAvatar(
                               backgroundImage: NetworkImage(user[
                                       "profilePic"] ??
-                                  "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png"),
+                                  "https://www.transparenttextures.com/patterns/debut-light.png"),
                               radius: 24,
                             ),
                             title: Text(

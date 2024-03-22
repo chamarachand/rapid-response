@@ -31,11 +31,15 @@ class WelcomePage extends StatelessWidget {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Image.asset("assets/doctor_2.png"),
+                    Container(
+                      child: Center(
+                        child: Image.asset("assets/doctor_2.png"),
+                        
+                      ),
+                      width: MediaQuery.of(context).size.width,
                     ),
                     const SizedBox(
-                      height: 95,
+                      height: 85,
                     ),
                     Center(
                       child: ElevatedButton(

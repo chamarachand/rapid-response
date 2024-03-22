@@ -8,7 +8,7 @@ const areaEventSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   time: { type: Date, required: true },
   image: { type: String, maxlength: 1024 },
-  location: { type: String, required: true },
+  location: { type: String, default: "" }, // set to required
   description: { type: String, maxlength: 9048 },
 });
 
@@ -21,7 +21,7 @@ function validateAreaEvent(areaEvent) {
     date: Joi.date().required(),
     time: Joi.date().required(),
     image: Joi.string().max(1024).allow(""),
-    location: Joi.string().required(),
+    location: Joi.string(), // Add required later
     description: Joi.string().max(9048),
   });
 
