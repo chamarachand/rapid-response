@@ -13,6 +13,15 @@ const civilianSchema = new mongoose.Schema({
     ],
     default: [],
   },
+  registeredLocationsArray: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Registered Location",
+      },
+    ],
+    default: [],
+  },
 });
 
 civilianSchema.methods.generateAuthToken = function () {

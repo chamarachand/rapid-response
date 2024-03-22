@@ -64,10 +64,10 @@ class MainMenuScreen extends State<MainMenu> {
       return Container(
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 240, 250, 151),
+          color: Color.fromARGB(255, 248, 255, 183),
           border:
-              Border.all(color: Color.fromARGB(255, 252, 195, 88), width: 5),
-          borderRadius: BorderRadius.circular(20),
+              Border.all(color: Color.fromARGB(255, 255, 221, 157), width: 3),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -95,7 +95,7 @@ class MainMenuScreen extends State<MainMenu> {
                         style: const TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ],

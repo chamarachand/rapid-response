@@ -12,6 +12,7 @@ const incidentReportRoutes = require("./routes/incidentReportRoutes");
 const areaEventRoutes = require("./routes/areaEventRoutes");
 const profilePicRoutes = require("./routes/profilePicRoutes");
 const incidentPostRoutes = require("./routes/incidentPostRoutes");
+const registeredLocationsRoutes = require("./routes/registeredLocationsRoutes");
 
 // Database connection
 connection();
@@ -29,6 +30,7 @@ app.use("/api/incident-report", incidentReportRoutes);
 app.use("/api/area-event", areaEventRoutes);
 app.use("/api/profile-pic", profilePicRoutes);
 app.use("/api/posts", incidentPostRoutes);
+app.use("/api/registeredLocations", registeredLocationsRoutes);
 
 // Connecting to the port
 const port = process.env.PORT || 3000;

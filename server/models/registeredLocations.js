@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
-const registeredLocationsShema = new mongoose.Schema({
+const registeredLocationsSchema = new mongoose.Schema({
     addedBy: { type: mongoose.Schema.Types.ObjectId, required: true },
     locationTag: { type: String, required: true },
     address: { type: String, required: true },
@@ -9,15 +9,15 @@ const registeredLocationsShema = new mongoose.Schema({
     longitude: { type: Number, required: true },
 });
 
-const RegisterLocation = mongoose.model("Registered Location", registeredLocationsShema);
+const RegisterLocation = mongoose.model("Registered Location", registeredLocationsSchema);
 
 function validateRegisteredLocation(RegisterLocation) {
     const schema = Joi.object({
         addedBy: Joi.objectId().required(),
-        locationTag: Joi.string().allow(""),
-        address: Joi.string().allow(""),
-        latitude: Joi.Number().allow(""),
-        longitude: Joi.Number().allow(""),
+        locationTag: Joi.string().required(),
+        address: Joi.string().required(),
+        latitude: Joi.Number().required(),
+        longitude: Joi.Number().required(),
     });
   
     return schema.validate(RegisterLocation);
