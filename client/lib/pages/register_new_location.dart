@@ -4,7 +4,10 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/pages/registered_locations.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisterLocation extends StatefulWidget {
   const RegisterLocation({super.key});
@@ -17,28 +20,29 @@ class RegisterNewLocation extends State<RegisterLocation> {
   late double long;
   late String address = "Address loading...";
   String? newAddress;
-  late String addressTag;
+  String addressTag = "";
   bool showLocationInputs = false;
   TextEditingController latitudeController = TextEditingController();
   TextEditingController longitudeController = TextEditingController();
+  TextEditingController addressTagController = TextEditingController();
   late Position _previousPosition;
+  var _id;
 
   int _selectedIndex = 1;
 
   final profileImg =
       "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
-  var _firstName = "";
-
   void _loadToken() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
 
-    if (accessToken != null) {
-      var decodedToken = JwtDecoder.decode(accessToken);
+    if (idToken != null) {
+      var decodedToken = JwtDecoder.decode(idToken);
       // Access token claims
       setState(() {
-        _firstName = decodedToken["firstName"];
+        _id = decodedToken["id"];
       });
+      print(_id);
     }
   }
 
@@ -46,6 +50,13 @@ class RegisterNewLocation extends State<RegisterLocation> {
   void initState() {
     super.initState();
     _loadToken();
+    addressTagController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    addressTagController.dispose();
+    super.dispose();
   }
 
   Future<void> _requestLocationPermission() async {
@@ -131,6 +142,49 @@ class RegisterNewLocation extends State<RegisterLocation> {
     });
   }
 
+  Future<void> createRegisteredLocation(Map<String, dynamic> data) async {
+    const url = 'http://10.0.2.2:3000/api/registeredLocations/create-registered-location'; // Replace with your actual server URL
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(data),
+      );
+
+      if (response.statusCode == 201) {
+        showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('New Location Registered',textAlign: TextAlign.center,),
+            content: Text(
+              'The new loaction $addressTag has been successfully registered',textAlign: TextAlign.center,),
+            actions: [
+              Center(
+                child: TextButton(
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisteredLocation())),
+                  child: const Text('OK'),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+
+      } else {
+        print('Failed to register location: ${response.body}');
+      }
+    } catch (error) {
+      print('Error creating registered location: $error');
+    }
+  }
+
   Widget buildRegisterNewLocationInput(){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -138,25 +192,30 @@ class RegisterNewLocation extends State<RegisterLocation> {
       children: [
         const Text(
           'Location Tag',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal),
         ),
-        const SizedBox(
+        SizedBox(
           child: TextField(
-            decoration:
-                InputDecoration(labelText: 'Enter Name Tag For Location'),
+            controller: addressTagController, // Use the controller
+            onChanged: (value) {
+              setState(() {
+                addressTag = value; // Update the addressTag variable
+              });
+            },
+            decoration: const InputDecoration(labelText: 'Enter Name Tag For Location'),
           ),
         ),
         const SizedBox(height: 10),
         const Text(
           'Address',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal),
         ),
         Text(newAddress ??
             address), // Display the new address if set, otherwise use the existing address
         const SizedBox(height: 20),
         const Text(
           'Location',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal,),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -166,13 +225,13 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 _requestLocationPermission();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+                backgroundColor: Color.fromARGB(255, 169, 158, 255),
                 padding: const EdgeInsets.symmetric(
                     horizontal: 20, vertical: 15),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(5),
                 )),
-              child: const Text('Current Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+              child: const Text('Current Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),),
             ),
             ElevatedButton(
               onPressed: () {
@@ -181,13 +240,13 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+                backgroundColor: const Color.fromARGB(255, 169, 158, 255),
                 padding: const EdgeInsets.symmetric(
                     horizontal: 36, vertical: 15),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(5),
                 )),
-              child: const Text('Set Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+              child: const Text('Set Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),),
             ),
           ],
         ),
@@ -221,7 +280,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 71, 62, 133),
+                      backgroundColor: Color.fromARGB(255, 114, 98, 218),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30, vertical: 10),
                       shape: RoundedRectangleBorder(
@@ -267,7 +326,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 71, 62, 133),
+                      backgroundColor: const Color.fromARGB(255, 114, 98, 218),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 34, vertical: 10),
                       shape: RoundedRectangleBorder(
@@ -282,14 +341,46 @@ class RegisterNewLocation extends State<RegisterLocation> {
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            // Handle confirm
+            if (addressTag.isNotEmpty &&
+            newAddress!.isNotEmpty &&
+            lat != null &&
+            long != null) {
+              createRegisteredLocation({
+                'addedBy': _id, 
+                'locationTag': addressTag,
+                'address': newAddress,
+                'latitude': lat,
+                'longitude': long, 
+              });
+            } else {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('Incomplete Input',textAlign: TextAlign.center,),
+                    content: const Text(
+                        'Please enter the requied information before confirming',textAlign: TextAlign.center,),
+                    actions: [
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('OK'),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 85, 65, 241),
+            backgroundColor: const Color.fromARGB(255, 169, 158, 255),
             padding: const EdgeInsets.symmetric(
                 horizontal: 32, vertical: 15),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(5),
             )),
           child: const Text('Confirm',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
         ),
@@ -309,7 +400,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
             fontWeight: FontWeight.normal,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 0, 88, 202),
+        backgroundColor: Color.fromARGB(255, 119, 178, 255),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

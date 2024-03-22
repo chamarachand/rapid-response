@@ -36,7 +36,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
 
   Future<bool> fetchAvailability() async {
     try {
-      final response = await http.get(Uri.parse('YOUR_BACKEND_URL_HERE'));
+      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/first-responder/get-availability'));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['availability'];
@@ -50,7 +50,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
   Future<void> updateAvailability(bool newAvailability) async {
     try {
       final response = await http.patch(
-        Uri.parse('YOUR_BACKEND_URL_HERE'),
+        Uri.parse('http://10.0.2.2:3000/api/first-responder/set-availability?availability=true'),
         body: json.encode({'availability': newAvailability}),
         headers: {'Content-Type': 'application/json'},
       );

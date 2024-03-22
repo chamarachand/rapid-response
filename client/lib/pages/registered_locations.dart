@@ -1,8 +1,11 @@
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 import 'package:client/pages/register_new_location.dart';
+import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; 
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisteredLocation extends StatefulWidget {
   const RegisteredLocation({super.key});
@@ -11,50 +14,63 @@ class RegisteredLocation extends StatefulWidget {
 }
 
 class DispalyRegisteredLocations extends State<RegisteredLocation> {
-  List<String> locationTags = ['Home', 'Office', 'School', 'Work', 'Neigbhor'];
-  List<String> locationData = [
-    'Main house at 156/A',
-    'Workplace',
-    'High School',
-    'aeduih awjfj ab ckjcbasas cas c asc sac as c as csa c asc as cas c',
-    'asnd as asc as csacas cs ac as cas c sa csacsacsac  sac sa cs ac as'
-  ];
-
+  List _registeredLocations = [];
   int _selectedIndex = 1;
 
   final profileImg =
       "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
-  var _firstName = "";
+  var _id;
 
-  void _loadToken() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
+  _loadToken() async {
+    final idToken = await UserSecureStorage.getIdToken();
 
-    if (accessToken != null) {
-      var decodedToken = JwtDecoder.decode(accessToken);
+    if (idToken != null) {
+      var decodedToken = JwtDecoder.decode(idToken);
       // Access token claims
       setState(() {
-        _firstName = decodedToken["firstName"];
+        _id = decodedToken["id"];
       });
+      print(_id);
     }
   }
+
+  Future<void> _loadRegisteredLocations(String userId) async {
+  try {
+    final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/registeredLocations/registered-locations/$userId'));
+    if (response.statusCode == 200) {
+      setState(() {
+          _registeredLocations = jsonDecode(response.body);
+          print(_registeredLocations);
+        });
+    } else {
+      throw Exception('Failed to fetch registered locations');
+    }
+  } catch (error) {
+    print('Error fetching registered locations: $error');
+  }
+}
 
   @override
   void initState() {
     super.initState();
-    _loadToken();
+    _loadToken().then((_) {
+    if (_id != null) {
+      _loadRegisteredLocations(_id);
+    }
+  });
   }
 
   @override
   Widget buildRegisteredLocationDisplay(
       String locationTag, String locationData) {
-    return Container(
+      return Container(
         margin: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 185, 217, 243),
+          color: Color.fromARGB(255, 198, 229, 255),
           border:
-              Border.all(color: Color.fromARGB(255, 111, 91, 223), width: 5),
-          borderRadius: BorderRadius.circular(20),
+              Border.all(color: Color.fromARGB(255, 191, 185, 224), width: 3),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -66,6 +82,7 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: Icon(
                   Icons.location_on,
+                  color: Color.fromARGB(255, 115, 113, 113),
                   size: 50,
                 ),
               ),
@@ -82,7 +99,7 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
                         style: const TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ],
@@ -101,8 +118,8 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
                 onPressed: () {},
                 icon: const Icon(
                   Icons.delete,
-                  color: Colors.black,
-                  size: 55,
+                  color: Color.fromARGB(255, 255, 132, 132),
+                  size: 40,
                 ),
               ),
             ],
@@ -122,15 +139,15 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
             fontWeight: FontWeight.normal,
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 1, 111, 255),
+        backgroundColor: Color.fromARGB(255, 121, 179, 255),
       ),
       body: Stack(
         children: [
           ListView.builder(
-            itemCount: locationTags.length,
+            itemCount: _registeredLocations.length,
             itemBuilder: (BuildContext context, int index) {
               return buildRegisteredLocationDisplay(
-                  locationTags[index], locationData[index]);
+                  _registeredLocations[index]["locationTag"], _registeredLocations[index]["address"],);
             },
           ),
           Positioned(
@@ -138,14 +155,14 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
             right: -15,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) => const RegisterLocation())));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => const RegisterLocation())));
               },
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
-                backgroundColor: const Color.fromARGB(255, 1, 111, 255),
+                backgroundColor: const Color.fromARGB(255, 121, 179, 255),
               ),
               child: const Icon(
                 Icons.add,
