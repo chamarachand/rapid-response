@@ -23,6 +23,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
 
   void _getAccessToken() async {
     _accessToken = await UserSecureStorage.getAccessToken();
+    print(_accessToken);
   }
 
   void _updateSearchQuery(String newQuery) {

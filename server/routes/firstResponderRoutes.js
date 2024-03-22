@@ -62,7 +62,10 @@ router.post("/", async (req, res) => {
 router.get("/get-availability", authMiddleware, async (req, res) => {
   try {
     const { id } = req.user;
-    const firstResponder = await FirstResponder.findById(id, { availability });
+    const firstResponder = await FirstResponder.findById(id).select(
+      "availability"
+    );
+    console.log(firstResponder);
 
     if (!firstResponder)
       return res.status(404).send("FirstResponder not found");
@@ -75,12 +78,13 @@ router.get("/get-availability", authMiddleware, async (req, res) => {
 });
 
 // Link - http://10.0.2.2:3000/api/first-responder/set-availability?availability=true
-router.patch("set-availability", authMiddleware, async (req, res) => {
+router.patch("/set-availability", authMiddleware, async (req, res) => {
+  console.log("Reached");
   try {
     const { id } = req.user;
     const { availability } = req.query;
 
-    if (!availability || typeof availability !== "boolean") {
+    if (!availability) {
       return res.status(400).send("Invalid availability value");
     }
 
@@ -93,12 +97,10 @@ router.patch("set-availability", authMiddleware, async (req, res) => {
     if (!firstResponder)
       return res.status(404).send("FirstResponder not found");
 
-    res
-      .status(200)
-      .send({
-        message: "Availability updated successfully",
-        availability: firstResponder.availability,
-      });
+    res.status(200).send({
+      message: "Availability updated successfully",
+      availability: firstResponder.availability,
+    });
   } catch (error) {
     console.error("Error updating availability:", error);
     res.status(500).send("Internal Server Error");
