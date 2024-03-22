@@ -16,7 +16,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
-  
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
@@ -30,7 +29,6 @@ class _ReportScreenState extends State<ReportScreen> {
   File? image;
   String? capturedSpeech;
   late Position currentPosition;
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +66,9 @@ class _ReportScreenState extends State<ReportScreen> {
                     fixedSize: const Size(1000, 50)),
                 onPressed: () {
                   showDialog(
-                   context: context,
-                  builder: (BuildContext context) => popup(),
-                 );
+                    context: context,
+                    builder: (BuildContext context) => popup(),
+                  );
                 },
                 child: const Text('+ add Image'),
               ),
@@ -150,27 +148,27 @@ class _ReportScreenState extends State<ReportScreen> {
     DateTime now = DateTime.now();
     String currentDate = DateFormat('yyyy-MM-dd').format(now);
 
-
     if (downloadUrl != null) {
       // Prepare form data
       final Map<String, dynamic> IncidentReport = {
         'victimId': decodedAccessToken["id"],
-        'EventType' : _EventTypeController.text,
-        'location': currentPosition,
+        'eventType': _EventTypeController.text,
+        'location': {
+          'latitude': currentPosition.latitude,
+          'longitude': currentPosition.longitude,
+        },
         'image': downloadUrl, // Assuming Firebase returns the URL
-        'voice': capturedSpeech,
+        'voice': capturedSpeech.toString(),
         'description': _DescriptionController.text,
         'timeStamp': currentDate,
       };
-
-      print(IncidentReport);
-      print(IncidentReport["time"].runtimeType);
 
       // Send POST request using http package
       final response = await http.post(
         Uri.parse('http://10.0.2.2:3000/api/incident-report/create-incident'),
         headers: {
           'Content-Type': 'application/json',
+          'x-auth-token': accessToken
         },
         body: jsonEncode(IncidentReport),
       );
@@ -180,7 +178,7 @@ class _ReportScreenState extends State<ReportScreen> {
         print('Event created successfully!');
       } else {
         // Handle error (show an error message)
-        print('Error creating event: ${response.statusCode}');
+        print('Error creating event: ${response.body}');
       }
     }
   }
@@ -189,7 +187,7 @@ class _ReportScreenState extends State<ReportScreen> {
     // Implement navigation logic based on the selected bottom navigation bar item
     // You can use Navigator to push or pop screens based on the selected index
   }
-  
+
 // Popup window when pressed camera icon
   Widget popup() => AlertDialog(
         title: const Text('Camera Options'),
@@ -228,7 +226,7 @@ class _ReportScreenState extends State<ReportScreen> {
     }
   }
 
-Future<String?> uploadImageToFirebase() async {
+  Future<String?> uploadImageToFirebase() async {
     if (image == null) return null; // Early exit if no image
 
     final storageRef = FirebaseStorage.instance.ref();
@@ -244,6 +242,4 @@ Future<String?> uploadImageToFirebase() async {
       return null;
     }
   }
-  
 }
-
