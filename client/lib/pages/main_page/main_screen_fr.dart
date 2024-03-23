@@ -64,6 +64,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
 
     try {
       final response = await http.patch(
+        // setting database availability of FR to the availability
         Uri.parse('http://10.0.2.2:3000/api/first-responder/set-availability?availability=$newAvailability'),
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +95,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       if (_availability) {
         startLocationService();// start tracking location when _availability is true
         _test = isLocationServiceRunning(); 
-      } else {
+      } else if (!_availability){
         stopLocationService(); // stop tracking location when _availability is false
         _test = isLocationServiceRunning(); 
       }
@@ -106,6 +107,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     final accessToken = await UserSecureStorage.getAccessToken();
     try {
       var response = await http.get(
+        // getting the latest 10 notifications form the database
         Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
         headers: {
           'Content-Type' : 'application/json',
@@ -127,10 +129,12 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     }
   }
 
-  
+  // creating widget that creates the notification messages to be displayed based on the _notifications list entries 
   @override
   Widget _buildNotificationDisplay(
+    // getting the required data to make notification
       String notificationTopic, String notificationData, String notificationType) {
+        // customizing the icon based on notification type
         Icon cusIcon;
         if (notificationType == "emergency-contact-remove"){
           cusIcon = const Icon(
@@ -156,7 +160,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
-        } else {
+        } else {              // creating an else to account for other notification types unaccounted for
           cusIcon = const Icon(
                   Icons.warning_rounded,
                   size: 40,
@@ -322,8 +326,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
         children: [
           const SizedBox(height: 10),
           SwitchListTile(
-            title: Text(
-              'Availability $_test',
+            title: const Text(
+              'Availability',
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.black,
