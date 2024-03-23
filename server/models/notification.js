@@ -41,7 +41,7 @@ const Notification = mongoose.model("Notification", notificationSchema);
 function validate(notification) {
   const schema = Joi.object({
     from: Joi.objectId(),
-    to: Joi.objectId().required(),
+    to: Joi.objectId(),
     type: Joi.string().min(3).max(64),
     title: Joi.string().required(),
     body: Joi.string().required(),

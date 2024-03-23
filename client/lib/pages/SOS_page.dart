@@ -373,6 +373,7 @@ class emergency extends State<SOSpage> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Data sent successfully!');
         showSosSendDialog();
+        notifyEmergencyContacts();
       } else {
         print('Error sending data: ${response.statusCode} - ${response.body}');
       }
@@ -428,6 +429,33 @@ class emergency extends State<SOSpage> {
       );
     } else {
       print("No recording found to play");
+    }
+  }
+
+  notifyEmergencyContacts() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/emergency-contacts/send"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          },
+          body: jsonEncode({
+            "type": "emergency-contact-notify-sos",
+            "title": "SOS Alert from Your Contact",
+            "body":
+                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted a SOS"
+          }));
+      if (response.statusCode == 200) {
+        print("Notification send to emergency contacts");
+      }
+    } catch (e) {
+      print("Error: $e");
     }
   }
 
