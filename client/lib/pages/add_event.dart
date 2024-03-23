@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:client/pages/google_map.dart';
-import 'package:client/pages/main_screen_fr.dart';
+import 'package:client/pages/main_page/main_screen_fr.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';

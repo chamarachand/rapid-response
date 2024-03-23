@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 import 'package:client/pages/register/register_screen_1.dart';
-import 'package:client/pages/main_screen.dart';
-import 'package:client/pages/main_screen_fr.dart';
+import 'package:client/pages/main_page/main_screen.dart';
+import 'package:client/pages/main_page/main_screen_fr.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:client/api/firebase_api.dart';
 

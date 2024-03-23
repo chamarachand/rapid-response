@@ -1,18 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:client/pages/incidentPost/incidentPostPage.dart';
-import 'package:client/pages/profile_screen.dart';
-import 'package:client/pages/registered_locations.dart';
+import 'package:client/pages/profile_screen/profile_screen.dart';
+import 'package:client/pages/registered_locations/registered_locations.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'SOS_page.dart';
-import 'report_incident_screen.dart';
-import 'package:client/pages/welcome_screen.dart';
+import 'package:client/pages/SOS_page.dart';
+import 'package:client/pages/report_incident_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; 
-import 'package:client/pages/navigationBar/bottomNaviBar.dart';
-import 'login_screen.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
+import 'package:client/pages/login_screen.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -63,33 +59,33 @@ class MainMenuScreen extends State<MainMenu> {
     @override
   Widget _buildNotificationDisplay(
       String notificationTopic, String notificationData, String notificationType) {
-        var _icon;
+        Icon cusIcon;
         if (notificationType == "emergency-contact-remove"){
-          _icon = const Icon(
+          cusIcon = const Icon(
                   Icons.link,
                   size: 40,
                   color: Color.fromARGB(255, 255, 133, 124),
                 );
         } else if (notificationType == "emergency-contact-request"){
-          _icon = const Icon(
+          cusIcon = const Icon(
                   Icons.link,
                   size: 40,
                   color: Color.fromARGB(255, 152, 188, 255),
                 );
         } else if (notificationType == "emergency-contact-request-accept"){
-          _icon = const Icon(
+          cusIcon = const Icon(
                   Icons.link,
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
         } else if (notificationType == "registered-location-added"){
-          _icon = const Icon(
+          cusIcon = const Icon(
                   Icons.location_city,
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
         } else {
-          _icon = const Icon(
+          cusIcon = const Icon(
                   Icons.warning_rounded,
                   size: 40,
                 );
@@ -110,7 +106,7 @@ class MainMenuScreen extends State<MainMenu> {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: _icon
+                child: cusIcon
               ),
               Expanded(
                   child: Column(
@@ -142,7 +138,8 @@ class MainMenuScreen extends State<MainMenu> {
               )),
             ],
           ),
-        ));
+        )
+        );
   }
 
   @override

@@ -1,8 +1,8 @@
-import 'package:client/pages/main_screen_fr.dart';
+import 'package:client/pages/main_page/main_screen_fr.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:client/pages/welcome_screen.dart';
-import 'package:client/pages/main_screen.dart';
+import 'package:client/pages/main_page/main_screen.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class AuthenticationWrapper extends StatelessWidget {
