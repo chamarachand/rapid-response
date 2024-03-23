@@ -11,6 +11,8 @@ import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; 
+import 'package:client/pages/navigationBar/bottomNaviBar.dart';
+import 'login_screen.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -60,13 +62,44 @@ class MainMenuScreen extends State<MainMenu> {
 
     @override
   Widget _buildNotificationDisplay(
-      String notificationType, String notificationData) {
+      String notificationTopic, String notificationData, String notificationType) {
+        var _icon;
+        if (notificationType == "emergency-contact-remove"){
+          _icon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 255, 133, 124),
+                );
+        } else if (notificationType == "emergency-contact-request"){
+          _icon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 152, 188, 255),
+                );
+        } else if (notificationType == "emergency-contact-request-accept"){
+          _icon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 89, 255, 133),
+                );
+        } else if (notificationType == "registered-location-added"){
+          _icon = const Icon(
+                  Icons.location_city,
+                  size: 40,
+                  color: Color.fromARGB(255, 89, 255, 133),
+                );
+        } else {
+          _icon = const Icon(
+                  Icons.warning_rounded,
+                  size: 40,
+                );
+        }
       return Container(
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 248, 255, 183),
+          color: const Color.fromARGB(255, 248, 255, 183),
           border:
-              Border.all(color: Color.fromARGB(255, 255, 221, 157), width: 3),
+              Border.all(color: const Color.fromARGB(255, 255, 221, 157), width: 3),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
@@ -75,12 +108,9 @@ class MainMenuScreen extends State<MainMenu> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: Icon(
-                  Icons.location_on,
-                  size: 50,
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: _icon
               ),
               Expanded(
                   child: Column(
@@ -91,10 +121,10 @@ class MainMenuScreen extends State<MainMenu> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        notificationType,
+                        notificationTopic,
                         style: const TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 18,
+                          fontSize: 17,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
@@ -104,7 +134,7 @@ class MainMenuScreen extends State<MainMenu> {
                     notificationData,
                     style: const TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
@@ -194,7 +224,7 @@ class MainMenuScreen extends State<MainMenu> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const WelcomePage()),
+                                          const LoginPage()),
                                   (route) => false);
                             },
                           ),
@@ -305,58 +335,19 @@ class MainMenuScreen extends State<MainMenu> {
               child: ListView.builder(
                 itemCount: _notifications.length, // Example notification count
                 itemBuilder: (context, index) {
-                  return _buildNotificationDisplay(_notifications[index]["title"], _notifications[index]["body"]);
+                  return _buildNotificationDisplay(_notifications[index]["title"], _notifications[index]["body"], _notifications[index]["type"]);
                 },
               ),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.link),
-                onPressed: () {
-                  _onItemTapped(0);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
-                },
-              ),
-              label: 'Link',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  _onItemTapped(1);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const MainMenu())));
-                },
-              ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () {
-                  _onItemTapped(2);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const IncidentPostPage())));
-                },
-              ),
-              label: 'History',
-            ),
-          ]),
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        false,
+      ),
     );
   }
 
