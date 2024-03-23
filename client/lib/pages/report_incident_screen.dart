@@ -32,6 +32,33 @@ class _ReportScreenState extends State<ReportScreen> {
   String? capturedSpeech;
   late Position currentPosition;
 
+  notifyEmergencyContacts() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/emergency-contacts/send"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          },
+          body: jsonEncode({
+            "type": "emergency-contact-notify-incident",
+            "title": "Incident Report Alert from Your Contact",
+            "body":
+                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted a an incident Report"
+          }));
+      if (response.statusCode == 200) {
+        print("Notification send to emergency contacts");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   showIncidentReportSendDialog() {
     showAlertDialog(
         context,
@@ -197,6 +224,7 @@ class _ReportScreenState extends State<ReportScreen> {
         // Handle successful event creation (show a success message, navigate, etc.)
         print('Event created successfully!');
         showIncidentReportSendDialog();
+        notifyEmergencyContacts();
       } else {
         // Handle error (show an error message)
         print('Error creating event: ${response.body}');

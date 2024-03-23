@@ -6,10 +6,11 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 const { Notification, validate } = require("../models/notification");
+const { sendNotification } = require("../services/notificationService");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
 
 // Get latest notifications
 router.get("/latest/:count", authMiddleware, async (req, res) => {
@@ -206,20 +207,88 @@ router.post("/send", authMiddleware, async (req, res) => {
     fcmTokenCivilian?.fcmToken || fcmTokenFirstResponder?.fcmToken;
   if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
 
-  try {
-    admin.messaging().send({
-      token: fcmToken,
-      notification: {
+  sendNotification(fcmToken, title, body);
+  // try {
+  //   admin.messaging().send({
+  //     token: fcmToken,
+  //     notification: {
+  //       title: title,
+  //       body: body,
+  //     },
+  //   });
+  //   console.log("Notification send successfully");
+  //   res.status(200).send("Send Success");
+  // } catch (error) {
+  //   console.error("Error: " + error);
+  //   res.status(500).send("Internal Server Error");
+  // }
+});
+
+// send sos. incident notifications for emergency contacts
+router.post("/emergency-contacts/send", authMiddleware, async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const { type, title, body } = req.body;
+
+  const userId = req.user.id;
+  if (!userId) return res.status(400).send("Bad request");
+
+  let notification;
+
+  const { emergencyContacts } = await Civilian.findById(userId).select(
+    "emergencyContacts"
+  );
+
+  if (!emergencyContacts)
+    return res
+      .status(404)
+      .send("Emergency contact field for the given user not found");
+  if (emergencyContacts.length === 0)
+    return res.status(204).send("No emergency contacts for the given user");
+
+  allNotified = true;
+
+  for (const contact of emergencyContacts) {
+    // Save to db - notifications collection
+    try {
+      notification = new Notification({
+        from: userId,
+        to: contact,
+        type: type,
         title: title,
         body: body,
-      },
-    });
-    console.log("Notification send successfully");
-    res.status(200).send("Send Success");
-  } catch (error) {
-    console.error("Error: " + error);
-    res.status(500).send("Internal Server Error");
+        timestamp: new Date().toLocaleString(),
+        responded: false,
+      });
+
+      await notification.save();
+    } catch (error) {
+      console.log("Error: ");
+      res.status(500).send(error);
+    }
+
+    // Save to db - user notifications
+    const emergencyContact = await Civilian.findByIdAndUpdate(
+      contact,
+      { $push: { notifications: notification._id } },
+      { new: true }
+    );
+
+    if (!emergencyContact)
+      return res.status(404).send("Receiver with the given id not found");
+
+    // send notification
+    const { fcmToken } = await Civilian.findById(contact).select("fcmToken");
+    if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
+
+    const send = await sendNotification(fcmToken, title, body);
+    if (!send) allNotified = false;
   }
+
+  return allNotified
+    ? res.status(200).send("Notification send to all emergency contacts")
+    : res.status(417).send("Notification sending failed");
 });
 
 module.exports = router;
