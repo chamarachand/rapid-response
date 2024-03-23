@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:client/pages/SOSFunctions/GetLocation.dart';
 import 'package:client/pages/SOSFunctions/UploadToFirebase.dart';
+import 'package:client/pages/main_screen.dart';
+import 'package:client/pages/utils/alert_dialogs.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -363,13 +365,14 @@ class emergency extends State<SOSpage> {
         Uri.parse(backendUrl),
         headers: {
           'Content-type': 'application/json',
-          'Authorization': 'Bearer $accessToken'
+          'x-auth-token': accessToken
         }, // If needed
         body: jsonEncode(dataToSend),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Data sent successfully!');
+        showSosSendDialog();
       } else {
         print('Error sending data: ${response.statusCode} - ${response.body}');
       }
@@ -426,6 +429,24 @@ class emergency extends State<SOSpage> {
     } else {
       print("No recording found to play");
     }
+  }
+
+  showSosSendDialog() {
+    showAlertDialog(
+        context,
+        "SOS Send Successfully",
+        "Your SOS message has been sent successfully",
+        const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+          size: 40,
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MainMenu())),
+              child: const Text("OK")),
+        ]);
   }
 
   @override
