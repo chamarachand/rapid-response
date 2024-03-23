@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
 import 'package:client/pages/link_accounts/first_responders/my_supervisors.dart';
 
-class LinkAccountHome extends StatefulWidget {
-  const LinkAccountHome({super.key});
+class LinkAccountHomeFR extends StatefulWidget {
+  const LinkAccountHomeFR({super.key});
 
   @override
-  State<LinkAccountHome> createState() => _LinkAccountHomeState();
+  State<LinkAccountHomeFR> createState() => _LinkAccountHomeFRState();
 }
 
-class _LinkAccountHomeState extends State<LinkAccountHome> {
+class _LinkAccountHomeFRState extends State<LinkAccountHomeFR> {
   int _selectedIndex = 0;
 
   @override
@@ -105,7 +105,7 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
+                          builder: ((context) => const LinkAccountHomeFR())));
                 },
               ),
               label: 'Link',

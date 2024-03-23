@@ -8,6 +8,7 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/pages/navigationBar/bottomNaviBar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -170,43 +171,12 @@ class ProfileScreen extends State<Profile> {
           buildUserInfoDisplay(Icons.email, "Email Address", _email),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.link),
-                onPressed: () {
-                  _onItemTapped(0);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
-                },
-              ),
-              label: 'Link',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  _onItemTapped(1);
-                },
-              ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () {
-                  _onItemTapped(2);
-                },
-              ),
-              label: 'History',
-            ),
-          ]),
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        false,
+      ),
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:client/pages/link_accounts/first_responders/link_accounts_home_f
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/pages/navigationBar/bottomNaviBar.dart';
 
 class ProfileFr extends StatefulWidget {
   const ProfileFr({super.key});
@@ -162,43 +163,12 @@ class ProfileScreenFr extends State<ProfileFr> {
               Icons.location_city, "Work Address", _workAddress),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.link),
-                onPressed: () {
-                  _onItemTapped(0);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
-                },
-              ),
-              label: 'Link',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  _onItemTapped(1);
-                },
-              ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () {
-                  _onItemTapped(2);
-                },
-              ),
-              label: 'History',
-            ),
-          ]),
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        true,
+      ),
     );
   }
 

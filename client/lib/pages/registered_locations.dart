@@ -6,6 +6,7 @@ import 'package:client/pages/register_new_location.dart';
 import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:client/pages/navigationBar/bottomNaviBar.dart';
 
 class RegisteredLocation extends StatefulWidget {
   const RegisteredLocation({super.key});
@@ -172,43 +173,12 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
           )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.link),
-                onPressed: () {
-                  _onItemTapped(0);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
-                },
-              ),
-              label: 'Link',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  _onItemTapped(1);
-                },
-              ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () {
-                  _onItemTapped(2);
-                },
-              ),
-              label: 'History',
-            ),
-          ]),
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        false,
+      ),
     );
   }
 

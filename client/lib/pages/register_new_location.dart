@@ -8,6 +8,7 @@ import 'package:client/pages/registered_locations.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:client/pages/navigationBar/bottomNaviBar.dart';
 
 class RegisterLocation extends StatefulWidget {
   const RegisterLocation({super.key});
@@ -16,6 +17,7 @@ class RegisterLocation extends StatefulWidget {
 }
 
 class RegisterNewLocation extends State<RegisterLocation> {
+  int _selectedIndex = 1;
   late double lat;
   late double long;
   late String address = "Address loading...";
@@ -26,15 +28,15 @@ class RegisterNewLocation extends State<RegisterLocation> {
   TextEditingController longitudeController = TextEditingController();
   TextEditingController addressTagController = TextEditingController();
   late Position _previousPosition;
+  late String? _accessToken;
   var _id;
-
-  int _selectedIndex = 1;
 
   final profileImg =
       "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
 
   void _loadToken() async {
     final idToken = await UserSecureStorage.getIdToken();
+    _accessToken = await UserSecureStorage.getAccessToken();
 
     if (idToken != null) {
       var decodedToken = JwtDecoder.decode(idToken);
@@ -142,6 +144,30 @@ class RegisterNewLocation extends State<RegisterLocation> {
     });
   }
 
+  sendRequestConfirmNotification() async {
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    final response =
+        await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
+            headers: {
+              'Content-Type': 'application/json',
+              if (_accessToken != null) 'x-auth-token': _accessToken!
+            },
+            body: jsonEncode({
+              "from": decodedIdToken["id"],
+              "to": decodedIdToken["id"],
+              "type": "registered-location-added",
+              "title": "New location registered",
+              "body":
+                  "New location $newAddress has been registered as $addressTag"
+            }));
+
+    if (response.statusCode == 200) {
+      print("Notification send successfully!");
+    }
+  }
+
   Future<void> createRegisteredLocation(Map<String, dynamic> data) async {
     const url = 'http://10.0.2.2:3000/api/registeredLocations/create-registered-location'; // Replace with your actual server URL
 
@@ -158,6 +184,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
         showDialog(
         context: context,
         builder: (BuildContext context) {
+          sendRequestConfirmNotification();
           return AlertDialog(
             title: const Text('New Location Registered',textAlign: TextAlign.center,),
             content: Text(
@@ -165,10 +192,12 @@ class RegisterNewLocation extends State<RegisterLocation> {
             actions: [
               Center(
                 child: TextButton(
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RegisteredLocation())),
+                onPressed: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const RegisteredLocation()),
+                  (route) => false),
                   child: const Text('OK'),
                 ),
               ),
@@ -411,43 +440,12 @@ class RegisterNewLocation extends State<RegisterLocation> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.link),
-                onPressed: () {
-                  _onItemTapped(0);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
-                },
-              ),
-              label: 'Link',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  _onItemTapped(1);
-                },
-              ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () {
-                  _onItemTapped(2);
-                },
-              ),
-              label: 'History',
-            ),
-          ]),
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        false,
+      ),
     );
   }
 
