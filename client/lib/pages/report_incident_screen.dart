@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:client/pages/SOS_page.dart';
 import 'package:client/pages/SpeechtoText.dart';
+import 'package:client/pages/main_screen.dart';
+import 'package:client/pages/utils/alert_dialogs.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,24 @@ class _ReportScreenState extends State<ReportScreen> {
   File? image;
   String? capturedSpeech;
   late Position currentPosition;
+
+  showIncidentReportSendDialog() {
+    showAlertDialog(
+        context,
+        "Incident Report Send Successfully",
+        "Your incident report has has been sent successfully",
+        const Icon(
+          Icons.check_circle_rounded,
+          color: Colors.green,
+          size: 40,
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MainMenu())),
+              child: const Text("OK")),
+        ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -176,6 +196,7 @@ class _ReportScreenState extends State<ReportScreen> {
       if (response.statusCode == 201) {
         // Handle successful event creation (show a success message, navigate, etc.)
         print('Event created successfully!');
+        showIncidentReportSendDialog();
       } else {
         // Handle error (show an error message)
         print('Error creating event: ${response.body}');

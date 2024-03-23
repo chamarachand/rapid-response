@@ -1,20 +1,9 @@
-// const mongoose = require("mongoose");
-
-// const sosReportSchema = new mongoose.Schema({
-//   id: { type: String, required: true },
-//   image: { type: String },
-//   voice: { type: String },
-//   emergencyType: { type: String, required: true },
-//   location: { type: Object, required: true },
-//   date: {type: String, required: true}, // Assuming location is a GeoJSON object
-// });
-
-// const SOSReport = mongoose.model("SOSReport", sosReportSchema);
-
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
+const { SOSReport } = require("../models/sosReport");
 
-router.post("/", async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   console.log("Reached");
   const { id, image, voice, emergencyType, location, date } = req.body;
 
@@ -25,7 +14,7 @@ router.post("/", async (req, res) => {
       voice,
       emergencyType,
       location,
-      date
+      date,
     });
 
     await newSOSReport.save();
