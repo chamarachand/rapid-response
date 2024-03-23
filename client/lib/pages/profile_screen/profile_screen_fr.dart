@@ -1,8 +1,7 @@
-import 'package:client/pages/link_accounts/first_responders/link_accounts_home_fr.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/navigationBar/bottomNaviBar.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class ProfileFr extends StatefulWidget {
   const ProfileFr({super.key});

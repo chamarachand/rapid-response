@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
-import 'package:client/pages/register_new_location.dart';
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; 
+import 'package:client/pages/registered_locations/register_new_location.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:client/pages/navigationBar/bottomNaviBar.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class RegisteredLocation extends StatefulWidget {
   const RegisteredLocation({super.key});

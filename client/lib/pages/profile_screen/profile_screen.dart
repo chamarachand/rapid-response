@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
 import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,7 @@ import 'package:client/storage/user_secure_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/navigationBar/bottomNaviBar.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

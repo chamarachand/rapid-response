@@ -1,14 +1,13 @@
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/registered_locations.dart';
+import 'package:client/pages/registered_locations/registered_locations.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:client/pages/navigationBar/bottomNaviBar.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class RegisterLocation extends StatefulWidget {
   const RegisterLocation({super.key});
@@ -371,9 +370,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
         ElevatedButton(
           onPressed: () {
             if (addressTag.isNotEmpty &&
-            newAddress!.isNotEmpty &&
-            lat != null &&
-            long != null) {
+            newAddress!.isNotEmpty) {
               createRegisteredLocation({
                 'addedBy': _id, 
                 'locationTag': addressTag,

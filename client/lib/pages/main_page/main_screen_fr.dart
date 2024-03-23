@@ -1,15 +1,13 @@
 import 'package:client/pages/add_event.dart';
-import 'package:client/pages/profile_screen_fr.dart';
+import 'package:client/pages/profile_screen/profile_screen_fr.dart';
 import 'package:flutter/material.dart';
-import 'package:client/pages/welcome_screen.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:client/pages/link_accounts/first_responders/link_accounts_home_fr.dart';
 import 'package:client/pages/location_functions.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:client/pages/navigationBar/bottomNaviBar.dart';
-import 'login_screen.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
+import 'package:client/pages/login_screen.dart';
 
 class MainMenuFR extends StatefulWidget {
   const MainMenuFR({super.key});
@@ -18,82 +16,92 @@ class MainMenuFR extends StatefulWidget {
 }
 
 class MainMenuScreenFR extends State<MainMenuFR> {
-  bool _availability = false;
-  bool _test = false;
-  int _selectedIndex = 1;
-  var _firstName = "";
-  List _notifications = [];
+  //initializing the global variables used in the page
+  bool _availability = false; // represents first responder's availibity to accept requests
+  bool _test = false; // representing current state of location tracking
+  int _selectedIndex = 1; // variable used by ButtomNavigationBar
+  var _firstName = ""; // user's first name
+  List _notifications = []; // list to hold notifications
 
+  // creating widget to load user token when initaited
   void _loadToken() async {
     final idToken = await UserSecureStorage.getIdToken();
 
     if (idToken != null) {
       var decodedToken = JwtDecoder.decode(idToken);
-      // Access token claims
+      // access token claims
       setState(() {
         _firstName = decodedToken["firstName"];
       });
-    }
+    } else {print("load token not working");}
   }
 
+  // creating widget to fetch user availability from database
   Future<bool> fetchAvailability() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/first-responder/get-availability'));
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/first-responder/get-availability'),
+        headers: {
+            'Content-Type' : 'application/json',
+            if (accessToken != null) 'x-auth-token' : accessToken,
+          });
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return data['availability'];
       }
     } catch (e) {
+      // error message used in testing
       print('Error fetching availability: $e');
     }
-    return false; // Return false if there's any error
+    return false; // return false if there's any error
   }
 
+  // creating widget to update user availability to database when changed
   Future<void> updateAvailability(bool newAvailability) async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+
     try {
       final response = await http.patch(
-        Uri.parse('http://10.0.2.2:3000/api/first-responder/set-availability?availability=true'),
-        body: json.encode({'availability': newAvailability}),
-        headers: {'Content-Type': 'application/json'},
+        Uri.parse('http://10.0.2.2:3000/api/first-responder/set-availability?availability=$newAvailability'),
+        headers: {
+          'Content-Type': 'application/json',
+          if (accessToken != null) 'x-auth-token' : accessToken,
+          },
       );
       if (response.statusCode == 200) {
-        // Update availability locally if backend update succeeds
+        // update availability locally if backend update succeeds
         setState(() {
           _availability = newAvailability;
         });
       } else {
+        // error message used in testing
         print('Failed to update availability: ${response.statusCode}');
       }
     } catch (e) {
+      // error message used in testing
       print('Error updating availability: $e');
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _loadToken();
-    fetchAvailability().then((availability) {
-      setState(() {
-        _availability = availability;
-      });
-    });
-  }
-
+  // creating widget to toggle availability
   void _toggleAvailability(bool value) {
+    // updating new availability locally and in database
     setState(() {
       _availability = value;
       updateAvailability(value);
       if (_availability) {
-        startLocationService();// Start tracking location when _availability is true
+        startLocationService();// start tracking location when _availability is true
         _test = isLocationServiceRunning(); 
       } else {
-        stopLocationService(); // Stop tracking location when _availability is false
+        stopLocationService(); // stop tracking location when _availability is false
         _test = isLocationServiceRunning(); 
       }
     });
   }
 
+  // creating widget to get notifications array from the database
   void _getNotifications() async {
     final accessToken = await UserSecureStorage.getAccessToken();
     try {
@@ -105,28 +113,62 @@ class MainMenuScreenFR extends State<MainMenuFR> {
         }
       );
       if (response.statusCode == 200) {
+        // updating _notifications list with database list data
         setState(() {
           _notifications = jsonDecode(response.body);
-          print(_notifications);
         });
       } else if (response.statusCode == 404) {
         //no notifications for user
+        print("notification error not upated to list");
       }
     } catch (error) {
+      // error message used in testing
       print("Error: $error");
     }
   }
 
+  
   @override
   Widget _buildNotificationDisplay(
-      String notificationType, String notificationData) {
+      String notificationTopic, String notificationData, String notificationType) {
+        Icon cusIcon;
+        if (notificationType == "emergency-contact-remove"){
+          cusIcon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 255, 133, 124),
+                );
+        } else if (notificationType == "emergency-contact-request"){
+          cusIcon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 152, 188, 255),
+                );
+        } else if (notificationType == "emergency-contact-request-accept"){
+          cusIcon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 89, 255, 133),
+                );
+        } else if (notificationType == "registered-location-added"){
+          cusIcon = const Icon(
+                  Icons.location_city,
+                  size: 40,
+                  color: Color.fromARGB(255, 89, 255, 133),
+                );
+        } else {
+          cusIcon = const Icon(
+                  Icons.warning_rounded,
+                  size: 40,
+                );
+        }
       return Container(
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 240, 250, 151),
+          color: const Color.fromARGB(255, 248, 255, 183),
           border:
-              Border.all(color: Color.fromARGB(255, 252, 195, 88), width: 5),
-          borderRadius: BorderRadius.circular(20),
+              Border.all(color: const Color.fromARGB(255, 255, 221, 157), width: 3),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -134,12 +176,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5),
-                child: Icon(
-                  Icons.location_on,
-                  size: 50,
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: cusIcon
               ),
               Expanded(
                   child: Column(
@@ -150,11 +189,11 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        notificationType,
+                        notificationTopic,
                         style: const TextStyle(
                           color: Color.fromARGB(255, 0, 0, 0),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          fontWeight: FontWeight.normal,
                         ),
                       ),
                     ],
@@ -163,7 +202,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                     notificationData,
                     style: const TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 15,
+                      fontSize: 14,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
@@ -171,7 +210,22 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               )),
             ],
           ),
-        ));
+        )
+        );
+  }
+  
+  // initiating widgets
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+    _getNotifications();
+    // updating local availability after update from database
+    fetchAvailability().then((availability) {
+      setState(() {
+        _availability = availability;
+      });
+    });
   }
 
   @override
@@ -330,7 +384,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               child: ListView.builder(
                 itemCount: _notifications.length, // Example notification count
                 itemBuilder: (context, index) {
-                  return _buildNotificationDisplay(_notifications[index]["title"], _notifications[index]["body"]);
+                  return _buildNotificationDisplay(_notifications[index]["title"], _notifications[index]["body"], _notifications[index]["type"]);
                 },
               ),
             ),

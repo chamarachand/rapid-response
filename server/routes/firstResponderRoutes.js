@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const { FirstResponder, validate } = require("../models/first-responder");
 const authMiddleware = require("../middleware/authMiddleware");
 const { mongo, default: mongoose } = require("mongoose");
+const { sendRegisterConfirmationMail } = require("../services/emailService");
 
 // Get
 router.get("/", (req, res) => {
@@ -103,6 +104,56 @@ router.patch("/set-availability", authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating availability:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/get-latitude-longitude", authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.user;
+    const firstResponder = await FirstResponder.findById(id).select(
+      "latitude","longitude"
+    );
+    console.log(firstResponder);
+
+    if (!firstResponder)
+      return res.status(404).send("FirstResponder not found");
+
+    res.status(200).send({ availability: firstResponder.availability });
+  } catch (error) {
+    console.error("Error getting availability:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// Link - http://10.0.2.2:3000/api/first-responder/set-availability?availability=true
+router.patch("/set-latitude-longitude", authMiddleware, async (req, res) => {
+  console.log("Reached");
+  try {
+    const { id } = req.user;
+    const { latitude } = req.query;
+    const { longitude } = req.query;
+
+    if (!latitude || !longitude) {
+      return res.status(400).send("Invalid latitude or longitude value");
+    }
+
+    const firstResponder = await FirstResponder.findByIdAndUpdate(
+      id,
+      { latitude: latitude },
+      { longitude: longitude },
+      { new: true }
+    );
+
+    if (!firstResponder)
+      return res.status(404).send("FirstResponder not found");
+
+    res.status(200).send({
+      message: "Latitude Longitude updated successfully",
+      availability: firstResponder.availability,
+    });
+  } catch (error) {
+    console.error("Error updating Latitude Longitude", error);
     res.status(500).send("Internal Server Error");
   }
 });
