@@ -126,6 +126,7 @@ router.get("/get-latitude-longitude", authMiddleware, async (req, res) => {
   }
 });
 
+
 // Link - http://10.0.2.2:3000/api/first-responder/set-latitude-longitude?latitude=valueHere&longitude=valueHere
 router.patch("/set-latitude-longitude", authMiddleware, async (req, res) => {
   console.log("Reached");

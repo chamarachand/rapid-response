@@ -178,7 +178,8 @@ class RegisterNewLocation extends State<RegisterLocation> {
 
   // function to add new registered location to database
   Future<void> createRegisteredLocation(Map<String, dynamic> data) async {
-    const url = 'http://10.0.2.2:3000/api/registeredLocations/create-registered-location'; // Replace with your actual server URL
+    const url =
+        'http://10.0.2.2:3000/api/registeredLocations/create-registered-location'; // Replace with your actual server URL
 
     try {
       final response = await http.post(
@@ -243,7 +244,8 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 addressTag = value; // updating the addressTag variable
               });
             },
-            decoration: const InputDecoration(labelText: 'Enter Name Tag For Location'),
+            decoration:
+                const InputDecoration(labelText: 'Enter Name Tag For Location'),
           ),
         ),
         const SizedBox(height: 10),
@@ -256,7 +258,10 @@ class RegisterNewLocation extends State<RegisterLocation> {
         const SizedBox(height: 20),
         const Text(
           'Location',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal,),
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.normal,
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -267,13 +272,16 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 _requestLocationPermission();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(255, 169, 158, 255),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                )),
-              child: const Text('Current Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),),
+                  backgroundColor: Color.fromARGB(255, 169, 158, 255),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  )),
+              child: const Text(
+                'Current Location',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+              ),
             ),
             // button to select 'set location manully'
             ElevatedButton(
@@ -283,13 +291,16 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 169, 158, 255),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 36, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                )),
-              child: const Text('Set Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),),
+                  backgroundColor: const Color.fromARGB(255, 169, 158, 255),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 36, vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  )),
+              child: const Text(
+                'Set Location',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),
+              ),
             ),
           ],
         ),
@@ -325,13 +336,16 @@ class RegisterNewLocation extends State<RegisterLocation> {
                       });
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 114, 98, 218),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      )),
-                    child: const Text('Back',style: TextStyle(fontWeight: FontWeight.bold),),
+                        backgroundColor: Color.fromARGB(255, 114, 98, 218),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        )),
+                    child: const Text(
+                      'Back',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   // set button that confirms input to lat and long 
                   ElevatedButton(
@@ -374,13 +388,17 @@ class RegisterNewLocation extends State<RegisterLocation> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 114, 98, 218),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 34, vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      )),
-                    child: const Text('Set',style: TextStyle(fontWeight: FontWeight.bold),),
+                        backgroundColor:
+                            const Color.fromARGB(255, 114, 98, 218),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 34, vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        )),
+                    child: const Text(
+                      'Set',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),
@@ -394,20 +412,25 @@ class RegisterNewLocation extends State<RegisterLocation> {
             newAddress!.isNotEmpty) {
               // creating registered loaction
               createRegisteredLocation({
-                'addedBy': _id, 
+                'addedBy': _id,
                 'locationTag': addressTag,
                 'address': newAddress,
                 'latitude': lat,
-                'longitude': long, 
+                'longitude': long,
               });
             } else {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: const Text('Incomplete Input',textAlign: TextAlign.center,),
+                    title: const Text(
+                      'Incomplete Input',
+                      textAlign: TextAlign.center,
+                    ),
                     content: const Text(
-                        'Please enter the requied information before confirming',textAlign: TextAlign.center,),
+                      'Please enter the requied information before confirming',
+                      textAlign: TextAlign.center,
+                    ),
                     actions: [
                       Center(
                         child: TextButton(
@@ -424,13 +447,15 @@ class RegisterNewLocation extends State<RegisterLocation> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB(255, 169, 158, 255),
-            padding: const EdgeInsets.symmetric(
-                horizontal: 32, vertical: 15),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-            )),
-          child: const Text('Confirm',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+              backgroundColor: const Color.fromARGB(255, 169, 158, 255),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              )),
+          child: const Text(
+            'Confirm',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
       ],
     );
@@ -456,7 +481,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: SizedBox(
-            height: MediaQuery.of(context).size.height-200,
+            height: MediaQuery.of(context).size.height - 200,
             child: buildRegisterNewLocationInput(),
           ),
         ),
