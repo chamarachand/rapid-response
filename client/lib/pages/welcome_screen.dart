@@ -39,7 +39,7 @@ class WelcomePage extends StatelessWidget {
                       width: MediaQuery.of(context).size.width,
                     ),
                     const SizedBox(
-                      height: 85,
+                      height: 25,
                     ),
                     Center(
                       child: ElevatedButton(
@@ -89,22 +89,22 @@ class WelcomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Center(
-                        child: ElevatedButton(
-                            onPressed: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const add_event())),
-                            child: const Text("To Add Event (Test)"))),
-                    Center(
-                      child: ElevatedButton(
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const IncidentPostPage())),
-                          child: const Text("Incident post")),
-                    ),
+                    // Center(
+                    //     child: ElevatedButton(
+                    //         onPressed: () => Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (context) => const add_event())),
+                    //         child: const Text("To Add Event (Test)"))),
+                    // Center(
+                    //   child: ElevatedButton(
+                    //       onPressed: () => Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) =>
+                    //                   const IncidentPostPage())),
+                    //       child: const Text("Incident post")),
+                    // ),
                   ])),
         ));
   }
