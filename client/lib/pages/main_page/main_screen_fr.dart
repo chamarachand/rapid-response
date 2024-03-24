@@ -19,7 +19,8 @@ class MainMenuFR extends StatefulWidget {
 
 class MainMenuScreenFR extends State<MainMenuFR> {
   //initializing the global variables used in the page
-  bool _availability = false; // represents first responder's availibity to accept requests
+  bool _availability =
+      false; // represents first responder's availibity to accept requests
   bool _test = false; // representing current state of location tracking
   int _selectedIndex = 1; // variable used by ButtomNavigationBar
   var _firstName = ""; // user's first name
@@ -39,7 +40,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       setState(() {
         _firstName = decodedToken["firstName"];
       });
-    } else {print("load token not working");}
+    } else {
+      print("load token not working");
+    }
   }
 
   // creating widget to fetch user availability from database
@@ -48,10 +51,11 @@ class MainMenuScreenFR extends State<MainMenuFR> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/first-responder/get-availability'),
-        headers: {
-            'Content-Type' : 'application/json',
-            if (accessToken != null) 'x-auth-token' : accessToken,
+          Uri.parse(
+              'http://10.0.2.2:3000/api/first-responder/get-availability'),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
           });
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -71,11 +75,12 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     try {
       final response = await http.patch(
         // setting database availability of FR to the availability
-        Uri.parse('http://10.0.2.2:3000/api/first-responder/set-availability?availability=$newAvailability'),
+        Uri.parse(
+            'http://10.0.2.2:3000/api/first-responder/set-availability?availability=$newAvailability'),
         headers: {
           'Content-Type': 'application/json',
-          if (accessToken != null) 'x-auth-token' : accessToken,
-          },
+          if (accessToken != null) 'x-auth-token': accessToken,
+        },
       );
       if (response.statusCode == 200) {
         // update availability locally if backend update succeeds
@@ -99,11 +104,11 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       _availability = value;
       updateAvailability(value);
       if (_availability) {
-        startLocationService();// start tracking location when _availability is true
-        _test = isLocationServiceRunning(); 
-      } else if (!_availability){
+        startLocationService(); // start tracking location when _availability is true
+        _test = isLocationServiceRunning();
+      } else if (!_availability) {
         stopLocationService(); // stop tracking location when _availability is false
-        _test = isLocationServiceRunning(); 
+        _test = isLocationServiceRunning();
       }
     });
   }
@@ -113,13 +118,13 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     final accessToken = await UserSecureStorage.getAccessToken();
     try {
       var response = await http.get(
-        // getting the latest 10 notifications form the database
-        Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
-        headers: {
-          'Content-Type' : 'application/json',
-          if (accessToken != null) 'x-auth-token' : accessToken,
-        }
-      );
+          // getting the latest 10 notifications form the database
+
+          Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          });
       if (response.statusCode == 200) {
         // updating _notifications list with database list data
         setState(() {
@@ -135,7 +140,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     }
   }
 
-  // creating widget that creates the notification messages to be displayed based on the _notifications list entries 
+  // creating widget that creates the notification messages to be displayed based on the _notifications list entries
   @override
   Widget _buildNotificationDisplay(
     // getting the required data to make notification
@@ -183,8 +188,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
         margin: const EdgeInsets.all(5),  // adding a gap arround the container to have better flow with other notifications
         decoration: BoxDecoration(        // decorating notification container 
           color: const Color.fromARGB(255, 248, 255, 183),
-          border:
-              Border.all(color: const Color.fromARGB(255, 255, 221, 157), width: 3),
+          border: Border.all(
+              color: const Color.fromARGB(255, 255, 221, 157), width: 3),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(                  // adding padding between container and row items
@@ -227,10 +232,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               )),
             ],
           ),
-        )
-        );
+        ));
   }
-  
+
   // initiating widgets
   @override
   void initState() {
@@ -327,8 +331,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginPage()),
+                                      builder: (context) => const LoginPage()),
                                   (route) => false);
                               // stopping startLocationService and work manager as user is logging out
                               stopLocationService();    
@@ -420,7 +423,10 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               child: ListView.builder(
                 itemCount: _notifications.length, // Example notification count
                 itemBuilder: (context, index) {
-                  return _buildNotificationDisplay(_notifications[index]["title"], _notifications[index]["body"], _notifications[index]["type"]);
+                  return _buildNotificationDisplay(
+                      _notifications[index]["title"],
+                      _notifications[index]["body"],
+                      _notifications[index]["type"]);
                 },
               ),
             ),
