@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:client/pages/incidentPost/GmapOpen.dart';
+import 'package:client/pages/incidentPost/data_service.dart';
 
 class IncidentPostPage extends StatefulWidget {
   const IncidentPostPage({Key? key}) : super(key: key);
@@ -12,6 +14,31 @@ class IncidentPostPage extends StatefulWidget {
 
 class PurposeState extends State<IncidentPostPage> {
   double _currentSliderValue = 0.0;
+
+  List<dynamic> postData = [];
+  List<dynamic> sosData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    try {
+      List<dynamic> posts = await fetchPostData();
+      List<dynamic> sos = await fetchSosData();
+      setState(() {
+        postData = posts;
+        sosData = sos;
+      });
+    } catch (e) {
+      // Handle error
+      print('Error fetching data: $e');
+    }
+    print(postData);
+    print(sosData);
+  }
 
   @override
   Widget build(BuildContext context) {
