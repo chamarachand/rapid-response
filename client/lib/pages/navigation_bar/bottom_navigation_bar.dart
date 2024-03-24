@@ -3,6 +3,7 @@ import 'package:client/pages/main_page/main_screen_fr.dart';
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/first_responders/link_accounts_home_fr.dart';
 import 'package:client/pages/link_accounts/civilians/link_account_home.dart'; 
+import 'package:client/pages/history_screen.dart';
 
 //creating a common BottomNavigationBar for tha application.
 class BottomNavigationBarUtils {
@@ -79,7 +80,13 @@ class BottomNavigationBarUtils {
           icon: IconButton(
             icon: const Icon(Icons.history),
             onPressed: () {
-              
+              // removing previous routes to disable user from going to previous pages
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        const HistoryScreen()),
+                (route) => false);
             },
           ),
           // adding 'History' label to navi button
