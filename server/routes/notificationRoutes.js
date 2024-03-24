@@ -205,9 +205,12 @@ router.post("/send", authMiddleware, async (req, res) => {
   ]);
   const fcmToken =
     fcmTokenCivilian?.fcmToken || fcmTokenFirstResponder?.fcmToken;
-  if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
+  if (!fcmToken) return res.status(202).send("Reciever FCM token not found");
 
-  sendNotification(fcmToken, title, body);
+  const send = sendNotification(fcmToken, title, body);
+  return send
+    ? res.status(200).send("Notification send successfully")
+    : res.status(202).send("Request created. Failed to send the notification");
   // try {
   //   admin.messaging().send({
   //     token: fcmToken,
