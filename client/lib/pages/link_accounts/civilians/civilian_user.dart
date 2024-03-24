@@ -116,6 +116,7 @@ class _CivilianUserPageState extends State<CivilianUserPage> {
   }
 
   void showRequestAlreadySentDialog() {
+    print("Reached");
     showAlertDialog(
         context,
         "Request Already Sent",
