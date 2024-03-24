@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:client/pages/SOS_page.dart';
-import 'package:client/pages/SpeechtoText.dart';
 import 'package:client/pages/main_page/main_screen.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 import 'package:client/storage/user_secure_storage.dart';
@@ -16,6 +15,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
+import 'package:speech_to_text/speech_to_text.dart';
+
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -33,79 +34,16 @@ class _ReportScreenState extends State<ReportScreen> {
   String? capturedSpeech;
   late Position currentPosition;// initiating value, will be change on _loadToken
   int _selectedIndex = 1;  // value used to indicated selected button of buttom navi bar
+  final SpeechToText _speechToText = SpeechToText();
 
-  notifyFirstResponders(String incidentId) async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-    final idToken = await UserSecureStorage.getIdToken();
-    final decodedIdToken = JwtDecoder.decode(idToken!);
+  bool _speechEnabled = false;
+  String _wordsSpoken = "";
 
-    try {
-      var response = await http.post(
-          Uri.parse(
-              "http://10.0.2.2:3000/api/notification/first-responder/send/incident-report/${incidentId}"),
-          headers: {
-            'Content-Type': 'application/json',
-            if (accessToken != null) 'x-auth-token': accessToken,
-          },
-          body: jsonEncode({
-            "type": "first-responder-notify-incident",
-            "title": "Incident Report from a Nearby Contact",
-            "body":
-                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted an incident Report"
-          }));
-      if (response.statusCode == 200) {
-        print("Notification send to emergency contacts");
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
+  @override
+  void initState() {
+    super.initState();
+    initSpeech();
   }
-
-  notifyEmergencyContacts() async {
-    final accessToken = await UserSecureStorage.getAccessToken();
-    final idToken = await UserSecureStorage.getIdToken();
-    final decodedIdToken = JwtDecoder.decode(idToken!);
-
-    try {
-      var response = await http.post(
-          Uri.parse(
-              "http://10.0.2.2:3000/api/notification/emergency-contacts/send"),
-          headers: {
-            'Content-Type': 'application/json',
-            if (accessToken != null) 'x-auth-token': accessToken,
-          },
-          body: jsonEncode({
-            "type": "emergency-contact-notify-incident",
-            "title": "Incident Report Alert from Your Contact",
-            "body":
-                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted a an incident Report"
-          }));
-      if (response.statusCode == 200) {
-        print("Notification send to emergency contacts");
-      }
-    } catch (e) {
-      print("Error: $e");
-    }
-  }
-
-  showIncidentReportSendDialog() {
-    showAlertDialog(
-        context,
-        "Incident Report Send Successfully",
-        "Your incident report has has been sent successfully",
-        const Icon(
-          Icons.check_circle_rounded,
-          color: Colors.green,
-          size: 40,
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const MainMenu())),
-              child: const Text("OK")),
-        ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,15 +95,10 @@ class _ReportScreenState extends State<ReportScreen> {
                     backgroundColor: Colors.orange,
                     fixedSize: const Size(1000, 50)),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Speech_To_Text_Page(),
-                    ),
-                  ).then((capturedText) {
-                    // capturedText will contain the speech captured from Speech_To_Text_Page
-                    capturedSpeech = capturedText as String?;
-                  });
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) => Speechtotext(),
+                  );
                 },
                 child: const Text('+ add Voice'),
               ),
@@ -231,7 +164,7 @@ class _ReportScreenState extends State<ReportScreen> {
           'coordinates': [currentPosition.longitude, currentPosition.latitude],
         },
         'image': downloadUrl, // Assuming Firebase returns the URL
-        'voice': capturedSpeech.toString(),
+        'voice': _wordsSpoken,
         'description': _DescriptionController.text,
         'timeStamp': currentDate,
       };
@@ -315,4 +248,118 @@ class _ReportScreenState extends State<ReportScreen> {
       return null;
     }
   }
+
+  Widget Speechtotext() {
+  return AlertDialog(
+    title: Text(
+      'Speech to Text',
+      style: TextStyle(color: Colors.black),
+    ),
+    actions: [
+      FloatingActionButton(
+        onPressed: _speechToText.isListening ? _stopListening : _startListening,
+        child: Icon(
+          Icons.mic,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.red, // Customize color as needed
+        foregroundColor: Colors.white, // Customize foreground color as needed
+      ),
+    ],
+  );
+}
+  void initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  void _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {
+    });
+  }
+
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  void _onSpeechResult(result) {
+  setState(() {
+    _wordsSpoken = "${result.recognizedWords}";
+  });
+  Navigator.pop(_wordsSpoken as BuildContext); // Pop the screen and return the captured speech
+ }
+  notifyFirstResponders(String incidentId) async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/first-responder/send/incident-report/${incidentId}"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          },
+          body: jsonEncode({
+            "type": "first-responder-notify-incident",
+            "title": "Incident Report from a Nearby Contact",
+            "body":
+                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted an incident Report"
+          }));
+      if (response.statusCode == 200) {
+        print("Notification send to emergency contacts");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  notifyEmergencyContacts() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/emergency-contacts/send"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          },
+          body: jsonEncode({
+            "type": "emergency-contact-notify-incident",
+            "title": "Incident Report Alert from Your Contact",
+            "body":
+                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted a an incident Report"
+          }));
+      if (response.statusCode == 200) {
+        print("Notification send to emergency contacts");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  showIncidentReportSendDialog() {
+    showAlertDialog(
+        context,
+        "Incident Report Send Successfully",
+        "Your incident report has has been sent successfully",
+        const Icon(
+          Icons.check_circle_rounded,
+          color: Colors.green,
+          size: 40,
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MainMenu())),
+              child: const Text("OK")),
+        ]);
+  }
+
 }
