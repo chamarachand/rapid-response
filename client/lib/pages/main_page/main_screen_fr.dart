@@ -1,3 +1,4 @@
+//<SAHAN-IIT_20220334-UoW_w1953208>
 import 'package:client/pages/add_event.dart';
 import 'package:client/pages/profile_screen/profile_screen_fr.dart';
 import 'package:flutter/material.dart';
@@ -18,14 +19,13 @@ class MainMenuFR extends StatefulWidget {
 }
 
 class MainMenuScreenFR extends State<MainMenuFR> {
-  //initializing the global variables used in the page
-  bool _availability =
-      false; // represents first responder's availibity to accept requests
-  bool _test = false; // representing current state of location tracking
+  // initializing the global variables used in the page
+  bool _availability = false; // represents first responder's availibity to accept requests
   int _selectedIndex = 1; // variable used by ButtomNavigationBar
   var _firstName = ""; // user's first name
   List _notifications = []; // list to hold notifications
 
+// function to get user permission for GPS location tracking
   Future<void> _requestLocationPermission() async {
     var status = await Permission.location.request();
   }
@@ -40,9 +40,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       setState(() {
         _firstName = decodedToken["firstName"];
       });
-    } else {
-      print("load token not working");
-    }
+    } 
   }
 
   // creating widget to fetch user availability from database
@@ -104,11 +102,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       _availability = value;
       updateAvailability(value);
       if (_availability) {
-        startLocationService(); // start tracking location when _availability is true
-        _test = isLocationServiceRunning();
-      } else if (!_availability) {
+        startLocationService();// start tracking location when _availability is true
+      } else if (!_availability){
         stopLocationService(); // stop tracking location when _availability is false
-        _test = isLocationServiceRunning();
       }
     });
   }
@@ -147,27 +143,15 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       String notificationTopic, String notificationData, String notificationType) {
         // customizing the icon based on notification type
         Icon cusIcon;
-        if (notificationType == "emergency-contact-remove"){
+        if (notificationType == "supervisee-remove"){
           cusIcon = const Icon(
                   Icons.link,
                   size: 40,
                   color: Color.fromARGB(255, 255, 133, 124),
                 );
-        } else if (notificationType == "emergency-contact-request"){
+        } else if (notificationType == "supervisee-request-accept"){
           cusIcon = const Icon(
                   Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 152, 188, 255),
-                );
-        } else if (notificationType == "emergency-contact-request-accept"){
-          cusIcon = const Icon(
-                  Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 89, 255, 133),
-                );
-        } else if (notificationType == "registered-location-added"){
-          cusIcon = const Icon(
-                  Icons.location_city,
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
@@ -177,10 +161,11 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                   size: 40,
                   color: Color.fromARGB(255, 152, 188, 255),
                 );
-        } else {              // creating an else to account for other notification types unaccounted for
+        } else {              // creating an else to account for other notification types (SOS and incident reports)
           cusIcon = const Icon(
                   Icons.warning_rounded,
                   size: 40,
+                  color: Color.fromARGB(255, 255, 152, 152),
                 );
         }
       // returing the container with the created notification
@@ -433,15 +418,17 @@ class MainMenuScreenFR extends State<MainMenuFR> {
           ),
         ],
       ),
+      // applying navi bar using buildBottomNavigationBar()
       bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
         context,
         _selectedIndex,
         _onItemTapped,
-        true,
+        true,  // passing as true since page belogs to FR
       ),
     );
   }
 
+  // creating method to change selected index on tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

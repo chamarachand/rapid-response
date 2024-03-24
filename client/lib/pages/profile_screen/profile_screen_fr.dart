@@ -10,11 +10,12 @@ class ProfileFr extends StatefulWidget {
 }
 
 class ProfileScreenFr extends State<ProfileFr> {
-  int _selectedIndex = 1;
-
-  final profileImg =
-      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
-
+  // initializing the global variables used in the page
+  int _selectedIndex = 1;   // variable used by ButtomNavigationBar
+  // sample imaged used as profile image
+  final profileImg = 
+      "https://static.vecteezy.com/system/resources/previews/005/164/094/non_2x/nurse-professional-using-face-mask-with-stethoscope-free-vector.jpg";
+  // variables used to store user data
   var _username = "";
   var _firstName = "";
   var _lastName = "";
@@ -25,9 +26,10 @@ class ProfileScreenFr extends State<ProfileFr> {
   var _workId = "";
   var _workAddress = "";
 
+  // creating widget to load user token when initaited
   void _loadToken() async {
     final idToken = await UserSecureStorage.getIdToken();
-
+  
     if (idToken != null) {
       var decodedToken = JwtDecoder.decode(idToken);
       // Access token claims
@@ -45,14 +47,16 @@ class ProfileScreenFr extends State<ProfileFr> {
     }
   }
 
+  // initiating widgets
   @override
   void initState() {
     super.initState();
     _loadToken();
   }
 
+  // creating widget to build user information display
   @override
-  Widget buildUserInfoDisplay(IconData iconData, String title, String data) {
+  Widget buildUserInfoDisplay(IconData iconData, String title, String data) {  // getting icon, title and details relavent to display
     return Expanded(
         child: Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -95,6 +99,7 @@ class ProfileScreenFr extends State<ProfileFr> {
               ),
             ],
           )),
+          // icon button to enable future implimentation of user info updating
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.edit),
@@ -104,10 +109,14 @@ class ProfileScreenFr extends State<ProfileFr> {
     ));
   }
 
+  // creating the main widget
   @override
   Widget build(BuildContext context) {
+    // using Scaffold to build user profile screen
     return Scaffold(
+      // creating the Appbar for user profile screen
       appBar: AppBar(
+        // adding screen title
         title: const Text(
           'User Profile',
           style: TextStyle(
@@ -118,10 +127,12 @@ class ProfileScreenFr extends State<ProfileFr> {
         ),
         backgroundColor: const Color(0xFF8497B0),
       ),
+      // creating body of Scafold using a column
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          // using stack to display user image and a update image button on top of it
           Stack(
             children: [
               Center(
@@ -139,6 +150,7 @@ class ProfileScreenFr extends State<ProfileFr> {
               Positioned(
                 bottom: 5,
                 right: 100,
+                // creating button for updating profile picture functionality that will be implimented in the future
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
@@ -150,6 +162,7 @@ class ProfileScreenFr extends State<ProfileFr> {
               )
             ],
           ),
+          // creating the information displays with user information
           buildUserInfoDisplay(Icons.person, "Username", _username),
           buildUserInfoDisplay(
               Icons.info_outline, "Name", "$_firstName $_lastName"),
@@ -162,15 +175,17 @@ class ProfileScreenFr extends State<ProfileFr> {
               Icons.location_city, "Work Address", _workAddress),
         ],
       ),
+      // applying navi bar using buildBottomNavigationBar()
       bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
         context,
         _selectedIndex,
         _onItemTapped,
-        true,
+        true, // passing as true since page belogs to FR
       ),
     );
   }
 
+  // creating method to change selected index on tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

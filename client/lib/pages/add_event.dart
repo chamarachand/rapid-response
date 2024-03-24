@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class add_event extends StatefulWidget {
   const add_event({super.key});
@@ -21,6 +22,7 @@ class add_event extends StatefulWidget {
 }
 
 class _addEventState extends State<add_event> {
+  int _selectedIndex = 1; // variable used by ButtomNavigationBar
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _EventTypeController = TextEditingController();
   final TextEditingController _dateTimeController = TextEditingController();
@@ -179,24 +181,21 @@ class _addEventState extends State<add_event> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            label: "Home",
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            label: "Link",
-            icon: Icon(Icons.link),
-          ),
-          BottomNavigationBarItem(
-            label: "History",
-            icon: Icon(Icons.history),
-          ),
-        ],
-        onTap: _onBottomNavBarItemTapped,
+      // applying navi bar using buildBottomNavigationBar()
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        true,  // passing as true since page belogs to FR
       ),
     );
+  }
+
+  // creating method to change selected index on tap
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   Future<void> _submitIncident() async {
