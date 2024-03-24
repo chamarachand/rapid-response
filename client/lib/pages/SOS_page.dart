@@ -5,6 +5,7 @@ import 'package:client/pages/SOSFunctions/UploadToFirebase.dart';
 import 'package:client/pages//main_page/main_screen.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 import 'package:client/storage/user_secure_storage.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,6 +28,7 @@ class SOSpage extends StatefulWidget {
 
 GetLocation getLocation = GetLocation();
 UploadToFirebase uploadToFirebase = UploadToFirebase();
+int _selectedIndex = 1;
 
 class emergency extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
@@ -371,8 +373,11 @@ class emergency extends State<SOSpage> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Data sent successfully!');
+        Map<String, dynamic> responseBody = json.decode(response.body);
+        String sosId = responseBody['sosId'];
         showSosSendDialog();
         notifyEmergencyContacts();
+        notifyFirstResponders(sosId);
       } else {
         print('Error sending data: ${response.statusCode} - ${response.body}');
       }
@@ -452,6 +457,33 @@ class emergency extends State<SOSpage> {
           }));
       if (response.statusCode == 200) {
         print("Notification send to emergency contacts");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
+  notifyFirstResponders(String sosId) async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/first-responder/send/sos-report/${sosId}"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          },
+          body: jsonEncode({
+            "type": "first-responder-notify-sos",
+            "title": "SOS Report from a Nearby Contact",
+            "body":
+                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted an SOS Report"
+          }));
+      if (response.statusCode == 200) {
+        print("Notification send to first responders");
       }
     } catch (e) {
       print("Error: $e");
