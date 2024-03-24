@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 import 'package:client/pages/login_screen.dart';
+import 'package:client/pages/incidentPost/incidentPostPage.dart';
 
 class MainMenuFR extends StatefulWidget {
   const MainMenuFR({super.key});
@@ -17,7 +18,8 @@ class MainMenuFR extends StatefulWidget {
 
 class MainMenuScreenFR extends State<MainMenuFR> {
   //initializing the global variables used in the page
-  bool _availability = false; // represents first responder's availibity to accept requests
+  bool _availability =
+      false; // represents first responder's availibity to accept requests
   bool _test = false; // representing current state of location tracking
   int _selectedIndex = 1; // variable used by ButtomNavigationBar
   var _firstName = ""; // user's first name
@@ -33,7 +35,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       setState(() {
         _firstName = decodedToken["firstName"];
       });
-    } else {print("load token not working");}
+    } else {
+      print("load token not working");
+    }
   }
 
   // creating widget to fetch user availability from database
@@ -42,10 +46,11 @@ class MainMenuScreenFR extends State<MainMenuFR> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/first-responder/get-availability'),
-        headers: {
-            'Content-Type' : 'application/json',
-            if (accessToken != null) 'x-auth-token' : accessToken,
+          Uri.parse(
+              'http://10.0.2.2:3000/api/first-responder/get-availability'),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
           });
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -65,11 +70,12 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     try {
       final response = await http.patch(
         // setting database availability of FR to the availability
-        Uri.parse('http://10.0.2.2:3000/api/first-responder/set-availability?availability=$newAvailability'),
+        Uri.parse(
+            'http://10.0.2.2:3000/api/first-responder/set-availability?availability=$newAvailability'),
         headers: {
           'Content-Type': 'application/json',
-          if (accessToken != null) 'x-auth-token' : accessToken,
-          },
+          if (accessToken != null) 'x-auth-token': accessToken,
+        },
       );
       if (response.statusCode == 200) {
         // update availability locally if backend update succeeds
@@ -93,12 +99,11 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       _availability = value;
       updateAvailability(value);
       if (_availability) {
-        startLocationService();// start tracking location when _availability is true
-        _test = isLocationServiceRunning(); 
-
-      } else if (!_availability){
+        startLocationService(); // start tracking location when _availability is true
+        _test = isLocationServiceRunning();
+      } else if (!_availability) {
         stopLocationService(); // stop tracking location when _availability is false
-        _test = isLocationServiceRunning(); 
+        _test = isLocationServiceRunning();
       }
     });
   }
@@ -108,14 +113,13 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     final accessToken = await UserSecureStorage.getAccessToken();
     try {
       var response = await http.get(
-        // getting the latest 10 notifications form the database
+          // getting the latest 10 notifications form the database
 
-        Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
-        headers: {
-          'Content-Type' : 'application/json',
-          if (accessToken != null) 'x-auth-token' : accessToken,
-        }
-      );
+          Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          });
       if (response.statusCode == 200) {
         // updating _notifications list with database list data
         setState(() {
@@ -131,51 +135,52 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     }
   }
 
-
-  // creating widget that creates the notification messages to be displayed based on the _notifications list entries 
+  // creating widget that creates the notification messages to be displayed based on the _notifications list entries
   @override
   Widget _buildNotificationDisplay(
-    // getting the required data to make notification
-      String notificationTopic, String notificationData, String notificationType) {
-        // customizing the icon based on notification type
-        Icon cusIcon;
-        if (notificationType == "emergency-contact-remove"){
-          cusIcon = const Icon(
-                  Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 255, 133, 124),
-                );
-        } else if (notificationType == "emergency-contact-request"){
-          cusIcon = const Icon(
-                  Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 152, 188, 255),
-                );
-        } else if (notificationType == "emergency-contact-request-accept"){
-          cusIcon = const Icon(
-                  Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 89, 255, 133),
-                );
-        } else if (notificationType == "registered-location-added"){
-          cusIcon = const Icon(
-                  Icons.location_city,
-                  size: 40,
-                  color: Color.fromARGB(255, 89, 255, 133),
-                );
-
-        } else {              // creating an else to account for other notification types unaccounted for
-          cusIcon = const Icon(
-                  Icons.warning_rounded,
-                  size: 40,
-                );
-        }
-      return Container(
+      // getting the required data to make notification
+      String notificationTopic,
+      String notificationData,
+      String notificationType) {
+    // customizing the icon based on notification type
+    Icon cusIcon;
+    if (notificationType == "emergency-contact-remove") {
+      cusIcon = const Icon(
+        Icons.link,
+        size: 40,
+        color: Color.fromARGB(255, 255, 133, 124),
+      );
+    } else if (notificationType == "emergency-contact-request") {
+      cusIcon = const Icon(
+        Icons.link,
+        size: 40,
+        color: Color.fromARGB(255, 152, 188, 255),
+      );
+    } else if (notificationType == "emergency-contact-request-accept") {
+      cusIcon = const Icon(
+        Icons.link,
+        size: 40,
+        color: Color.fromARGB(255, 89, 255, 133),
+      );
+    } else if (notificationType == "registered-location-added") {
+      cusIcon = const Icon(
+        Icons.location_city,
+        size: 40,
+        color: Color.fromARGB(255, 89, 255, 133),
+      );
+    } else {
+      // creating an else to account for other notification types unaccounted for
+      cusIcon = const Icon(
+        Icons.warning_rounded,
+        size: 40,
+      );
+    }
+    return Container(
         margin: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 248, 255, 183),
-          border:
-              Border.all(color: const Color.fromARGB(255, 255, 221, 157), width: 3),
+          border: Border.all(
+              color: const Color.fromARGB(255, 255, 221, 157), width: 3),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Padding(
@@ -185,9 +190,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: cusIcon
-              ),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: cusIcon),
               Expanded(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,10 +222,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               )),
             ],
           ),
-        )
-        );
+        ));
   }
-  
+
   // initiating widgets
   @override
   void initState() {
@@ -307,10 +310,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const LoginPage()),
+                                      builder: (context) => const LoginPage()),
                                   (route) => false);
-                              stopLocationService();    
+                              stopLocationService();
                             },
                           ),
                         ],
@@ -339,9 +341,11 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             ),
             value: _availability,
             onChanged: _toggleAvailability,
-            activeColor: Colors.green, 
-            inactiveTrackColor: Colors.red, 
-            subtitle: _availability ? const Text('Available') : const Text('Unavailable'),
+            activeColor: Colors.green,
+            inactiveTrackColor: Colors.red,
+            subtitle: _availability
+                ? const Text('Available')
+                : const Text('Unavailable'),
           ),
           const SizedBox(height: 10),
           ElevatedButton(
@@ -368,7 +372,10 @@ class MainMenuScreenFR extends State<MainMenuFR> {
           const SizedBox(height: 25),
           ElevatedButton(
             onPressed: () {
-              // Implement incident posts functionality
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: ((context) => const IncidentPostPage())));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
@@ -392,7 +399,10 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               child: ListView.builder(
                 itemCount: _notifications.length, // Example notification count
                 itemBuilder: (context, index) {
-                  return _buildNotificationDisplay(_notifications[index]["title"], _notifications[index]["body"], _notifications[index]["type"]);
+                  return _buildNotificationDisplay(
+                      _notifications[index]["title"],
+                      _notifications[index]["body"],
+                      _notifications[index]["type"]);
                 },
               ),
             ),
