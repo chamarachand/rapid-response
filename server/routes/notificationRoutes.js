@@ -38,6 +38,30 @@ router.get("/latest/:count", authMiddleware, async (req, res) => {
   }
 });
 
+// Get all latest notifications
+router.get("/latest-notifications", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+
+  if (!userId)
+    return res.status(400).send("Bad Request");
+
+  try {
+    const notifications = await Notification.find({
+      to: userId,
+    })
+      .select("_id type from title body timestamp")
+      .sort({ timestamp: -1 });
+
+    if (notifications.length < 1)
+      return res.status(404).send("No notifications found for the user");
+
+    return res.status(200).send(notifications);
+  } catch (error) {
+    console.log("Error: ", error);
+    return res.status(500).send("Internal Server Error");
+  }
+});
+
 // Check if a request has been already sent to the intended user
 router.get(
   "/search/request/:intendedUserId",

@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 import 'package:client/pages/login_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:client/pages/incidentPost/incidentPostPage.dart';
 
 class MainMenuFR extends StatefulWidget {
   const MainMenuFR({super.key});
@@ -22,6 +24,10 @@ class MainMenuScreenFR extends State<MainMenuFR> {
   int _selectedIndex = 1; // variable used by ButtomNavigationBar
   var _firstName = ""; // user's first name
   List _notifications = []; // list to hold notifications
+
+  Future<void> _requestLocationPermission() async {
+    var status = await Permission.location.request();
+  }
 
   // creating widget to load user token when initaited
   void _loadToken() async {
@@ -160,32 +166,39 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
+        } else if (notificationType == "supervisee-request"){
+          cusIcon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 152, 188, 255),
+                );
         } else {              // creating an else to account for other notification types unaccounted for
           cusIcon = const Icon(
                   Icons.warning_rounded,
                   size: 40,
                 );
         }
+      // returing the container with the created notification
       return Container(
-        margin: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.all(5),  // adding a gap arround the container to have better flow with other notifications
+        decoration: BoxDecoration(        // decorating notification container 
           color: const Color.fromARGB(255, 248, 255, 183),
           border:
               Border.all(color: const Color.fromARGB(255, 255, 221, 157), width: 3),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Padding(
+        child: Padding(                  // adding padding between container and row items
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          child: Row(
+          child: Row(                    // using a Row() for placement of content within the notification
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: cusIcon
+                child: cusIcon           // using the before determined icon
               ),
               Expanded(
-                  child: Column(
+                  child: Column(         // using a Column() to hold notification topic and content
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -222,7 +235,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
   @override
   void initState() {
     super.initState();
+    _requestLocationPermission();
     _loadToken();
+    // getting notification list from database
     _getNotifications();
     // updating local availability after update from database
     fetchAvailability().then((availability) {
@@ -232,9 +247,12 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     });
   }
 
+  // creting the main widget
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    // using Scaffold to build main menu
+    return Scaffold(    
+      // creating the Appbar for main menu
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -244,22 +262,23 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                 double appBarHeight = AppBar().preferredSize.height;
                 return Container(
                   alignment: Alignment.center,
-                  child: IconButton(
+                  child: IconButton(   // main logo is made as an icon button, further functionality will be added in the future
                     icon: SizedBox(
                       width: appBarHeight - 20,
                       height: appBarHeight - 20,
-                      child: Image.asset('assets/RR_logo.png'),
+                      child: Image.asset('assets/RR_logo.png'), // using app logo 
                     ),
                     onPressed: () {},
                   ),
                 );
               },
             ),
-            Builder(
+            Builder(  // creating a user name display and popup menu for viewing profile and logout
               builder: (BuildContext context) {
                 double appBarHeight = AppBar().preferredSize.height;
                 return Container(
                   alignment: Alignment.center,
+                  // using popupmenubutton for view profile and logout options
                   child: PopupMenuButton(
                     icon: SizedBox(
                       height: appBarHeight,
@@ -276,6 +295,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                         ],
                       ),
                     ),
+                    // building popupmenu
                     itemBuilder: (BuildContext context) => <PopupMenuEntry>[
                       PopupMenuItem(
                           child: Column(
@@ -288,15 +308,19 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                             child: Image.asset('assets/RR_logo.png'),
                           ),
                           const SizedBox(height: 25),
+                          // creating ListTile for view profile option
                           ListTile(
                             title: const Center(child: Text('View Profile')),
+                            // redirecting user to profile screen onTap
                             onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const ProfileFr())),
                           ),
+                          // creting ListTile for logout option
                           ListTile(
                             title: const Center(child: Text('Logout')),
+                            // removing current account and redirecting user to Login page onTap
                             onTap: () {
                               UserSecureStorage.deleteAccessToken();
                               UserSecureStorage.deleteIdToken();
@@ -306,6 +330,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                                       builder: (context) =>
                                           const LoginPage()),
                                   (route) => false);
+                              // stopping startLocationService and work manager as user is logging out
                               stopLocationService();    
                             },
                           ),
@@ -320,11 +345,13 @@ class MainMenuScreenFR extends State<MainMenuFR> {
         ),
         backgroundColor: const Color(0xFF8497B0),
       ),
+      // creating body of Scafold using a column
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const SizedBox(height: 10),
+          // creating availability toogle switch
           SwitchListTile(
             title: const Text(
               'Availability',
@@ -334,15 +361,16 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               ),
             ),
             value: _availability,
-            onChanged: _toggleAvailability,
+            onChanged: _toggleAvailability, // updating availability when toggled to database nd other functions based on availability
             activeColor: Colors.green, 
             inactiveTrackColor: Colors.red, 
             subtitle: _availability ? const Text('Available') : const Text('Unavailable'),
           ),
           const SizedBox(height: 10),
+          // creating button for add event functionality
           ElevatedButton(
             onPressed: () {
-              // Implement Add event functionality
+              // redirecting user to add even screen
               Navigator.push(context,
                   MaterialPageRoute(builder: ((context) => const add_event())));
             },
@@ -362,9 +390,12 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             ),
           ),
           const SizedBox(height: 25),
+          // creating button for incident posts functionaliy.
           ElevatedButton(
             onPressed: () {
-              // Implement incident posts functionality
+              // redirecting user to add incident posts screen
+              Navigator.push(context,
+                  MaterialPageRoute(builder: ((context) => const IncidentPostPage())));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
@@ -382,6 +413,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             ),
           ),
           const SizedBox(height: 25),
+          // creating the notification display area where the 10 latest notifications will be displayed
           Expanded(
             child: Container(
               color: const Color.fromARGB(255, 255, 255, 255),
