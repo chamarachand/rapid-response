@@ -15,6 +15,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -39,6 +40,7 @@ class emergency extends State<SOSpage> {
   late String long;
   late Position currentPosition;
   String locationMessage = 'Current Location of the User';
+  int _selectedIndex = 2;  // value used to indicated selected button of buttom navi bar
 
   @override
   Widget build(BuildContext context) {
@@ -89,23 +91,20 @@ class emergency extends State<SOSpage> {
       ),
 
 // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            label: "Link",
-            icon: Icon(Icons.link),
-          ),
-          BottomNavigationBarItem(
-            label: "Home",
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            label: "History",
-            icon: Icon(Icons.history),
-          ),
-        ],
+      // calling buildBottomNavigationBar() to create buttom navigation bar s
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        false,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
 // Camera Button and related functions

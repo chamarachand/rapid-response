@@ -2,6 +2,7 @@ import 'package:client/pages/link_accounts/civilians/search_civilian.dart';
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/civilians/my_emergency_contacts.dart';
 import 'package:client/pages/link_accounts/civilians/emergency_contact_requests.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class LinkAccountHome extends StatefulWidget {
   const LinkAccountHome({super.key});
@@ -11,7 +12,7 @@ class LinkAccountHome extends StatefulWidget {
 }
 
 class _LinkAccountHomeState extends State<LinkAccountHome> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0;  // value used to indicated selected button of buttom navi bar
 
   @override
   Widget build(BuildContext context) {
@@ -79,43 +80,13 @@ class _LinkAccountHomeState extends State<LinkAccountHome> {
         tooltip: "Add Emergency Contact",
         child: const Icon(Icons.person_add_alt_sharp),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.link),
-                onPressed: () {
-                  _onItemTapped(0);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHome())));
-                },
-              ),
-              label: 'Link',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  _onItemTapped(1);
-                },
-              ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () {
-                  _onItemTapped(2);
-                },
-              ),
-              label: 'History',
-            ),
-          ]),
+      // calling buildBottomNavigationBar() to create buttom navigation bar s
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        false,
+      ),
     );
   }
 
