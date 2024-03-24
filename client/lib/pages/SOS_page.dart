@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:client/pages/SOSFunctions/GetLocation.dart';
 import 'package:client/pages/SOSFunctions/UploadToFirebase.dart';
-import 'package:client/pages/main_screen.dart';
+import 'package:client/pages//main_page/main_screen.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 import 'package:client/storage/user_secure_storage.dart';
 import 'package:flutter/material.dart';

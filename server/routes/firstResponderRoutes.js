@@ -112,7 +112,7 @@ router.get("/get-latitude-longitude", authMiddleware, async (req, res) => {
   try {
     const { id } = req.user;
     const firstResponder = await FirstResponder.findById(id).select(
-      "latitude","longitude"
+      "latitude longitude"
     );
     console.log(firstResponder);
 
@@ -126,13 +126,13 @@ router.get("/get-latitude-longitude", authMiddleware, async (req, res) => {
   }
 });
 
-// Link - http://10.0.2.2:3000/api/first-responder/set-availability?availability=true
+
+// Link - http://10.0.2.2:3000/api/first-responder/set-latitude-longitude?latitude=valueHere&longitude=valueHere
 router.patch("/set-latitude-longitude", authMiddleware, async (req, res) => {
   console.log("Reached");
   try {
     const { id } = req.user;
-    const { latitude } = req.query;
-    const { longitude } = req.query;
+    const { latitude, longitude } = req.query;
 
     if (!latitude || !longitude) {
       return res.status(400).send("Invalid latitude or longitude value");
@@ -140,8 +140,7 @@ router.patch("/set-latitude-longitude", authMiddleware, async (req, res) => {
 
     const firstResponder = await FirstResponder.findByIdAndUpdate(
       id,
-      { latitude: latitude },
-      { longitude: longitude },
+      { latitude: latitude, longitude: longitude },
       { new: true }
     );
 
