@@ -7,6 +7,7 @@ const { Civilian } = require("../models/civilian");
 const { FirstResponder } = require("../models/first-responder");
 const { Notification, validate } = require("../models/notification");
 const { sendNotification } = require("../services/notificationService");
+const { SOSReport } = require("../models/sosReport");
 
 // admin.initializeApp({
 //   credential: admin.credential.cert(serviceAccount),
@@ -317,5 +318,96 @@ router.post("/emergency-contacts/send", authMiddleware, async (req, res) => {
     ? res.status(200).send("Notification send to all emergency contacts")
     : res.status(417).send("Notification sending failed");
 });
+
+// send sos. incident notifications for emergency contacts
+router.post(
+  "/first-responder/send/:emergencyType/:emergencyId",
+  authMiddleware,
+  async (req, res) => {
+    const { error } = validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const { type, title, body } = req.body;
+
+    const userId = req.user.id;
+    const { emergencyType, emergencyId } = req.params;
+
+    if (!userId || !emergencyType || !emergencyId)
+      return res.status(400).send("Bad request");
+
+    const isSOS = emergencyType === "sos-report";
+
+    let notification;
+
+    const firstResponders = await FirstResponder.find({
+      availability: true,
+    }).select("_id");
+
+    if (!firstResponders)
+      return res.status(404).send("No first responders available");
+    if (firstResponders.length === 0)
+      return res.status(204).send("No emergency contacts for the given user");
+
+    let allNotified = true;
+
+    for (const responder of firstResponders) {
+      // Save to db - notifications collection
+      try {
+        notification = new Notification({
+          from: userId,
+          to: responder._id,
+          type: type,
+          title: title,
+          body: body,
+          timestamp: new Date().toLocaleString(),
+          responded: false,
+        });
+
+        await notification.save();
+      } catch (error) {
+        console.log("Error: ");
+        return res.status(500).send(error);
+      }
+
+      // Save to db - firstResponder notifications
+      const updateQuery = {
+        $push: {
+          notifications: notification._id,
+        },
+      };
+
+      if (isSOS) {
+        updateQuery.$push.sosReports = emergencyId;
+      } else {
+        updateQuery.$push.incidentReports = emergencyId;
+      }
+
+      const firstResponder = await FirstResponder.findByIdAndUpdate(
+        responder,
+        updateQuery,
+        { new: true }
+      );
+
+      if (!firstResponder)
+        return res
+          .status(404)
+          .send("First Responder with the given id not found");
+
+      // send notification
+      const { fcmToken } = await FirstResponder.findById(responder).select(
+        "fcmToken"
+      );
+      if (!fcmToken)
+        return res.status(404).send("Reciever FCM token not found");
+
+      const send = await sendNotification(fcmToken, title, body);
+      if (!send) allNotified = false;
+    }
+
+    return allNotified
+      ? res.status(200).send("Notification send to all emergency contacts")
+      : res.status(417).send("Notification sending failed");
+  }
+);
 
 module.exports = router;
