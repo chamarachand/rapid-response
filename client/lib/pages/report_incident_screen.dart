@@ -32,6 +32,33 @@ class _ReportScreenState extends State<ReportScreen> {
   String? capturedSpeech;
   late Position currentPosition;
 
+  notifyFirstResponders(String incidentId) async {
+    final accessToken = await UserSecureStorage.getAccessToken();
+    final idToken = await UserSecureStorage.getIdToken();
+    final decodedIdToken = JwtDecoder.decode(idToken!);
+
+    try {
+      var response = await http.post(
+          Uri.parse(
+              "http://10.0.2.2:3000/api/notification/first-responder/send/incident-report/${incidentId}"),
+          headers: {
+            'Content-Type': 'application/json',
+            if (accessToken != null) 'x-auth-token': accessToken,
+          },
+          body: jsonEncode({
+            "type": "first-responder-notify-incident",
+            "title": "Incident Report from a Nearby Contact",
+            "body":
+                "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} just posted an incident Report"
+          }));
+      if (response.statusCode == 200) {
+        print("Notification send to emergency contacts");
+      }
+    } catch (e) {
+      print("Error: $e");
+    }
+  }
+
   notifyEmergencyContacts() async {
     final accessToken = await UserSecureStorage.getAccessToken();
     final idToken = await UserSecureStorage.getIdToken();
@@ -201,8 +228,9 @@ class _ReportScreenState extends State<ReportScreen> {
         'victimId': decodedAccessToken["id"],
         'eventType': _EventTypeController.text,
         'location': {
-          'latitude': currentPosition.latitude,
-          'longitude': currentPosition.longitude,
+          // Assuming GeoJSON format
+          'type': 'Point',
+          'coordinates': [currentPosition.longitude, currentPosition.latitude],
         },
         'image': downloadUrl, // Assuming Firebase returns the URL
         'voice': capturedSpeech.toString(),
@@ -223,7 +251,10 @@ class _ReportScreenState extends State<ReportScreen> {
       if (response.statusCode == 201) {
         // Handle successful event creation (show a success message, navigate, etc.)
         print('Event created successfully!');
+        Map<String, dynamic> responseBody = json.decode(response.body);
+        String incidentId = responseBody['incidentId'];
         showIncidentReportSendDialog();
+        notifyFirstResponders(incidentId);
         notifyEmergencyContacts();
       } else {
         // Handle error (show an error message)

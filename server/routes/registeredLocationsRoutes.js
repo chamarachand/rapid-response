@@ -4,21 +4,16 @@ const { Civilian } = require("../models/civilian");
 const { RegisterLocation, validate } = require("../models/registeredLocations");
 
 router.post("/create-registered-location", async (req, res) => {
-  console.log("Reached");
-
   const { addedBy, locationTag, address, latitude, longitude } = req.body;
 
   // Validate if required fields are present
   if (!addedBy) {
     return res.status(400).send("Missing required fields id");
-  }
-  else if (!locationTag) {
+  } else if (!locationTag) {
     return res.status(400).send("Missing required fields locTag");
-  }
-  else if (!address) {
+  } else if (!address) {
     return res.status(400).send("Missing required fields address");
-  }
-  else if (!latitude || !longitude) {
+  } else if (!latitude || !longitude) {
     return res.status(400).send("Missing required fields lat long");
   }
 
@@ -28,20 +23,20 @@ router.post("/create-registered-location", async (req, res) => {
       locationTag,
       address,
       latitude,
-      longitude
+      longitude,
     });
 
-  await RegisteredLocation.save();
+    await RegisteredLocation.save();
 
-  const registeredLocationId = RegisteredLocation._id;
+    const registeredLocationId = RegisteredLocation._id;
 
-  const updatedUser = await Civilian.findByIdAndUpdate(
-    addedBy,
-    { $push: { registeredLocationsArray: registeredLocationId } },
-    { new: true }
-  );
-  if (!updatedUser)
-    return res.status(404).send("User with the given id not found");
+    const updatedUser = await Civilian.findByIdAndUpdate(
+      addedBy,
+      { $push: { registeredLocationsArray: registeredLocationId } },
+      { new: true }
+    );
+    if (!updatedUser)
+      return res.status(404).send("User with the given id not found");
 
     res.status(201).send("New Location Successfully Registered.");
   } catch (error) {
@@ -61,7 +56,7 @@ router.get("/registered-locations/:userId", async (req, res) => {
     }
 
     const registeredLocations = await RegisterLocation.find({
-      addedBy: userId
+      addedBy: userId,
     });
 
     res.json(registeredLocations);

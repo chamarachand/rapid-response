@@ -17,9 +17,12 @@ router.post("/", authMiddleware, async (req, res) => {
       date,
     });
 
-    await newSOSReport.save();
+    const sosReport = await newSOSReport.save();
 
-    res.json({ message: "SOS report created successfully!" });
+    res.status(201).json({
+      sosId: sosReport._id,
+      message: "SOS report created successfully!",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error creating SOS report" });

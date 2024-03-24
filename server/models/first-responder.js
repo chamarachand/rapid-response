@@ -43,6 +43,24 @@ const firstResponderSchema = new mongoose.Schema({
     ],
     default: [],
   },
+  sosReports: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "SOSReport",
+      },
+    ],
+    default: [],
+  },
+  incidentReports: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "IncidentReport",
+      },
+    ],
+    default: [],
+  },
 });
 
 firstResponderSchema.methods.generateAuthToken = function () {
