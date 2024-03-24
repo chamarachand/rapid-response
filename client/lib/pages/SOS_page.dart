@@ -16,7 +16,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class SOSpage extends StatefulWidget {
   const SOSpage({super.key});
@@ -42,7 +41,8 @@ class emergency extends State<SOSpage> {
   late String long;
   late Position currentPosition;
   String locationMessage = 'Current Location of the User';
-  int _selectedIndex = 2;  // value used to indicated selected button of buttom navi bar
+  int _selectedIndex =
+      2; // value used to indicated selected button of buttom navi bar
 
   @override
   Widget build(BuildContext context) {
