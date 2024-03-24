@@ -95,6 +95,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       if (_availability) {
         startLocationService();// start tracking location when _availability is true
         _test = isLocationServiceRunning(); 
+
       } else if (!_availability){
         stopLocationService(); // stop tracking location when _availability is false
         _test = isLocationServiceRunning(); 
@@ -108,6 +109,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     try {
       var response = await http.get(
         // getting the latest 10 notifications form the database
+
         Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
         headers: {
           'Content-Type' : 'application/json',
@@ -128,6 +130,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       print("Error: $error");
     }
   }
+
 
   // creating widget that creates the notification messages to be displayed based on the _notifications list entries 
   @override
@@ -160,6 +163,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
+
         } else {              // creating an else to account for other notification types unaccounted for
           cusIcon = const Icon(
                   Icons.warning_rounded,
