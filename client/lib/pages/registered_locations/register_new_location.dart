@@ -16,23 +16,23 @@ class RegisterLocation extends StatefulWidget {
 }
 
 class RegisterNewLocation extends State<RegisterLocation> {
-  int _selectedIndex = 1;
-  late double lat;
-  late double long;
-  late String address = "Address loading...";
-  String? newAddress;
-  String addressTag = "";
-  bool showLocationInputs = false;
+  // initializing the global variables used in the page
+  int _selectedIndex = 1;   // variable used by ButtomNavigationBar
+  late double lat;          // variable for latitude
+  late double long;         // variable for longitude
+  late String address = "Address loading..."; // variable for initail address value
+  String? newAddress;                         // variable for address value after location provided
+  String addressTag = "";                     // variable for address name tag
+  bool showLocationInputs = false;            // variable for displaying of location input fields
+  // text editing controllers for latitude longitude and address
   TextEditingController latitudeController = TextEditingController();
   TextEditingController longitudeController = TextEditingController();
   TextEditingController addressTagController = TextEditingController();
-  late Position _previousPosition;
-  late String? _accessToken;
+  late Position _previousPosition;  // variable for current position
+  late String? _accessToken;        // variable for acess token
   var _id;
 
-  final profileImg =
-      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
-
+  // creating widget to load user token when initaited
   void _loadToken() async {
     final idToken = await UserSecureStorage.getIdToken();
     _accessToken = await UserSecureStorage.getAccessToken();
@@ -43,10 +43,10 @@ class RegisterNewLocation extends State<RegisterLocation> {
       setState(() {
         _id = decodedToken["id"];
       });
-      print(_id);
     }
   }
 
+  // initiating widgets
   @override
   void initState() {
     super.initState();
@@ -54,19 +54,23 @@ class RegisterNewLocation extends State<RegisterLocation> {
     addressTagController = TextEditingController();
   }
 
+  // disposing widgets
   @override
   void dispose() {
     addressTagController.dispose();
     super.dispose();
   }
 
+  // function to get user permission for GPS
   Future<void> _requestLocationPermission() async {
     var status = await Permission.location.request();
     if (status.isGranted) {
+      // calling getCurrentLocation when permision granted
       _getCurrentLocation();
     } else {}
   }
 
+  // function to get current location of user
   Future<void> _getCurrentLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -90,6 +94,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+      // using set location when location taken
       _setLocation(position.latitude, position.longitude);
 
       setState(() {
@@ -100,10 +105,10 @@ class RegisterNewLocation extends State<RegisterLocation> {
         accuracy: LocationAccuracy.high,
         distanceFilter: 10,
       );
-      // Start listening for location updates
+      // start listening for location updates
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position newPosition) {
-        // Calculate distance between new and previous position
+        // calculate distance between new and previous position
         double distanceInMeters = Geolocator.distanceBetween(
           _previousPosition.latitude,
           _previousPosition.longitude,
@@ -111,7 +116,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
           newPosition.longitude,
         );
 
-        // If user moved more than 100 meters, update previous position
+        // if user moved more than 100 meters, updatimg previous position
         if (distanceInMeters > 100) {
           setState(() {
             _previousPosition = newPosition;
@@ -122,11 +127,14 @@ class RegisterNewLocation extends State<RegisterLocation> {
     } catch (e) {}
   }
 
+  // function to get address using latitude and longitude
   void _setLocation(double nLat, double nLong) {
     placemarkFromCoordinates(nLat, nLong).then((List<Placemark> placemarks) {
       if (placemarks.isNotEmpty) {
+        // when placemaker available implimneting new data to variables
         setState(() {
           Placemark place = placemarks.first;
+          // getting address of provided placemaker
           newAddress = '${place.street}, ${place.locality}, ${place.country}';
           lat = nLat;
           long = nLong;
@@ -143,6 +151,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
     });
   }
 
+  // function to send notification when new location registered
   sendRequestConfirmNotification() async {
     final idToken = await UserSecureStorage.getIdToken();
     final decodedIdToken = JwtDecoder.decode(idToken!);
@@ -167,6 +176,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
     }
   }
 
+  // function to add new registered location to database
   Future<void> createRegisteredLocation(Map<String, dynamic> data) async {
     const url = 'http://10.0.2.2:3000/api/registeredLocations/create-registered-location'; // Replace with your actual server URL
 
@@ -179,6 +189,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
         body: jsonEncode(data),
       );
 
+      // informing user of successful registration
       if (response.statusCode == 201) {
         showDialog(
         context: context,
@@ -191,20 +202,21 @@ class RegisterNewLocation extends State<RegisterLocation> {
             actions: [
               Center(
                 child: TextButton(
-                onPressed: () => Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const RegisteredLocation()),
-                  (route) => false),
-                  child: const Text('OK'),
-                ),
+                  // moving user to registered locations page and removing stacktrace
+                  onPressed: () => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const RegisteredLocation()),
+                    (route) => false),
+                    child: const Text('OK'),
+                  ),
               ),
             ],
           );
         },
       );
-
+      // error checking
       } else {
         print('Failed to register location: ${response.body}');
       }
@@ -213,6 +225,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
     }
   }
 
+  // fuction to create body of screen
   Widget buildRegisterNewLocationInput(){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -224,10 +237,10 @@ class RegisterNewLocation extends State<RegisterLocation> {
         ),
         SizedBox(
           child: TextField(
-            controller: addressTagController, // Use the controller
+            controller: addressTagController, // use the controller to get addresstag
             onChanged: (value) {
               setState(() {
-                addressTag = value; // Update the addressTag variable
+                addressTag = value; // updating the addressTag variable
               });
             },
             decoration: const InputDecoration(labelText: 'Enter Name Tag For Location'),
@@ -239,7 +252,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.normal),
         ),
         Text(newAddress ??
-            address), // Display the new address if set, otherwise use the existing address
+            address), // displaying the new address if set, otherwise using the existing address
         const SizedBox(height: 20),
         const Text(
           'Location',
@@ -248,6 +261,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            // button to set current location as location to register
             ElevatedButton(
               onPressed: () {
                 _requestLocationPermission();
@@ -261,6 +275,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                 )),
               child: const Text('Current Location',style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal),),
             ),
+            // button to select 'set location manully'
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -279,6 +294,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
           ],
         ),
         const SizedBox(height: 10),
+        // display input fields for lat and long only when seleted to add location manually
         if (!showLocationInputs)
           const SizedBox(height: 206),
         if (showLocationInputs)
@@ -301,6 +317,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // back button that hides manual input field
                   ElevatedButton(
                     onPressed: () {
                       setState(() {
@@ -316,12 +333,14 @@ class RegisterNewLocation extends State<RegisterLocation> {
                       )),
                     child: const Text('Back',style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
+                  // set button that confirms input to lat and long 
                   ElevatedButton(
                     onPressed: () {
                       double? lat =
                           double.tryParse(latitudeController.text);
                       double? long =
                           double.tryParse(longitudeController.text);
+                      // checking validity of input    
                       if (lat == null ||
                           long == null ||
                           lat < -90 ||
@@ -346,6 +365,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
                             );
                           },
                         );
+                        // if input valid setting location based on input data to ge address
                       } else {
                         _setLocation(lat, long);
                         setState(() {
@@ -367,10 +387,12 @@ class RegisterNewLocation extends State<RegisterLocation> {
             ],
           ),
         const SizedBox(height: 20),
+        // confirm button to finalize registration
         ElevatedButton(
           onPressed: () {
             if (addressTag.isNotEmpty &&
             newAddress!.isNotEmpty) {
+              // creating registered loaction
               createRegisteredLocation({
                 'addedBy': _id, 
                 'locationTag': addressTag,
@@ -414,8 +436,10 @@ class RegisterNewLocation extends State<RegisterLocation> {
     );
   }
 
+  // creating the main widget
   @override
   Widget build(BuildContext context) {
+    // using Scaffold to build register new location screen
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -437,6 +461,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
           ),
         ),
       ),
+      // applying navi bar using buildBottomNavigationBar()
       bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
         context,
         _selectedIndex,
@@ -446,6 +471,7 @@ class RegisterNewLocation extends State<RegisterLocation> {
     );
   }
 
+  // creating method to change selected index on tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

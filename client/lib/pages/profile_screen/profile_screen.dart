@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
@@ -15,11 +14,13 @@ class Profile extends StatefulWidget {
 }
 
 class ProfileScreen extends State<Profile> {
-  int _selectedIndex = 1;
+  // initializing the global variables used in the page
+  int _selectedIndex = 1;  // variable used by ButtomNavigationBar
   File? image;
+  // sample imaged used as profile image
   String profileImg =
-      "https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png";
-
+      "https://th.bing.com/th/id/R.7e652b13150cba9f278a112dd4b3703e?rik=KdflSdVwJBl4zg&pid=ImgRaw&r=0";
+  // variables used to store user data
   var _username = "";
   var _firstName = "";
   var _lastName = "";
@@ -27,6 +28,7 @@ class ProfileScreen extends State<Profile> {
   var _phnNo = "";
   var _email = "";
 
+  // creating widget to load user token when initaited
   void _loadToken() async {
     final idToken = await UserSecureStorage.getIdToken();
 
@@ -44,12 +46,14 @@ class ProfileScreen extends State<Profile> {
     }
   }
 
+  // initiating widgets
   @override
   void initState() {
     super.initState();
     _loadToken();
   }
 
+  // creating widget to build user information display
   @override
   Widget buildUserInfoDisplay(IconData iconData, String title, String data) {
     return Expanded(
@@ -94,6 +98,7 @@ class ProfileScreen extends State<Profile> {
               ),
             ],
           )),
+          // icon button to enable future implimentation of user info updating
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.edit),
@@ -103,10 +108,13 @@ class ProfileScreen extends State<Profile> {
     ));
   }
 
+  // creating the main widget
   @override
   Widget build(BuildContext context) {
+    // using Scaffold to build user profile screen
     return Scaffold(
       appBar: AppBar(
+        // adding screen title
         title: const Text(
           'User Profile',
           style: TextStyle(
@@ -117,6 +125,7 @@ class ProfileScreen extends State<Profile> {
         ),
         backgroundColor: const Color(0xFF8497B0),
       ),
+      // creating body of Scafold using a column
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -127,6 +136,7 @@ class ProfileScreen extends State<Profile> {
                 child: SizedBox(
                   width: 200,
                   height: 200,
+                  // checking whether user has updated profile pic and showing it if updated
                   child: ClipOval(
                     child: image != null
                         ? Image.file(
@@ -152,6 +162,7 @@ class ProfileScreen extends State<Profile> {
                       builder: (BuildContext context) => popup(),
                     );
                   },
+                  // creating button for updating profile picture
                   style: ElevatedButton.styleFrom(
                     shape: const CircleBorder(),
                     backgroundColor: Colors.black,
@@ -161,6 +172,7 @@ class ProfileScreen extends State<Profile> {
               )
             ],
           ),
+          // creating the information displays with user information
           buildUserInfoDisplay(Icons.person, "Username", _username),
           buildUserInfoDisplay(
               Icons.info_outline, "Name", "$_firstName $_lastName"),
@@ -169,15 +181,17 @@ class ProfileScreen extends State<Profile> {
           buildUserInfoDisplay(Icons.email, "Email Address", _email),
         ],
       ),
+      // applying navi bar using buildBottomNavigationBar()
       bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
         context,
         _selectedIndex,
         _onItemTapped,
-        false,
+        false, // passing as false since page belogs to civilain
       ),
     );
   }
-
+  
+  // creating method to change selected index on tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

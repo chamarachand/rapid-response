@@ -12,9 +12,9 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class DispalyHistoryScreen extends State<HistoryScreen> {
-  int _selectedIndex = 2;
   List _notifications = []; // list to hold notifications
-  late bool _isFirstResponder = false;
+  late bool _isFirstResponder = false; // initiating value, will be change on _loadToken
+  int _selectedIndex = 2;  // value used to indicated selected button of buttom navi bar
 
   // creating widget to load user token when initaited
   void _loadToken() async {
@@ -84,11 +84,23 @@ class DispalyHistoryScreen extends State<HistoryScreen> {
           cusIcon = const Icon(
                   Icons.link,
                   size: 40,
-                  color: Color.fromARGB(255, 89, 255, 133),
+                  color: Color.fromARGB(255, 155, 255, 181),
                 );
         } else if (notificationType == "registered-location-added"){
           cusIcon = const Icon(
                   Icons.location_city,
+                  size: 40,
+                  color: Color.fromARGB(255, 155, 255, 181),
+                );
+        } else if (notificationType == "supervisee-remove"){
+          cusIcon = const Icon(
+                  Icons.link,
+                  size: 40,
+                  color: Color.fromARGB(255, 255, 133, 124),
+                );
+        } else if (notificationType == "supervisee-request-accept"){
+          cusIcon = const Icon(
+                  Icons.link,
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
@@ -102,6 +114,7 @@ class DispalyHistoryScreen extends State<HistoryScreen> {
           cusIcon = const Icon(
                   Icons.warning_rounded,
                   size: 40,
+                  color: Color.fromARGB(255, 255, 152, 152),
                 );
         }
       // returing the container with the created notification
@@ -188,6 +201,7 @@ class DispalyHistoryScreen extends State<HistoryScreen> {
                 },
               ),
             ),
+      // calling buildBottomNavigationBar() to create buttom navigation bar s
       bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
         context,
         _selectedIndex,
@@ -197,6 +211,7 @@ class DispalyHistoryScreen extends State<HistoryScreen> {
     );
   }
 
+  // creating method to change selected index on tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

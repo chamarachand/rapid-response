@@ -4,27 +4,28 @@ import 'package:workmanager/workmanager.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// Variable to keep track of the number of connected Flutter engines
+// variable to keep track of the number of connected Flutter engines
 int connectedFlutterEngines = 0;
-
+// variable to store previous location
 Position? previousLocation;
+// variable to represent running of location services
 late bool _isLocationServiceRunning;
 
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    // Increment the connectedFlutterEngines count when a new Flutter engine connects
+    // increasing the connectedFlutterEngines count when a new Flutter engine is connected
     connectedFlutterEngines++;
 
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    // Retrieve previous latitude and longitude from the database
+    // variables to store previous lat and long in database
     double? previousLatitude;
     double? previousLongitude;
 
     final accessToken = await UserSecureStorage.getAccessToken();
-
+    // retrieve previous latitude and longitude from the database
     try {
       final response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/first-responder/get-latitude-longitude'),
@@ -39,13 +40,12 @@ void callbackDispatcher() {
         previousLongitude = data['longitude'];
       }
     } catch (e) {
-      // Handle error
       print('Error fetching previous location: $e');
     }
 
-    // Check if previous latitude and longitude are available
+    // checking whether previous latitude and longitude is available
     if (previousLatitude != null && previousLongitude != null) {
-      // Calculate distance between previous and current locations
+      // calculating the distance between previous and current locations
       double distanceInMeters = Geolocator.distanceBetween(
         previousLatitude,
         previousLongitude,
@@ -53,14 +53,14 @@ void callbackDispatcher() {
         position.longitude,
       );
 
-      // Check if distance is greater than or equal to 100 meters
-      if (distanceInMeters >= 100) {
-        // Update location to the database
+      // checking whether the distance is greater 100 meters
+      if (distanceInMeters > 100) {
+        // updating location to the database if distance greaterthan 100m
         updateLocationToDatabase(position.latitude, position.longitude);
         print('Location updated: ${position.latitude}, ${position.longitude}');
       }
     } else {
-      // Update previous location for the first time
+      // updating previous location for the first time
       updateLocationToDatabase(position.latitude, position.longitude);
       print('First location recorded: ${position.latitude}, ${position.longitude}');
     }
@@ -69,10 +69,8 @@ void callbackDispatcher() {
   });
 }
 
-// Function to update location to the database
+// function to update location to the database
 Future<void> updateLocationToDatabase(double latitude, double longitude) async {
-  // Implement database update logic here
-  // Use HTTP requests or any database library to update the location
   final accessToken = await UserSecureStorage.getAccessToken();
 
   try {
@@ -84,17 +82,15 @@ Future<void> updateLocationToDatabase(double latitude, double longitude) async {
       },
     );
     if (response.statusCode == 200) {
-      // Handle success
     } else {
-      // Handle error
       print('Failed to update location: ${response.statusCode}');
     }
   } catch (e) {
-    // Handle error
     print('Error updating location: $e');
   }
 }
 
+// function to start location services in background
 void startLocationService() {
   Workmanager().initialize(
     callbackDispatcher,
@@ -109,10 +105,10 @@ void startLocationService() {
 }
 
 void stopLocationService() {
-  // Decrement the connectedFlutterEngines count when a Flutter engine disconnects
+  // decreasing the connectedFlutterEngines count when a Flutter engine is disconnected
   connectedFlutterEngines--;
   
-  // Check if there are no active Flutter engines before stopping the service
+  // checking whether there are no active Flutter engines before stopping the service
   if (connectedFlutterEngines <= 0) {
     Workmanager().cancelAll(); // Cancels all background tasks
     _isLocationServiceRunning = false;

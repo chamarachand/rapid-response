@@ -17,10 +17,12 @@ class MainMenu extends StatefulWidget {
 }
 
 class MainMenuScreen extends State<MainMenu> {
-  int _selectedIndex = 1;
-  List _notifications = [];
-  var _firstName = "";
+  // initializing the global variables used in the page
+  int _selectedIndex = 1;    // variable used by ButtomNavigationBar
+  List _notifications = []; // list to hold notifications
+  var _firstName = "";     // user's first name
 
+  // creating widget to load user token when initaited
   void _loadToken() async {
     final idToken = await UserSecureStorage.getIdToken();
 
@@ -33,10 +35,12 @@ class MainMenuScreen extends State<MainMenu> {
     }
   }
 
+  // creating widget to get notifications array from the database
   void _getNotifications() async {
     final accessToken = await UserSecureStorage.getAccessToken();
     try {
       var response = await http.get(
+        // getting the latest 10 notifications form the database
         Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
         headers: {
           'Content-Type' : 'application/json',
@@ -44,6 +48,7 @@ class MainMenuScreen extends State<MainMenu> {
         }
       );
       if (response.statusCode == 200) {
+        // updating _notifications list with database list data
         setState(() {
           _notifications = jsonDecode(response.body);
           print(_notifications);
@@ -52,13 +57,17 @@ class MainMenuScreen extends State<MainMenu> {
         //no notifications for user
       }
     } catch (error) {
+      // error message used in testing
       print("Error: $error");
     }
   }
 
-    @override
+// creating widget that creates the notification messages to be displayed based on the _notifications list entries 
+  @override
   Widget _buildNotificationDisplay(
+    // getting the required data to make notification
       String notificationTopic, String notificationData, String notificationType) {
+        // customizing the icon based on notification type
         Icon cusIcon;
         if (notificationType == "emergency-contact-remove"){
           cusIcon = const Icon(
@@ -84,32 +93,34 @@ class MainMenuScreen extends State<MainMenu> {
                   size: 40,
                   color: Color.fromARGB(255, 89, 255, 133),
                 );
-        } else {
+        } else {       // creating an else to account for other notification types unaccounted for
           cusIcon = const Icon(
                   Icons.warning_rounded,
                   size: 40,
+                  color: Color.fromARGB(255, 255, 152, 152),
                 );
         }
+      // returing the container with the created notification
       return Container(
-        margin: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
+        margin: const EdgeInsets.all(5),    // adding a gap arround the container to have better flow with other notifications
+        decoration: BoxDecoration(        // decorating notification container 
           color: const Color.fromARGB(255, 248, 255, 183),
           border:
               Border.all(color: const Color.fromARGB(255, 255, 221, 157), width: 3),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Padding(
+        child: Padding(   // adding padding between container and row items
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          child: Row(
+          child: Row(     // using a Row() for placement of content within the notification
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: cusIcon
+                child: cusIcon     // using the before determined icon
               ),
               Expanded(
-                  child: Column(
+                  child: Column(   // using a Column() to hold notification topic and content
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -142,16 +153,21 @@ class MainMenuScreen extends State<MainMenu> {
         );
   }
 
+  // initiating widgets
   @override
   void initState() {
     super.initState();
     _loadToken();
+    // getting notification list from database
     _getNotifications();
   }
 
+  // creting the main widget
   @override
   Widget build(BuildContext context) {
+    // using Scaffold to build main menu
     return Scaffold(
+      // creating the Appbar for main menu for FR
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,22 +177,24 @@ class MainMenuScreen extends State<MainMenu> {
                 double appBarHeight = AppBar().preferredSize.height;
                 return Container(
                   alignment: Alignment.center,
-                  child: IconButton(
+                  child: IconButton(     // main logo is made as an icon button, further functionality will be added in the future
                     icon: SizedBox(
                       width: appBarHeight - 20,
                       height: appBarHeight - 20,
-                      child: Image.asset('assets/RR_logo.png'),
+                      child: Image.asset('assets/RR_logo.png'),  // using app logo 
                     ),
                     onPressed: () {},
                   ),
                 );
               },
             ),
-            Builder(
+            // creating a user name display and popup menu for viewing profile and logout
+            Builder(   
               builder: (BuildContext context) {
                 double appBarHeight = AppBar().preferredSize.height;
                 return Container(
                   alignment: Alignment.center,
+                  // using popupmenubutton for view profile and logout options
                   child: PopupMenuButton(
                     icon: SizedBox(
                       height: appBarHeight,
@@ -193,6 +211,7 @@ class MainMenuScreen extends State<MainMenu> {
                         ],
                       ),
                     ),
+                    // building popupmenu
                     itemBuilder: (BuildContext context) => <PopupMenuEntry>[
                       PopupMenuItem(
                           child: Column(
@@ -205,15 +224,19 @@ class MainMenuScreen extends State<MainMenu> {
                             child: Image.asset('assets/RR_logo.png'),
                           ),
                           const SizedBox(height: 25),
+                          // creating ListTile for view profile option
                           ListTile(
                             title: const Center(child: Text('View Profile')),
+                            // redirecting user to profile screen onTap
                             onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => const Profile())),
                           ),
+                          // creting ListTile for logout option
                           ListTile(
                             title: const Center(child: Text('Logout')),
+                            // removing current account and redirecting user to Login page onTap
                             onTap: () {
                               UserSecureStorage.deleteAccessToken();
                               UserSecureStorage.deleteIdToken();
@@ -236,15 +259,19 @@ class MainMenuScreen extends State<MainMenu> {
         ),
         backgroundColor: const Color(0xFF8497B0),
       ),
+      // creating body of Scafold using a column
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const SizedBox(height: 25),
+          // usinf Row() to align and position SOS and Report buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              // creating SOS button
               ElevatedButton(
+                // calling SOS functionality on press
                 onPressed: () => Navigator.push(context,
                     MaterialPageRoute(builder: (context) => const SOSpage())),
                 style: ElevatedButton.styleFrom(
@@ -262,7 +289,9 @@ class MainMenuScreen extends State<MainMenu> {
                   ),
                 ),
               ),
+              // creating Report button
               ElevatedButton(
+                // calling Report functionality on press
                 onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -285,9 +314,10 @@ class MainMenuScreen extends State<MainMenu> {
             ],
           ),
           const SizedBox(height: 25),
+          // creating button for Map functionality
           ElevatedButton(
             onPressed: () {
-              // Implement Map functionality
+              // needs to impliment Map functionality
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
@@ -305,7 +335,9 @@ class MainMenuScreen extends State<MainMenu> {
             ),
           ),
           const SizedBox(height: 25),
+          // creating button for Registered Locations functionality
           ElevatedButton(
+            // calling registered locations functionality on press
             onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -326,12 +358,16 @@ class MainMenuScreen extends State<MainMenu> {
             ),
           ),
           const SizedBox(height: 25),
+          // creting notification area
           Expanded(
+            // using container for notifications
             child: Container(
               color: const Color.fromARGB(255, 255, 255, 255),
+              // using ListView.builder to create and display the individual notifications
               child: ListView.builder(
-                itemCount: _notifications.length, // Example notification count
+                itemCount: _notifications.length, // notification count taken from list lenght
                 itemBuilder: (context, index) {
+                  // calling _buildNotificationDisplay() with content to create individual notifications
                   return _buildNotificationDisplay(_notifications[index]["title"], _notifications[index]["body"], _notifications[index]["type"]);
                 },
               ),
@@ -339,15 +375,17 @@ class MainMenuScreen extends State<MainMenu> {
           ),
         ],
       ),
+      // applying navi bar using buildBottomNavigationBar()
       bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
         context,
         _selectedIndex,
         _onItemTapped,
-        false,
+        false,  // passing as false since page belongs to civilian
       ),
     );
   }
 
+  // creating method to change selected index on tap
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
