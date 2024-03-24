@@ -15,6 +15,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
@@ -30,7 +31,8 @@ class _ReportScreenState extends State<ReportScreen> {
   String imageUrl = '';
   File? image;
   String? capturedSpeech;
-  late Position currentPosition;
+  late Position currentPosition;// initiating value, will be change on _loadToken
+  int _selectedIndex = 1;  // value used to indicated selected button of buttom navi bar
 
   notifyEmergencyContacts() async {
     final accessToken = await UserSecureStorage.getAccessToken();
@@ -167,24 +169,20 @@ class _ReportScreenState extends State<ReportScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            label: "Home",
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            label: "Link",
-            icon: Icon(Icons.link),
-          ),
-          BottomNavigationBarItem(
-            label: "History",
-            icon: Icon(Icons.history),
-          ),
-        ],
-        onTap: _onBottomNavBarItemTapped,
+      // calling buildBottomNavigationBar() to create buttom navigation bar s
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        false,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   Future<void> _submitIncident() async {
@@ -230,11 +228,6 @@ class _ReportScreenState extends State<ReportScreen> {
         print('Error creating event: ${response.body}');
       }
     }
-  }
-
-  void _onBottomNavBarItemTapped(int index) {
-    // Implement navigation logic based on the selected bottom navigation bar item
-    // You can use Navigator to push or pop screens based on the selected index
   }
 
 // Popup window when pressed camera icon

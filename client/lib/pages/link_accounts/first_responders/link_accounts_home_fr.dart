@@ -3,6 +3,7 @@ import 'package:client/pages/link_accounts/first_responders/supervisee_requests.
 import 'package:flutter/material.dart';
 import 'package:client/pages/link_accounts/first_responders/search_firstresponders.dart';
 import 'package:client/pages/link_accounts/first_responders/my_supervisors.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 
 class LinkAccountHomeFR extends StatefulWidget {
   const LinkAccountHomeFR({super.key});
@@ -92,43 +93,13 @@ class _LinkAccountHomeFRState extends State<LinkAccountHomeFR> {
         tooltip: "Add Emergency Contact",
         child: const Icon(Icons.person_add_alt_sharp),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: const Color(0xFFD9D9D9),
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: [
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.link),
-                onPressed: () {
-                  _onItemTapped(0);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const LinkAccountHomeFR())));
-                },
-              ),
-              label: 'Link',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.home),
-                onPressed: () {
-                  _onItemTapped(1);
-                },
-              ),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: IconButton(
-                icon: const Icon(Icons.history),
-                onPressed: () {
-                  _onItemTapped(2);
-                },
-              ),
-              label: 'History',
-            ),
-          ]),
+      // calling buildBottomNavigationBar() to create buttom navigation bar s
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+        context,
+        _selectedIndex,
+        _onItemTapped,
+        true,
+      ),
     );
   }
 
