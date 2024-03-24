@@ -5,6 +5,7 @@ import 'package:client/pages/SOSFunctions/UploadToFirebase.dart';
 import 'package:client/pages//main_page/main_screen.dart';
 import 'package:client/pages/utils/alert_dialogs.dart';
 import 'package:client/storage/user_secure_storage.dart';
+import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,6 +27,7 @@ class SOSpage extends StatefulWidget {
 
 GetLocation getLocation = GetLocation();
 UploadToFirebase uploadToFirebase = UploadToFirebase();
+int _selectedIndex = 1;
 
 class emergency extends State<SOSpage> {
   String _chosenModel = 'Accident'; // Initial value for the dropdown
@@ -89,23 +91,15 @@ class emergency extends State<SOSpage> {
       ),
 
 // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            label: "Link",
-            icon: Icon(Icons.link),
-          ),
-          BottomNavigationBarItem(
-            label: "Home",
-            icon: Icon(Icons.home),
-          ),
-          BottomNavigationBarItem(
-            label: "History",
-            icon: Icon(Icons.history),
-          ),
-        ],
-      ),
+      bottomNavigationBar: BottomNavigationBarUtils.buildBottomNavigationBar(
+          context, _selectedIndex, _onItemTapped, true),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
 // Camera Button and related functions
