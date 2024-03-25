@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+import 'package:client/storage/user_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:client/pages/incidentPost/GmapOpen.dart';
@@ -25,9 +26,11 @@ class PurposeState extends State<IncidentPostPage> {
   }
 
   Future<void> fetchData() async {
+    final accessToken = await UserSecureStorage.getAccessToken();
     try {
-      final response = await http
-          .get(Uri.parse('http://10.0.2.2:3000/api/posts/incidents/latest'));
+      final response = await http.get(
+          Uri.parse('http://10.0.2.2:3000/api/posts/incidents/latest'),
+          headers: {if (accessToken != null) 'x-auth-token': accessToken});
       if (response.statusCode == 200) {
         setState(() {
           postData = jsonDecode(response.body);
