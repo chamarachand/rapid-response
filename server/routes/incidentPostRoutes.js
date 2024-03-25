@@ -1,23 +1,44 @@
 const express = require("express");
 const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
 const { IncidentReport } = require("../models/incidentReport");
 const { SOSReport } = require("../models/sosReport");
+const { FirstResponder } = require("../models/first-responder");
 
 //api/posts/incidents
-router.get("/incidents/latest", async (req, res) => {
+router.get("/incidents/latest", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+  if (!userId) return res.status(400).send("Bad Request");
+
   try {
-    const latestIncident = await IncidentReport.find().sort({ createdAt: 1 }); //-1 for descending order
-    res.status(200).send(latestIncident.reverse());
+    const { incidentReports } = await FirstResponder.findById(userId)
+      .select("incidentReports")
+      .populate({
+        path: "incidentReports",
+        model: "IncidentReport",
+        options: { sort: { timeStamp: -1 } },
+      })
+      .limit(15);
+    return res.status(200).send(incidentReports);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal server error.");
+    return res.status(500).send("Internal server error.");
   }
 });
 
-router.get("/sos/latest", async (req, res) => {
+router.get("/sos/latest", authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+  if (!userId) return res.status(400).send("Bad Request");
+
   try {
-    const latestSOS = await SOSReport.find().sort({ createdAt: 1 }).limit(3);
-    res.status(200).send(latestSOS.reverse());
+    const { sosReports } = await FirstResponder.findById(userId)
+      .select("sosReports")
+      .populate({
+        path: "sosReports",
+        model: "SOSReport",
+        options: { sort: { timeStamp: -1 } },
+      });
+    res.status(200).send(sosReports);
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error.");
@@ -25,4 +46,3 @@ router.get("/sos/latest", async (req, res) => {
 });
 
 module.exports = router;
-
