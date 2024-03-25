@@ -210,14 +210,33 @@ class RegisterNewLocation extends State<RegisterLocation> {
                         builder: (context) =>
                             const RegisteredLocation()),
                     (route) => false),
+          context: context,
+          builder: (BuildContext context) {
+            sendRequestConfirmNotification();
+            return AlertDialog(
+              title: const Text(
+                'New Location Registered',
+                textAlign: TextAlign.center,
+              ),
+              content: Text(
+                'The new loaction $addressTag has been successfully registered',
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                    onPressed: () => Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const RegisteredLocation()),
+                        (route) => false),
                     child: const Text('OK'),
                   ),
-              ),
-            ],
-          );
-        },
-      );
-      // error checking
+                ),
+              ],
+            );
+          },
+        );
       } else {
         print('Failed to register location: ${response.body}');
       }
