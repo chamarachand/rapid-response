@@ -1,5 +1,6 @@
 //<SAHAN-IIT_20220334-UoW_w1953208>
 import 'package:client/pages/add_event.dart';
+import 'package:client/pages/incidentPost/navigationIncident.dart';
 import 'package:client/pages/profile_screen/profile_screen_fr.dart';
 import 'package:flutter/material.dart';
 import 'package:client/storage/user_secure_storage.dart';
@@ -383,7 +384,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             onPressed: () {
               // redirecting user to add incident posts screen
               Navigator.push(context,
-                  MaterialPageRoute(builder: ((context) => const IncidentPostPage())));
+                  MaterialPageRoute(builder: ((context) => const NavigationIncident())));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
@@ -393,7 +394,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                   borderRadius: BorderRadius.circular(15.0),
                 )),
             child: const Text(
-              'Incident Posts',
+              'Incident Post',
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,
