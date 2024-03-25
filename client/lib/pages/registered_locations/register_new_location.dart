@@ -193,7 +193,6 @@ class RegisterNewLocation extends State<RegisterLocation> {
       // informing user of successful registration
       if (response.statusCode == 201) {
         showDialog(
-<<<<<<< HEAD
         context: context,
         builder: (BuildContext context) {
           sendRequestConfirmNotification();
@@ -211,15 +210,6 @@ class RegisterNewLocation extends State<RegisterLocation> {
                         builder: (context) =>
                             const RegisteredLocation()),
                     (route) => false),
-                    child: const Text('OK'),
-                  ),
-              ),
-            ],
-          );
-        },
-      );
-      // error checking
-=======
           context: context,
           builder: (BuildContext context) {
             sendRequestConfirmNotification();
@@ -247,7 +237,6 @@ class RegisterNewLocation extends State<RegisterLocation> {
             );
           },
         );
->>>>>>> e6928d40bb09c78902bb0dbc41764899a6c374a3
       } else {
         print('Failed to register location: ${response.body}');
       }
@@ -256,12 +245,8 @@ class RegisterNewLocation extends State<RegisterLocation> {
     }
   }
 
-<<<<<<< HEAD
   // fuction to create body of screen
   Widget buildRegisterNewLocationInput(){
-=======
-  Widget buildRegisterNewLocationInput() {
->>>>>>> e6928d40bb09c78902bb0dbc41764899a6c374a3
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -339,13 +324,9 @@ class RegisterNewLocation extends State<RegisterLocation> {
           ],
         ),
         const SizedBox(height: 10),
-<<<<<<< HEAD
         // display input fields for lat and long only when seleted to add location manually
         if (!showLocationInputs)
           const SizedBox(height: 206),
-=======
-        if (!showLocationInputs) const SizedBox(height: 206),
->>>>>>> e6928d40bb09c78902bb0dbc41764899a6c374a3
         if (showLocationInputs)
           Column(
             children: [
@@ -388,16 +369,11 @@ class RegisterNewLocation extends State<RegisterLocation> {
                   // set button that confirms input to lat and long 
                   ElevatedButton(
                     onPressed: () {
-<<<<<<< HEAD
                       double? lat =
                           double.tryParse(latitudeController.text);
                       double? long =
                           double.tryParse(longitudeController.text);
                       // checking validity of input    
-=======
-                      double? lat = double.tryParse(latitudeController.text);
-                      double? long = double.tryParse(longitudeController.text);
->>>>>>> e6928d40bb09c78902bb0dbc41764899a6c374a3
                       if (lat == null ||
                           long == null ||
                           lat < -90 ||
@@ -451,13 +427,9 @@ class RegisterNewLocation extends State<RegisterLocation> {
         // confirm button to finalize registration
         ElevatedButton(
           onPressed: () {
-<<<<<<< HEAD
             if (addressTag.isNotEmpty &&
             newAddress!.isNotEmpty) {
               // creating registered loaction
-=======
-            if (addressTag.isNotEmpty && newAddress!.isNotEmpty) {
->>>>>>> e6928d40bb09c78902bb0dbc41764899a6c374a3
               createRegisteredLocation({
                 'addedBy': _id,
                 'locationTag': addressTag,

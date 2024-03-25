@@ -2,25 +2,22 @@ const express = require("express");
 const router = express.Router();
 const { IncidentReport } = require("../models/incidentReport");
 const { SOSReport } = require("../models/sosReport");
-//const { Civilian } = require("../models/civilian");
-// const incidentReport = require('../models/incidentReport');
-const { route } = require("./civilianRoutes");
 
 //api/posts/incidents
-router.get("/incidents", async (req, res) => {
+router.get("/incidents/latest", async (req, res) => {
   try {
-    const incidentPost = await IncidentReport.find();
-    res.status(200).send(incidentPost);
+    const latestIncident = await IncidentReport.find().sort({ createdAt: 1 }); //-1 for descending order
+    res.status(200).send(latestIncident.reverse());
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error.");
   }
 });
 
-router.get("/sos", async (req, res) => {
+router.get("/sos/latest", async (req, res) => {
   try {
-    const SOSReport = await SOSReport.find();
-    res.status(200).send(SOSReport);
+    const latestSOS = await SOSReport.find().sort({ createdAt: 1 }).limit(3);
+    res.status(200).send(latestSOS.reverse());
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error.");
@@ -28,3 +25,4 @@ router.get("/sos", async (req, res) => {
 });
 
 module.exports = router;
+
