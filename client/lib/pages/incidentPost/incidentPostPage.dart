@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:client/pages/incidentPost/GmapOpen.dart';
 import 'package:client/pages/incidentPost/data_service.dart';
@@ -16,7 +17,6 @@ class PurposeState extends State<IncidentPostPage> {
   double _currentSliderValue = 0.0;
 
   List<dynamic> postData = [];
-  
 
   @override
   void initState() {
@@ -26,18 +26,17 @@ class PurposeState extends State<IncidentPostPage> {
 
   Future<void> fetchData() async {
     try {
-      List<dynamic> posts = await fetchPostData();
-      List<dynamic> sos = await fetchSosData();
-      setState(() {
-        postData = posts;
-        
-      });
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:3000/api/posts/incidents/latest'));
+      if (response.statusCode == 200) {
+        setState(() {
+          postData = jsonDecode(response.body);
+        });
+      }
     } catch (e) {
       // Handle error
       print('Error fetching data: $e');
     }
-    print(postData);
-    
   }
 
   @override
@@ -55,27 +54,25 @@ class PurposeState extends State<IncidentPostPage> {
         centerTitle: true,
       ),
       body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle(),
-              incidentTitle()
-            ],
-          ),
-        ),
+        child: ListView.builder(
+            itemCount: postData.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Container(
+                    color: const Color.fromARGB(255, 198, 229, 255),
+                    child: ListTile(
+                      title: Text(postData[index]["eventType"]),
+                      subtitle: Text(
+                          "Incident Report: ${postData[index]["description"]}"),
+                    ),
+                  ),
+                ),
+              );
+            }),
       ),
     );
   }

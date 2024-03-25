@@ -16,7 +16,7 @@ class _NavigationIncidentState extends State<NavigationIncident> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 242, 243, 247),
       appBar: AppBar(
-        title: null,
+        title: const Text("Incident Reports & SOS"),
         backgroundColor: Color.fromARGB(255, 244, 198, 198),
       ),
       body: Column(
@@ -47,7 +47,7 @@ class _NavigationIncidentState extends State<NavigationIncident> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: ((context) =>SOS()),
+                          builder: ((context) => SOS()),
                         ),
                       );
                     },

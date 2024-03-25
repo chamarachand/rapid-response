@@ -21,7 +21,8 @@ class MainMenuFR extends StatefulWidget {
 
 class MainMenuScreenFR extends State<MainMenuFR> {
   // initializing the global variables used in the page
-  bool _availability = false; // represents first responder's availibity to accept requests
+  bool _availability =
+      false; // represents first responder's availibity to accept requests
   int _selectedIndex = 1; // variable used by ButtomNavigationBar
   var _firstName = ""; // user's first name
   List _notifications = []; // list to hold notifications
@@ -41,7 +42,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       setState(() {
         _firstName = decodedToken["firstName"];
       });
-    } 
+    }
   }
 
   // creating widget to fetch user availability from database
@@ -103,8 +104,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       _availability = value;
       updateAvailability(value);
       if (_availability) {
-        startLocationService();// start tracking location when _availability is true
-      } else if (!_availability){
+        startLocationService(); // start tracking location when _availability is true
+      } else if (!_availability) {
         stopLocationService(); // stop tracking location when _availability is false
       }
     });
@@ -140,56 +141,64 @@ class MainMenuScreenFR extends State<MainMenuFR> {
   // creating widget that creates the notification messages to be displayed based on the _notifications list entries
   @override
   Widget _buildNotificationDisplay(
-    // getting the required data to make notification
-      String notificationTopic, String notificationData, String notificationType) {
-        // customizing the icon based on notification type
-        Icon cusIcon;
-        if (notificationType == "supervisee-remove"){
-          cusIcon = const Icon(
-                  Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 255, 133, 124),
-                );
-        } else if (notificationType == "supervisee-request-accept"){
-          cusIcon = const Icon(
-                  Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 89, 255, 133),
-                );
-        } else if (notificationType == "supervisee-request"){
-          cusIcon = const Icon(
-                  Icons.link,
-                  size: 40,
-                  color: Color.fromARGB(255, 152, 188, 255),
-                );
-        } else {              // creating an else to account for other notification types (SOS and incident reports)
-          cusIcon = const Icon(
-                  Icons.warning_rounded,
-                  size: 40,
-                  color: Color.fromARGB(255, 255, 152, 152),
-                );
-        }
-      // returing the container with the created notification
-      return Container(
-        margin: const EdgeInsets.all(5),  // adding a gap arround the container to have better flow with other notifications
-        decoration: BoxDecoration(        // decorating notification container 
+      // getting the required data to make notification
+      String notificationTopic,
+      String notificationData,
+      String notificationType) {
+    // customizing the icon based on notification type
+    Icon cusIcon;
+    if (notificationType == "supervisee-remove") {
+      cusIcon = const Icon(
+        Icons.link,
+        size: 40,
+        color: Color.fromARGB(255, 255, 133, 124),
+      );
+    } else if (notificationType == "supervisee-request-accept") {
+      cusIcon = const Icon(
+        Icons.link,
+        size: 40,
+        color: Color.fromARGB(255, 89, 255, 133),
+      );
+    } else if (notificationType == "supervisee-request") {
+      cusIcon = const Icon(
+        Icons.link,
+        size: 40,
+        color: Color.fromARGB(255, 152, 188, 255),
+      );
+    } else {
+      // creating an else to account for other notification types (SOS and incident reports)
+      cusIcon = const Icon(
+        Icons.warning_rounded,
+        size: 40,
+        color: Color.fromARGB(255, 255, 152, 152),
+      );
+    }
+    // returing the container with the created notification
+    return Container(
+        margin: const EdgeInsets.all(
+            5), // adding a gap arround the container to have better flow with other notifications
+        decoration: BoxDecoration(
+          // decorating notification container
           color: const Color.fromARGB(255, 248, 255, 183),
           border: Border.all(
               color: const Color.fromARGB(255, 255, 221, 157), width: 3),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: Padding(                  // adding padding between container and row items
+        child: Padding(
+          // adding padding between container and row items
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          child: Row(                    // using a Row() for placement of content within the notification
+          child: Row(
+            // using a Row() for placement of content within the notification
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: cusIcon           // using the before determined icon
-              ),
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: cusIcon // using the before determined icon
+                  ),
               Expanded(
-                  child: Column(         // using a Column() to hold notification topic and content
+                  child: Column(
+                // using a Column() to hold notification topic and content
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -241,7 +250,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
   @override
   Widget build(BuildContext context) {
     // using Scaffold to build main menu
-    return Scaffold(    
+    return Scaffold(
       // creating the Appbar for main menu
       appBar: AppBar(
         title: Row(
@@ -252,18 +261,21 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                 double appBarHeight = AppBar().preferredSize.height;
                 return Container(
                   alignment: Alignment.center,
-                  child: IconButton(   // main logo is made as an icon button, further functionality will be added in the future
+                  child: IconButton(
+                    // main logo is made as an icon button, further functionality will be added in the future
                     icon: SizedBox(
                       width: appBarHeight - 20,
                       height: appBarHeight - 20,
-                      child: Image.asset('assets/RR_logo.png'), // using app logo 
+                      child:
+                          Image.asset('assets/RR_logo.png'), // using app logo
                     ),
                     onPressed: () {},
                   ),
                 );
               },
             ),
-            Builder(  // creating a user name display and popup menu for viewing profile and logout
+            Builder(
+              // creating a user name display and popup menu for viewing profile and logout
               builder: (BuildContext context) {
                 double appBarHeight = AppBar().preferredSize.height;
                 return Container(
@@ -320,7 +332,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                                       builder: (context) => const LoginPage()),
                                   (route) => false);
                               // stopping startLocationService and work manager as user is logging out
-                              stopLocationService();    
+                              stopLocationService();
                             },
                           ),
                         ],
@@ -350,10 +362,13 @@ class MainMenuScreenFR extends State<MainMenuFR> {
               ),
             ),
             value: _availability,
-            onChanged: _toggleAvailability, // updating availability when toggled to database nd other functions based on availability
-            activeColor: Colors.green, 
-            inactiveTrackColor: Colors.red, 
-            subtitle: _availability ? const Text('Available') : const Text('Unavailable'),
+            onChanged:
+                _toggleAvailability, // updating availability when toggled to database nd other functions based on availability
+            activeColor: Colors.green,
+            inactiveTrackColor: Colors.red,
+            subtitle: _availability
+                ? const Text('Available')
+                : const Text('Unavailable'),
           ),
           const SizedBox(height: 10),
           // creating button for add event functionality
@@ -383,8 +398,10 @@ class MainMenuScreenFR extends State<MainMenuFR> {
           ElevatedButton(
             onPressed: () {
               // redirecting user to add incident posts screen
-              Navigator.push(context,
-                  MaterialPageRoute(builder: ((context) => const NavigationIncident())));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: ((context) => const NavigationIncident())));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
@@ -424,7 +441,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
         context,
         _selectedIndex,
         _onItemTapped,
-        true,  // passing as true since page belogs to FR
+        true, // passing as true since page belogs to FR
       ),
     );
   }

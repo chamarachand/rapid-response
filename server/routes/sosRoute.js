@@ -4,7 +4,6 @@ const authMiddleware = require("../middleware/authMiddleware");
 const { SOSReport } = require("../models/sosReport");
 
 router.post("/", authMiddleware, async (req, res) => {
-  console.log("Reached");
   const { id, image, voice, emergencyType, location, date } = req.body;
 
   try {

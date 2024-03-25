@@ -9,10 +9,6 @@ const { Notification, validate } = require("../models/notification");
 const { sendNotification } = require("../services/notificationService");
 const { SOSReport } = require("../models/sosReport");
 
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
-
 // Get latest notifications
 router.get("/latest/:count", authMiddleware, async (req, res) => {
   const userId = req.user.id;
@@ -43,8 +39,7 @@ router.get("/latest/:count", authMiddleware, async (req, res) => {
 router.get("/latest-notifications", authMiddleware, async (req, res) => {
   const userId = req.user.id;
 
-  if (!userId)
-    return res.status(400).send("Bad Request");
+  if (!userId) return res.status(400).send("Bad Request");
 
   try {
     const notifications = await Notification.find({
@@ -113,10 +108,6 @@ router.get("/requests", authMiddleware, async (req, res) => {
       responded: false,
     })
       .select("from")
-      // .populate({
-      //   path: "from",
-      //   select: "_id firstName lastName",
-      // })
       .sort({ timestamp: -1 });
 
     if (notifications.length === 0)
@@ -220,10 +211,6 @@ router.post("/send", authMiddleware, async (req, res) => {
     return res.status(404).send("Receiver with the given id not found");
 
   // Send notification
-
-  // const { fcmToken } = await Civilian.findById(to).select("fcmToken");
-  // if (!fcmToken) return res.status(404).send("Reciever FCM token not found");
-
   const [fcmTokenCivilian, fcmTokenFirstResponder] = await Promise.all([
     Civilian.findById(to).select("fcmToken"),
     FirstResponder.findById(to).select("fcmToken"),
@@ -236,20 +223,6 @@ router.post("/send", authMiddleware, async (req, res) => {
   return send
     ? res.status(200).send("Notification send successfully")
     : res.status(202).send("Request created. Failed to send the notification");
-  // try {
-  //   admin.messaging().send({
-  //     token: fcmToken,
-  //     notification: {
-  //       title: title,
-  //       body: body,
-  //     },
-  //   });
-  //   console.log("Notification send successfully");
-  //   res.status(200).send("Send Success");
-  // } catch (error) {
-  //   console.error("Error: " + error);
-  //   res.status(500).send("Internal Server Error");
-  // }
 });
 
 // send sos. incident notifications for emergency contacts
