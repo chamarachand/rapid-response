@@ -25,6 +25,9 @@ class MainMenuScreenFR extends State<MainMenuFR> {
   int _selectedIndex = 1; // variable used by ButtomNavigationBar
   var _firstName = ""; // user's first name
   List _notifications = []; // list to hold notifications
+  // sample imaged used as profile image
+  final profileImg = 
+      "https://static.vecteezy.com/system/resources/previews/005/164/094/non_2x/nurse-professional-using-face-mask-with-stethoscope-free-vector.jpg";
 
 // function to get user permission for GPS location tracking
   Future<void> _requestLocationPermission() async {
@@ -292,15 +295,25 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
+                          const SizedBox(height: 10),
                           SizedBox(
-                            width: appBarHeight - 20,
-                            height: appBarHeight - 20,
-                            child: Image.asset('assets/RR_logo.png'),
+                             width: appBarHeight + 80,
+                            height: appBarHeight + 80,
+                            child: Image.network(
+                              profileImg,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          const SizedBox(height: 25),
                           // creating ListTile for view profile option
                           ListTile(
-                            title: const Center(child: Text('View Profile')),
+                            title: const Center(child: Text(
+                              'View Profile',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            )),
                             // redirecting user to profile screen onTap
                             onTap: () => Navigator.push(
                                 context,
@@ -309,7 +322,14 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                           ),
                           // creting ListTile for logout option
                           ListTile(
-                            title: const Center(child: Text('Logout')),
+                            title: const Center(child: Text(
+                              'Logout',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 20,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            )),
                             // removing current account and redirecting user to Login page onTap
                             onTap: () {
                               UserSecureStorage.deleteAccessToken();
