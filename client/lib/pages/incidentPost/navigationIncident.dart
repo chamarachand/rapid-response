@@ -47,7 +47,7 @@ class _NavigationIncidentState extends State<NavigationIncident> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: ((context) => SOS ()),
+                          builder: ((context) =>SOS()),
                         ),
                       );
                     },

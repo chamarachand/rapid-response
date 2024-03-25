@@ -7,22 +7,22 @@ import 'package:client/pages/incidentPost/data_service.dart';
 import 'package:location/location.dart';
 
 class SOS extends StatefulWidget {
-  const SOS({Key? key,
-  required this. title, 
-  required this.location, 
-  required this.voice
-}) : super(key: key);
-  final String title;
-  final String location;
-  final String voice;
+  const SOS({
+    Key? key,
+    // required this.title,
+    // required this.location,
+    // required this.voice,
+  }) : super(key: key);
 
-
+  // final String title;
+  // final String location;
+  // final String voice;
 
   @override
-  State<State> SOSState() => SOSState();
+  State<SOS> createState() => _SOSState();
 }
 
-class SOS extends State<SOS> {
+class _SOSState extends State<SOS> {
   double _currentSliderValue = 0.0;
 
   List<dynamic> sosData = [];
@@ -79,15 +79,17 @@ class SOS extends State<SOS> {
               incidentTitle(),
               incidentTitle(),
               incidentTitle(),
-              incidentTitle()
+              incidentTitle(),
             ],
           ),
         ),
       ),
     );
   }
-
-  Widget incidentTitle() => Container(
+ 
+  Widget incidentTitle(
+    
+  ) => Container(
         margin: const EdgeInsets.all(3.0),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
