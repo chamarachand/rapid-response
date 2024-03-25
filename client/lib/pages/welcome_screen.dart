@@ -34,7 +34,6 @@ class WelcomePage extends StatelessWidget {
                     Container(
                       child: Center(
                         child: Image.asset("assets/doctor_2.png"),
-                        
                       ),
                       width: MediaQuery.of(context).size.width,
                     ),
@@ -89,22 +88,6 @@ class WelcomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Center(
-                    //     child: ElevatedButton(
-                    //         onPressed: () => Navigator.push(
-                    //             context,
-                    //             MaterialPageRoute(
-                    //                 builder: (context) => const add_event())),
-                    //         child: const Text("To Add Event (Test)"))),
-                    // Center(
-                    //   child: ElevatedButton(
-                    //       onPressed: () => Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(
-                    //               builder: (context) =>
-                    //                   const IncidentPostPage())),
-                    //       child: const Text("Incident post")),
-                    // ),
                   ])),
         ));
   }
