@@ -66,7 +66,6 @@ router.get("/get-availability", authMiddleware, async (req, res) => {
     const firstResponder = await FirstResponder.findById(id).select(
       "availability"
     );
-    console.log(firstResponder);
 
     if (!firstResponder)
       return res.status(404).send("FirstResponder not found");
@@ -80,7 +79,6 @@ router.get("/get-availability", authMiddleware, async (req, res) => {
 
 // Link - http://10.0.2.2:3000/api/first-responder/set-availability?availability=true
 router.patch("/set-availability", authMiddleware, async (req, res) => {
-  console.log("Reached");
   try {
     const { id } = req.user;
     const { availability } = req.query;
@@ -114,7 +112,6 @@ router.get("/get-latitude-longitude", authMiddleware, async (req, res) => {
     const firstResponder = await FirstResponder.findById(id).select(
       "latitude longitude"
     );
-    console.log(firstResponder);
 
     if (!firstResponder)
       return res.status(404).send("FirstResponder not found");
@@ -126,10 +123,8 @@ router.get("/get-latitude-longitude", authMiddleware, async (req, res) => {
   }
 });
 
-
 // Link - http://10.0.2.2:3000/api/first-responder/set-latitude-longitude?latitude=valueHere&longitude=valueHere
 router.patch("/set-latitude-longitude", authMiddleware, async (req, res) => {
-  console.log("Reached");
   try {
     const { id } = req.user;
     const { latitude, longitude } = req.query;
