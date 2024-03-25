@@ -1,4 +1,4 @@
-import 'package:client/pages/link_accounts/civilians/link_account_home.dart';
+import 'package:client/pages/incidentPost/SOS.dart';
 import 'package:flutter/material.dart';
 import 'package:client/pages/incidentPost/incidentPost.dart';
 import 'package:client/pages/incidentPost/incidentPostPage.dart';
@@ -47,7 +47,7 @@ class _NavigationIncidentState extends State<NavigationIncident> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: ((context) => LinkAccountHome()),
+                          builder: ((context) => SOS ()),
                         ),
                       );
                     },
