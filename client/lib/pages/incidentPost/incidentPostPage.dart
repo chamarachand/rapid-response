@@ -16,7 +16,7 @@ class PurposeState extends State<IncidentPostPage> {
   double _currentSliderValue = 0.0;
 
   List<dynamic> postData = [];
-  List<dynamic> sosData = [];
+  
 
   @override
   void initState() {
@@ -30,14 +30,14 @@ class PurposeState extends State<IncidentPostPage> {
       List<dynamic> sos = await fetchSosData();
       setState(() {
         postData = posts;
-        sosData = sos;
+        
       });
     } catch (e) {
       // Handle error
       print('Error fetching data: $e');
     }
     print(postData);
-    print(sosData);
+    
   }
 
   @override
