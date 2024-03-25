@@ -386,7 +386,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 119, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 100, vertical: 20),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 )),
@@ -409,7 +409,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFC06565),
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 90, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 80, vertical: 20),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 )),
