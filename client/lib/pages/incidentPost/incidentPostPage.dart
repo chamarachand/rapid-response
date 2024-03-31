@@ -29,7 +29,8 @@ class PurposeState extends State<IncidentPostPage> {
     final accessToken = await UserSecureStorage.getAccessToken();
     try {
       final response = await http.get(
-          Uri.parse('http://10.0.2.2:3000/api/posts/incidents/latest'),
+          Uri.parse(
+              'https://rapid-response-pi.vercel.app/api/posts/incidents/latest'),
           headers: {if (accessToken != null) 'x-auth-token': accessToken});
       if (response.statusCode == 200) {
         setState(() {

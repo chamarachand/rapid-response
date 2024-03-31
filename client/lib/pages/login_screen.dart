@@ -30,7 +30,8 @@ class _LoginPageState extends State<LoginPage> {
 
   login() async {
     try {
-      var response = await http.post(Uri.parse("http://10.0.2.2:3000/api/auth"),
+      var response = await http.post(
+          Uri.parse("https://rapid-response-pi.vercel.app/api/auth"),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             "username": usernameController.text.trim(),
@@ -70,7 +71,8 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       var response = await http.patch(
-          Uri.parse("http://10.0.2.2:3000/api/auth/update-fcm-token"),
+          Uri.parse(
+              "https://rapid-response-pi.vercel.app/api/auth/update-fcm-token"),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             "username": usernameController.text.trim(),

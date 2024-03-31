@@ -28,7 +28,8 @@ class _RegisterScreen4State extends State<RegisterPage4> {
   userExists(String username) async {
     try {
       var response = await http.get(
-          Uri.parse("http://10.0.2.2:3000/api/civilian/checkUser/$username"),
+          Uri.parse(
+              "https://rapid-response-pi.vercel.app/api/civilian/checkUser/$username"),
           headers: {'Content-Type': 'application/json'});
 
       var data = jsonDecode(response.body);
@@ -48,7 +49,7 @@ class _RegisterScreen4State extends State<RegisterPage4> {
     try {
       var response = await http.post(
           Uri.parse(
-              "http://10.0.2.2:3000/api/${isCivilian ? "civilian" : "first-responder"}"),
+              "https://rapid-response-pi.vercel.app/api/${isCivilian ? "civilian" : "first-responder"}"),
           headers: {
             'Content-Type': 'application/json',
           },

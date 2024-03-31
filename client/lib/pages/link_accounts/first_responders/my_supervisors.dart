@@ -17,7 +17,8 @@ class _MySupervisorsState extends State<MySupervisors> {
     final accessToken = await UserSecureStorage.getAccessToken();
 
     final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/api/linked-accounts/supervisors"),
+        Uri.parse(
+            "https://rapid-response-pi.vercel.app/api/linked-accounts/supervisors"),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken

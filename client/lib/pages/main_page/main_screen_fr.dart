@@ -27,7 +27,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
   var _firstName = ""; // user's first name
   List _notifications = []; // list to hold notifications
   // sample imaged used as profile image
-  final profileImg = 
+  final profileImg =
       "https://static.vecteezy.com/system/resources/previews/005/164/094/non_2x/nurse-professional-using-face-mask-with-stethoscope-free-vector.jpg";
 
 // function to get user permission for GPS location tracking
@@ -55,7 +55,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
     try {
       final response = await http.get(
           Uri.parse(
-              'http://10.0.2.2:3000/api/first-responder/get-availability'),
+              'https://rapid-response-pi.vercel.app/api/first-responder/get-availability'),
           headers: {
             'Content-Type': 'application/json',
             if (accessToken != null) 'x-auth-token': accessToken,
@@ -79,7 +79,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       final response = await http.patch(
         // setting database availability of FR to the availability
         Uri.parse(
-            'http://10.0.2.2:3000/api/first-responder/set-availability?availability=$newAvailability'),
+            'https://rapid-response-pi.vercel.app/api/first-responder/set-availability?availability=$newAvailability'),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken,
@@ -121,7 +121,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
       var response = await http.get(
           // getting the latest 10 notifications form the database
 
-          Uri.parse("http://10.0.2.2:3000/api/notification/latest/10"),
+          Uri.parse(
+              "https://rapid-response-pi.vercel.app/api/notification/latest/10"),
           headers: {
             'Content-Type': 'application/json',
             if (accessToken != null) 'x-auth-token': accessToken,
@@ -309,7 +310,7 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                         children: [
                           const SizedBox(height: 10),
                           SizedBox(
-                             width: appBarHeight + 80,
+                            width: appBarHeight + 80,
                             height: appBarHeight + 80,
                             child: Image.network(
                               profileImg,
@@ -318,7 +319,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                           ),
                           // creating ListTile for view profile option
                           ListTile(
-                            title: const Center(child: Text(
+                            title: const Center(
+                                child: Text(
                               'View Profile',
                               style: TextStyle(
                                 color: Color.fromARGB(255, 0, 0, 0),
@@ -334,7 +336,8 @@ class MainMenuScreenFR extends State<MainMenuFR> {
                           ),
                           // creting ListTile for logout option
                           ListTile(
-                            title: const Center(child: Text(
+                            title: const Center(
+                                child: Text(
                               'Logout',
                               style: TextStyle(
                                 color: Color.fromARGB(255, 0, 0, 0),

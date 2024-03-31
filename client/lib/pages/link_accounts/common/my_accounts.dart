@@ -27,7 +27,7 @@ class MyAccountsState extends State<MyAccounts> {
 
     final response = await http.get(
         Uri.parse(
-            "http://10.0.2.2:3000/api/linked-accounts/${widget.endpoint}s"),
+            "https://rapid-response-pi.vercel.app/api/linked-accounts/${widget.endpoint}s"),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken
@@ -47,7 +47,7 @@ class MyAccountsState extends State<MyAccounts> {
 
     final response = await http.delete(
         Uri.parse(
-            "http://10.0.2.2:3000/api/${widget.userType}/remove/${widget.endpoint}/${accountId}"),
+            "https://rapid-response-pi.vercel.app/api/${widget.userType}/remove/${widget.endpoint}/${accountId}"),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken
@@ -95,20 +95,20 @@ class MyAccountsState extends State<MyAccounts> {
     final idToken = await UserSecureStorage.getIdToken();
     final decodedIdToken = JwtDecoder.decode(idToken!);
 
-    final response =
-        await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
-            headers: {
-              'Content-Type': 'application/json',
-              if (accessToken != null) 'x-auth-token': accessToken
-            },
-            body: jsonEncode({
-              "from": decodedIdToken["id"],
-              "to": to,
-              "type": widget.notificationType,
-              "title": "Removed from ${widget.displayName}",
-              "body":
-                  "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} removed you from their ${widget.displayName.toLowerCase()}s"
-            }));
+    final response = await http.post(
+        Uri.parse("https://rapid-response-pi.vercel.app/api/notification/send"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (accessToken != null) 'x-auth-token': accessToken
+        },
+        body: jsonEncode({
+          "from": decodedIdToken["id"],
+          "to": to,
+          "type": widget.notificationType,
+          "title": "Removed from ${widget.displayName}",
+          "body":
+              "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} removed you from their ${widget.displayName.toLowerCase()}s"
+        }));
 
     if (response.statusCode == 200) {
       print("Notification send successfully!");

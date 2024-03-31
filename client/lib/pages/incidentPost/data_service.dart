@@ -2,8 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 Future<List<dynamic>> fetchPostData() async {
-  final response = await http
-      .get(Uri.parse('http://10.0.2.2:3000/api/posts/incidents/latest'));
+  final response = await http.get(Uri.parse(
+      'https://rapid-response-pi.vercel.app/api/posts/incidents/latest'));
   if (response.statusCode == 200) {
     return json.decode(response.body);
   } else {
@@ -13,8 +13,8 @@ Future<List<dynamic>> fetchPostData() async {
 }
 
 Future<List<dynamic>> fetchSosData() async {
-  final response =
-      await http.get(Uri.parse('http://10.0.2.2:3000/api/posts/sos'));
+  final response = await http
+      .get(Uri.parse('https://rapid-response-pi.vercel.app/api/posts/sos'));
   if (response.statusCode == 200) {
     return json.decode(response.body);
   } else {

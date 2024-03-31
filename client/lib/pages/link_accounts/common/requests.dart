@@ -28,7 +28,7 @@ class RequestsState extends State<Requests> {
 
     final response = await http.get(
         Uri.parse(
-            "http://10.0.2.2:3000/api/notification/requests/?type=${widget.notificationType}"),
+            "https://rapid-response-pi.vercel.app/api/notification/requests/?type=${widget.notificationType}"),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken
@@ -51,7 +51,7 @@ class RequestsState extends State<Requests> {
   updateNotificationStatus(String notificationId) async {
     final response = await http.patch(
         Uri.parse(
-            "http://10.0.2.2:3000/api/notification/responded/$notificationId"),
+            "https://rapid-response-pi.vercel.app/api/notification/responded/$notificationId"),
         headers: {
           'Content-Type': 'application/json',
           if (_accessToken != null) 'x-auth-token': _accessToken!
@@ -64,7 +64,7 @@ class RequestsState extends State<Requests> {
   addAsLinkedAccount(String requestedUserId) async {
     final response = await http.patch(
         Uri.parse(
-            "http://10.0.2.2:3000/api/linked-accounts/${widget.endpoint}/add/$requestedUserId"),
+            "https://rapid-response-pi.vercel.app/api/linked-accounts/${widget.endpoint}/add/$requestedUserId"),
         headers: {
           'Content-Type': 'application/json',
           if (_accessToken != null) 'x-auth-token': _accessToken!
@@ -79,20 +79,20 @@ class RequestsState extends State<Requests> {
     final idToken = await UserSecureStorage.getIdToken();
     final decodedIdToken = JwtDecoder.decode(idToken!);
 
-    final response =
-        await http.post(Uri.parse("http://10.0.2.2:3000/api/notification/send"),
-            headers: {
-              'Content-Type': 'application/json',
-              if (_accessToken != null) 'x-auth-token': _accessToken!
-            },
-            body: jsonEncode({
-              "from": decodedIdToken["id"],
-              "to": to,
-              "type": widget.notificationAcceptType,
-              "title": "Request Accepted",
-              "body":
-                  "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your ${widget.displayName.toLowerCase()}"
-            }));
+    final response = await http.post(
+        Uri.parse("https://rapid-response-pi.vercel.app/api/notification/send"),
+        headers: {
+          'Content-Type': 'application/json',
+          if (_accessToken != null) 'x-auth-token': _accessToken!
+        },
+        body: jsonEncode({
+          "from": decodedIdToken["id"],
+          "to": to,
+          "type": widget.notificationAcceptType,
+          "title": "Request Accepted",
+          "body":
+              "${decodedIdToken["firstName"]} ${decodedIdToken["lastName"]} accepted the request to be added as your ${widget.displayName.toLowerCase()}"
+        }));
 
     if (response.statusCode == 200) {
       print("Notification send successfully!");
