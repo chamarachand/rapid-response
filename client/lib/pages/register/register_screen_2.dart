@@ -42,16 +42,16 @@ class _RegisterPage2State extends State<RegisterPage2> {
 
   validateNic() async {
     try {
-      var response =
-          await http.post(Uri.parse("http://10.0.2.2:3000/api/validate-nic"),
-              headers: {
-                'Content-Type': 'application/json', // Add this line
-              },
-              body: jsonEncode({
-                "nicNo": _nicnoController.text,
-                "gender": _genderController.text,
-                "birthDay": _birthdateController.text
-              }));
+      var response = await http.post(
+          Uri.parse("https://rapid-response-pi.vercel.app/api/validate-nic"),
+          headers: {
+            'Content-Type': 'application/json', // Add this line
+          },
+          body: jsonEncode({
+            "nicNo": _nicnoController.text,
+            "gender": _genderController.text,
+            "birthDay": _birthdateController.text
+          }));
       if (response.statusCode == 200) {
         return true;
       } else if (response.statusCode == 403) {
@@ -67,7 +67,7 @@ class _RegisterPage2State extends State<RegisterPage2> {
     try {
       var response = await http.post(
           Uri.parse(
-              "http://10.0.2.2:3000/api/validate-nic/is-unique?userType=${UserType.getUserType() == UserTypes.civilian ? "civilian" : "first-responder"}"),
+              "https://rapid-response-pi.vercel.app/api/validate-nic/is-unique?userType=${UserType.getUserType() == UserTypes.civilian ? "civilian" : "first-responder"}"),
           headers: {
             'Content-Type': 'application/json',
           },

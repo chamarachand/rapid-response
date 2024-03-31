@@ -32,39 +32,38 @@ class _addEventState extends State<add_event> {
   File? image;
 
   Future<void> _selectDateTime(BuildContext context) async {
-  // Combine date picker and time picker interactions
-  final DateTime? pickedDate = await showDatePicker(
-    context: context,
-    initialDate: DateTime.now(), // Set initial date to current date
-    firstDate: DateTime(2024, 1, 1),
-    lastDate: DateTime(2036, 12, 31),
-  );
-
-  if (pickedDate != null) {
-    final TimeOfDay? pickedTime = await showTimePicker(
+    // Combine date picker and time picker interactions
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialDate: DateTime.now(), // Set initial date to current date
+      firstDate: DateTime(2024, 1, 1),
+      lastDate: DateTime(2036, 12, 31),
     );
 
-    if (pickedTime != null) {
-      // Combine date and time into a single DateTime variable
-      final selectedDateTime = DateTime(
-        pickedDate!.year,
-        pickedDate.month,
-        pickedDate.day,
-        pickedTime!.hour,
-        pickedTime.minute,
+    if (pickedDate != null) {
+      final TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
       );
 
-      // Update your UI or store the selectedDateTime variable
-      setState(() {
-        // You can adjust the format as needed (e.g., 'yyyy-MM-dd HH:mm')
-        _dateTimeController.text = selectedDateTime.toString();
-      });
+      if (pickedTime != null) {
+        // Combine date and time into a single DateTime variable
+        final selectedDateTime = DateTime(
+          pickedDate!.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime!.hour,
+          pickedTime.minute,
+        );
+
+        // Update your UI or store the selectedDateTime variable
+        setState(() {
+          // You can adjust the format as needed (e.g., 'yyyy-MM-dd HH:mm')
+          _dateTimeController.text = selectedDateTime.toString();
+        });
+      }
     }
   }
-}
-
 
   static const EdgeInsets textFieldPadding = EdgeInsets.all(10);
   DateTime selectedDate = DateTime.now();
@@ -186,7 +185,7 @@ class _addEventState extends State<add_event> {
         context,
         _selectedIndex,
         _onItemTapped,
-        true,  // passing as true since page belogs to FR
+        true, // passing as true since page belogs to FR
       ),
     );
   }
@@ -219,7 +218,8 @@ class _addEventState extends State<add_event> {
 
       // Send POST request using http package
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/area-event/create-area-event'),
+        Uri.parse(
+            'https://rapid-response-pi.vercel.app/api/area-event/create-area-event'),
         headers: {
           'Content-Type': 'application/json',
         },

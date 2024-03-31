@@ -359,7 +359,7 @@ class emergency extends State<SOSpage> {
       'date': currentDate
     };
 
-    String backendUrl = 'http://10.0.2.2:3000/api/sos-report';
+    String backendUrl = 'https://rapid-response-pi.vercel.app/api/sos-report';
 
     try {
       http.Response response = await http.post(
@@ -444,7 +444,7 @@ class emergency extends State<SOSpage> {
     try {
       var response = await http.post(
           Uri.parse(
-              "http://10.0.2.2:3000/api/notification/emergency-contacts/send"),
+              "https://rapid-response-pi.vercel.app/api/notification/emergency-contacts/send"),
           headers: {
             'Content-Type': 'application/json',
             if (accessToken != null) 'x-auth-token': accessToken,
@@ -471,7 +471,7 @@ class emergency extends State<SOSpage> {
     try {
       var response = await http.post(
           Uri.parse(
-              "http://10.0.2.2:3000/api/notification/first-responder/send/sos-report/${sosId}"),
+              "https://rapid-response-pi.vercel.app/api/notification/first-responder/send/sos-report/${sosId}"),
           headers: {
             'Content-Type': 'application/json',
             if (accessToken != null) 'x-auth-token': accessToken,

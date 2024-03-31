@@ -35,7 +35,7 @@ class _UserSearchPageState extends State<UserSearchPage> {
     try {
       var response = await http.get(
         Uri.parse(
-            "http://10.0.2.2:3000/api/${widget.endpoint}/search?username=$_searchQuery"),
+            "https://rapid-response-pi.vercel.app/api/${widget.endpoint}/search?username=$_searchQuery"),
         headers: {
           'Content-Type': 'application/json',
           if (_accessToken != null) 'x-auth-token': _accessToken!,

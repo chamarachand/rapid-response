@@ -30,7 +30,7 @@ class _FirstResponderUserPageState extends State<FirstResponderUserPage> {
     try {
       var response = await http.get(
           Uri.parse(
-              "http://10.0.2.2:3000/api/profile-pic/profile-pic-url/${widget._user["_id"]}"),
+              "https://rapid-response-pi.vercel.app/api/profile-pic/profile-pic-url/${widget._user["_id"]}"),
           headers: {
             'Content-Type': 'application/json',
             if (_accessToken != null) 'x-auth-token': _accessToken,
@@ -49,7 +49,7 @@ class _FirstResponderUserPageState extends State<FirstResponderUserPage> {
     try {
       var response = await http.get(
           Uri.parse(
-              "http://10.0.2.2:3000/api/linked-accounts/supervisee/${widget._user["_id"]}"),
+              "https://rapid-response-pi.vercel.app/api/linked-accounts/supervisee/${widget._user["_id"]}"),
           headers: {
             'Content-Type': 'application/json',
             if (_accessToken != null) 'x-auth-token': _accessToken,
@@ -68,7 +68,7 @@ class _FirstResponderUserPageState extends State<FirstResponderUserPage> {
     try {
       var response = await http.get(
           Uri.parse(
-              "http://10.0.2.2:3000/api/notification/search/request/${widget._user["_id"]}?type=supervisee-request"),
+              "https://rapid-response-pi.vercel.app/api/notification/search/request/${widget._user["_id"]}?type=supervisee-request"),
           headers: {
             'Content-Type': 'application/json',
             if (_accessToken != null) 'x-auth-token': _accessToken,
@@ -86,7 +86,8 @@ class _FirstResponderUserPageState extends State<FirstResponderUserPage> {
   sendRequest() async {
     try {
       var response = await http.post(
-          Uri.parse("http://10.0.2.2:3000/api/notification/send"),
+          Uri.parse(
+              "https://rapid-response-pi.vercel.app/api/notification/send"),
           headers: {
             'Content-Type': 'application/json',
             if (_accessToken != null) 'x-auth-token': _accessToken

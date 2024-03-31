@@ -17,7 +17,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:client/pages/navigation_bar/bottom_navigation_bar.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
-
 class ReportScreen extends StatefulWidget {
   const ReportScreen({super.key});
 
@@ -32,8 +31,10 @@ class _ReportScreenState extends State<ReportScreen> {
   String imageUrl = '';
   File? image;
   String? capturedSpeech;
-  late Position currentPosition;// initiating value, will be change on _loadToken
-  int _selectedIndex = 1;  // value used to indicated selected button of buttom navi bar
+  late Position
+      currentPosition; // initiating value, will be change on _loadToken
+  int _selectedIndex =
+      1; // value used to indicated selected button of buttom navi bar
   final SpeechToText _speechToText = SpeechToText();
 
   bool _speechEnabled = false;
@@ -44,6 +45,7 @@ class _ReportScreenState extends State<ReportScreen> {
     super.initState();
     initSpeech();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,7 +173,8 @@ class _ReportScreenState extends State<ReportScreen> {
 
       // Send POST request using http package
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/api/incident-report/create-incident'),
+        Uri.parse(
+            'https://rapid-response-pi.vercel.app/api/incident-report/create-incident'),
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': accessToken
@@ -250,24 +253,26 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   Widget Speechtotext() {
-  return AlertDialog(
-    title: Text(
-      'Speech to Text',
-      style: TextStyle(color: Colors.black),
-    ),
-    actions: [
-      FloatingActionButton(
-        onPressed: _speechToText.isListening ? _stopListening : _startListening,
-        child: Icon(
-          Icons.mic,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.red, // Customize color as needed
-        foregroundColor: Colors.white, // Customize foreground color as needed
+    return AlertDialog(
+      title: Text(
+        'Speech to Text',
+        style: TextStyle(color: Colors.black),
       ),
-    ],
-  );
-}
+      actions: [
+        FloatingActionButton(
+          onPressed:
+              _speechToText.isListening ? _stopListening : _startListening,
+          child: Icon(
+            Icons.mic,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.red, // Customize color as needed
+          foregroundColor: Colors.white, // Customize foreground color as needed
+        ),
+      ],
+    );
+  }
+
   void initSpeech() async {
     _speechEnabled = await _speechToText.initialize();
     setState(() {});
@@ -275,8 +280,7 @@ class _ReportScreenState extends State<ReportScreen> {
 
   void _startListening() async {
     await _speechToText.listen(onResult: _onSpeechResult);
-    setState(() {
-    });
+    setState(() {});
   }
 
   void _stopListening() async {
@@ -285,11 +289,13 @@ class _ReportScreenState extends State<ReportScreen> {
   }
 
   void _onSpeechResult(result) {
-  setState(() {
-    _wordsSpoken = "${result.recognizedWords}";
-  });
-  Navigator.pop(_wordsSpoken as BuildContext); // Pop the screen and return the captured speech
- }
+    setState(() {
+      _wordsSpoken = "${result.recognizedWords}";
+    });
+    Navigator.pop(_wordsSpoken
+        as BuildContext); // Pop the screen and return the captured speech
+  }
+
   notifyFirstResponders(String incidentId) async {
     final accessToken = await UserSecureStorage.getAccessToken();
     final idToken = await UserSecureStorage.getIdToken();
@@ -298,7 +304,7 @@ class _ReportScreenState extends State<ReportScreen> {
     try {
       var response = await http.post(
           Uri.parse(
-              "http://10.0.2.2:3000/api/notification/first-responder/send/incident-report/${incidentId}"),
+              "https://rapid-response-pi.vercel.app/api/notification/first-responder/send/incident-report/${incidentId}"),
           headers: {
             'Content-Type': 'application/json',
             if (accessToken != null) 'x-auth-token': accessToken,
@@ -325,7 +331,7 @@ class _ReportScreenState extends State<ReportScreen> {
     try {
       var response = await http.post(
           Uri.parse(
-              "http://10.0.2.2:3000/api/notification/emergency-contacts/send"),
+              "https://rapid-response-pi.vercel.app/api/notification/emergency-contacts/send"),
           headers: {
             'Content-Type': 'application/json',
             if (accessToken != null) 'x-auth-token': accessToken,
@@ -361,5 +367,4 @@ class _ReportScreenState extends State<ReportScreen> {
               child: const Text("OK")),
         ]);
   }
-
 }

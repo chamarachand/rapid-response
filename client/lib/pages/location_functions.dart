@@ -28,7 +28,8 @@ void callbackDispatcher() {
     // retrieve previous latitude and longitude from the database
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/first-responder/get-latitude-longitude'),
+        Uri.parse(
+            'https://rapid-response-pi.vercel.app/api/first-responder/get-latitude-longitude'),
         headers: {
           'Content-Type': 'application/json',
           if (accessToken != null) 'x-auth-token': accessToken,
@@ -62,7 +63,8 @@ void callbackDispatcher() {
     } else {
       // updating previous location for the first time
       updateLocationToDatabase(position.latitude, position.longitude);
-      print('First location recorded: ${position.latitude}, ${position.longitude}');
+      print(
+          'First location recorded: ${position.latitude}, ${position.longitude}');
     }
 
     return Future.value(true);
@@ -75,7 +77,8 @@ Future<void> updateLocationToDatabase(double latitude, double longitude) async {
 
   try {
     final response = await http.patch(
-      Uri.parse('http://10.0.2.2:3000/api/first-responder/set-latitude-longitude?latitude=$latitude&longitude=$longitude'),
+      Uri.parse(
+          'https://rapid-response-pi.vercel.app/api/first-responder/set-latitude-longitude?latitude=$latitude&longitude=$longitude'),
       headers: {
         'Content-Type': 'application/json',
         if (accessToken != null) 'x-auth-token': accessToken,
@@ -107,7 +110,7 @@ void startLocationService() {
 void stopLocationService() {
   // decreasing the connectedFlutterEngines count when a Flutter engine is disconnected
   connectedFlutterEngines--;
-  
+
   // checking whether there are no active Flutter engines before stopping the service
   if (connectedFlutterEngines <= 0) {
     Workmanager().cancelAll(); // Cancels all background tasks

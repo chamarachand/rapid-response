@@ -16,7 +16,7 @@ class RegisteredLocation extends StatefulWidget {
 class DispalyRegisteredLocations extends State<RegisteredLocation> {
   // initializing the global variables used in the page
   List _registeredLocations = []; // list used to store registerd locations
-  int _selectedIndex = 1;  // variable used by ButtomNavigationBar
+  int _selectedIndex = 1; // variable used by ButtomNavigationBar
   var _id;
   // sample imaged used as profile image
   final profileImg =
@@ -39,11 +39,12 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
   Future<void> _loadRegisteredLocations(String userId) async {
     try {
       // passsing http request with user Id to get registered locations array from database
-      final response = await http.get(Uri.parse('http://10.0.2.2:3000/api/registeredLocations/registered-locations/$userId'));
+      final response = await http.get(Uri.parse(
+          'https://rapid-response-pi.vercel.app/api/registeredLocations/registered-locations/$userId'));
       if (response.statusCode == 200) {
         setState(() {
-            _registeredLocations = jsonDecode(response.body);
-          });
+          _registeredLocations = jsonDecode(response.body);
+        });
       } else {
         throw Exception('Failed to fetch registered locations');
       }
@@ -65,11 +66,8 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
       ),
       actions: [
         // actions will be implimented in the future to facilitate removal of regitered locations
-        TextButton(
-            onPressed: (){},
-            child: const Text("Yes")),
-        TextButton(
-            onPressed: (){}, child: const Text("No")),
+        TextButton(onPressed: () {}, child: const Text("Yes")),
+        TextButton(onPressed: () {}, child: const Text("No")),
         TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Cancel"))
@@ -91,10 +89,11 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
   // creating widget to build registered locations display
   @override
   Widget buildRegisteredLocationDisplay(
-    // getting location tag and location details oncall
-    String locationTag, String locationData) {
-      // using container to contain individual location displays
-      return Container(
+      // getting location tag and location details oncall
+      String locationTag,
+      String locationData) {
+    // using container to contain individual location displays
+    return Container(
         margin: const EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: Color.fromARGB(255, 198, 229, 255),
@@ -185,7 +184,9 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
             itemCount: _registeredLocations.length,
             itemBuilder: (BuildContext context, int index) {
               return buildRegisteredLocationDisplay(
-                  _registeredLocations[index]["locationTag"], _registeredLocations[index]["address"],);
+                _registeredLocations[index]["locationTag"],
+                _registeredLocations[index]["address"],
+              );
             },
           ),
           Positioned(
@@ -194,10 +195,10 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
             // creating button to register new location
             child: ElevatedButton(
               onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: ((context) => const RegisterLocation())));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) => const RegisterLocation())));
               },
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
@@ -220,7 +221,7 @@ class DispalyRegisteredLocations extends State<RegisteredLocation> {
       ),
     );
   }
-  
+
   // creating method to change selected index on tap
   void _onItemTapped(int index) {
     setState(() {
