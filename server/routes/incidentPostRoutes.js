@@ -36,9 +36,8 @@ router.get("/sos/latest", authMiddleware, async (req, res) => {
       .populate({
         path: "sosReports",
         model: "SOSReport",
-        options: { sort: { timeStamp: -1 } },
       });
-    res.status(200).send(sosReports);
+    res.status(200).send(sosReports.reverse());
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error.");
